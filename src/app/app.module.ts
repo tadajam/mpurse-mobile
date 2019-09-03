@@ -1,13 +1,32 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { NgModule, Injectable } from '@angular/core';
+import {
+  BrowserModule,
+  HammerGestureConfig,
+  HAMMER_GESTURE_CONFIG
+} from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { InAppBrowserService } from './services/in-app-browser.service';
+import { BackgroundService } from './services/background.service';
+
+@Injectable()
+export class IonicGestureConfig extends HammerGestureConfig {
+  buildHammer(element: HTMLElement): any {
+    const mc = new (window as any).Hammer(element);
+    for (const eventName of Object.keys(this.overrides)) {
+      mc.get(eventName).set(this.overrides[eventName]);
+    }
+    return mc;
+  }
+}
 
 @NgModule({
   declarations: [AppComponent],
@@ -16,7 +35,11 @@ import { AppComponent } from './app.component';
   providers: [
     StatusBar,
     SplashScreen,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    { provide: HAMMER_GESTURE_CONFIG, useClass: IonicGestureConfig },
+    InAppBrowser,
+    InAppBrowserService,
+    BackgroundService
   ],
   bootstrap: [AppComponent]
 })

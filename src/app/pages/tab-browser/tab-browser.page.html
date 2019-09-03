@@ -1,0 +1,63 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-item>
+      <ion-icon name="search" slot="start"></ion-icon>
+      <ion-input clearInput placeholder="Search" (keyup.enter)="search()" [formControl]="searchStr" ></ion-input>
+    </ion-item>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-list>
+    <ion-list-header>
+      Favorite
+    </ion-list-header>
+    <ion-reorder-group [disabled]="!isReorderMode" (ionItemReorder)="reorderFavorites($event)">
+      <ion-item (click)="open(favorite.href)" *ngFor="let favorite of getFavorites()" (press)="onPress()">
+        <ion-thumbnail slot="start">
+          <ion-img src="{{favorite.icon}}"></ion-img>
+        </ion-thumbnail>
+        <ion-label>{{ favorite.title }}</ion-label>
+        <ion-icon *ngIf="! isReorderMode" [name]="isFavorite(favorite.href) ? 'star' : 'star-outline'"
+          slot="end" (click)="toggleFavorite(favorite);$event.stopPropagation();">
+        </ion-icon>
+        <ion-reorder *ngIf="isReorderMode" slot="end"></ion-reorder>
+      </ion-item>
+    </ion-reorder-group>
+  </ion-list>
+
+  <ion-list>
+    <ion-list-header>
+      App
+    </ion-list-header>
+    <ion-item *ngFor="let app of appList" (click)="open(app.href)">
+      <ion-thumbnail slot="start">
+        <ion-img [src]="app.icon"></ion-img>
+      </ion-thumbnail>
+      <ion-label>{{ app.title }}</ion-label>
+      <ion-icon [name]="isFavorite(app.href) ? 'star' : 'star-outline'" slot="end"
+        (click)="toggleFavorite({href: app.href, title: app.title, icon: app.icon});$event.stopPropagation();">
+      </ion-icon>
+    </ion-item>
+  </ion-list>
+
+  <ion-list>
+    <ion-list-header>
+      History
+    </ion-list-header>
+    <ion-item-sliding *ngFor="let history of getHistories()">
+      <ion-item (click)="open(history.href)">
+        <ion-thumbnail slot="start">
+          <ion-img src="{{history.icon}}"></ion-img>
+        </ion-thumbnail>
+        <ion-label>{{ history.title }}</ion-label>
+        <ion-icon [name]="isFavorite(history.href) ? 'star' : 'star-outline'" slot="end" (click)="toggleFavorite(history);$event.stopPropagation();"></ion-icon>
+      </ion-item>
+      <ion-item-options side="end">
+        <ion-item-option (click)="deleteHistory(history.href)">DELETE</ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+</ion-content>
