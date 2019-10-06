@@ -1,0 +1,9 @@
+export enum SeedLanguage {
+  CHINESE = 'CHINESE',
+  ENGLISH = 'ENGLISH',
+  FRENCH = 'FRENCH',
+  ITALIAN = 'ITALIAN',
+  JAPANESE = 'JAPANESE',
+  KOREAN = 'KOREAN',
+  SPANISH = 'SPANISH'
+}

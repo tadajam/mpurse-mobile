@@ -1,0 +1,66 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Connect Request</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="request">
+    <ion-item lines="none" text-center>
+      <ion-label>
+        <h1>From</h1>
+      </ion-label>
+    </ion-item>
+  
+    <ion-row justify-content-center>
+      <ion-avatar>
+        <ion-img [src]="request.icon"></ion-img>
+      </ion-avatar>
+    </ion-row>
+  
+    <ion-item lines="none" text-center>
+      <ion-label>
+        <h2>{{request.origin}}</h2>
+        <p>{{request.title}}</p>
+        <p>{{request.href}}</p>
+      </ion-label>
+    </ion-item>
+  </ng-container>
+  
+
+  <ng-container *ngIf="identity">
+    <ion-item lines="none" text-center>
+        <ion-label>
+          <h1>To</h1>
+        </ion-label>
+      </ion-item>
+    
+      <ion-row justify-content-center>
+        <ion-item lines="none">
+          <app-ident-icon [address]="address" diameter=65></app-ident-icon>
+        </ion-item>
+      </ion-row>
+    
+      <ion-item lines="none" text-center>
+        <ion-label>
+          <h1>{{identity.name}}</h1>
+          <p>{{address}}</p>
+        </ion-label>
+      </ion-item>
+  </ng-container>
+  
+  
+</ion-content>
+
+<ion-footer>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button (click)="cancel()" expand="block" color="light">CANCEL</ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button (click)="approve()" expand="block" color="primary">APPROVE</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

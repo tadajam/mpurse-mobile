@@ -1,0 +1,71 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Wallet</ion-title>
+  </ion-toolbar>
+  <ion-progress-bar *ngIf="loading" type="indeterminate"></ion-progress-bar>
+</ion-header>
+
+<ion-content>
+
+  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      refreshingSpinner="circles">
+    </ion-refresher-content>
+  </ion-refresher>
+  
+  <ion-row justify-content-center padding-top>
+    <ion-item (click)="openAccountsPage()" lines="none" class="identicon" button>
+      <app-ident-icon [address]="address" diameter=55></app-ident-icon>
+    </ion-item>
+  </ion-row>
+
+  <ng-container *ngIf="isEditable; then edit; else label"></ng-container>
+  <ng-template #edit>
+    <ion-item lines="none" text-center>
+      <ion-input
+        (input)="onInputTime($event.target.value)"
+        (ionBlur)="changeAccountName()"
+        type="text"
+        [value]="accountName"
+        [size]="accountName.length"
+        class="edit-account-name">
+      </ion-input>
+    </ion-item>
+  </ng-template>
+  <ng-template #label>
+    <ion-item (press)="editName()" lines="none" class="label-account-name" text-center>
+      <ion-label color="primary">
+        <h1>{{accountName}}</h1>
+      </ion-label>
+    </ion-item>
+  </ng-template>
+  
+  <ion-item (click)="copyAddress()" lines="none" class="address" text-center button margin-horizontal>
+    <ion-label ><h2>{{address}}</h2></ion-label>
+  </ion-item>
+
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Asset Balance</ion-label>
+    </ion-list-header>
+      <app-balance *ngIf="monaBalance" [asset]="monaBalance"></app-balance>
+      <app-balance *ngIf="xmpBalance" [asset]="xmpBalance"></app-balance>
+
+      <ion-item>
+        <ion-input type="search" placeholder="Search Asset" (keyup.enter)="search()"  ></ion-input>
+        <ion-icon name="search" slot="start"> </ion-icon>
+      </ion-item>
+
+      <app-balance *ngIf="searchedAsset" [asset]="searchedAsset"></app-balance>
+      
+      <ng-container *ngFor="let balance of assetBalances">
+        <app-balance [asset]="balance"></app-balance>
+      </ng-container>
+      
+  </ion-list>
+  
+</ion-content>

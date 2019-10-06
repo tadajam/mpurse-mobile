@@ -1,0 +1,15 @@
+<ion-item *ngIf="asset" lines="none">
+  <ion-avatar slot="start">
+    <img src="https://mpchain.info/icon/{{asset.asset}}.png">
+  </ion-avatar>
+  <ion-label>
+    <h2>{{asset.asset_longname ? asset.asset_longname : asset.asset}}</h2>
+    <p>
+      {{asset.quantity}}
+      {{hasUnconfirmed() ?
+        ' (' + (reflectUnconfirmed() | number: isDivisible() ? '1.8-8' : '') + ')' : ''}}
+    </p>
+  </ion-label>
+  <ion-spinner *ngIf="hasUnconfirmed()" name="circles" slot="end"></ion-spinner>
+  <ion-icon name="arrow-dropright" slot="end"></ion-icon>
+</ion-item>

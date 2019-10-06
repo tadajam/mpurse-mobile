@@ -1,0 +1,56 @@
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Routes, RouterModule } from '@angular/router';
+
+import { IonicModule } from '@ionic/angular';
+
+import { HomePage } from './home.page';
+import { MenuComponent } from '../../components/menu/menu.component';
+import { ComponentModule } from 'src/app/components/component.module';
+
+const routes: Routes = [
+  {
+    path: '',
+    component: HomePage,
+    children: [
+      { path: '', redirectTo: 'browser', pathMatch: 'full' },
+      {
+        path: 'browser',
+        loadChildren: '../browser/browser.module#BrowserPageModule'
+      },
+      {
+        path: 'wallet',
+        loadChildren: '../wallet/wallet.module#WalletPageModule'
+      },
+      {
+        path: 'settings',
+        loadChildren: '../settings/settings.module#SettingsPageModule'
+      },
+      {
+        path: 'info',
+        loadChildren: '../infomation/infomation.module#InfomationPageModule'
+      },
+      {
+        path: 'approve',
+        loadChildren: '../approve/approve.module#ApprovePageModule'
+      },
+      {
+        path: 'signature',
+        loadChildren: '../signature/signature.module#SignaturePageModule'
+      }
+    ]
+  }
+];
+
+@NgModule({
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonicModule,
+    RouterModule.forChild(routes),
+    ComponentModule
+  ],
+  declarations: [HomePage, MenuComponent]
+})
+export class HomePageModule {}

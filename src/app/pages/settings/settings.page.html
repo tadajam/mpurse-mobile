@@ -1,0 +1,83 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Settings</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <div padding>
+    <ion-label>
+      <h1>Language</h1>
+    </ion-label>
+    <ion-text>
+      <p>Translate the application.</p>
+    </ion-text>
+    <ion-select [(ngModel)]="lang" (ionChange)="changeLang()" interface="action-sheet" ngDefaultControl>
+      <ion-select-option value="en">English</ion-select-option>
+      <ion-select-option value="ja">Japanese</ion-select-option>
+    </ion-select>
+  </div>
+
+  <div padding>
+    <ion-label>
+      <h1>Search Engine</h1>
+    </ion-label>
+    <ion-text>
+      <p>Change the default search engine.</p>
+    </ion-text>
+    <ion-select [(ngModel)]="searchEngine" interface="action-sheet" ngDefaultControl>
+      <ion-select-option value="google">Google</ion-select-option>
+      <ion-select-option value="duckduckgo">DuckDuckGo</ion-select-option>
+    </ion-select>
+  </div>
+
+  <div padding>
+    <ion-label>
+      <h1>Export Private Key for {{accountName}}</h1>
+    </ion-label>
+    <ion-text color="danger">
+      <p>
+        <strong>
+          DO NOT share this private key with anyone!
+          This can be used to steal your accounts.
+        </strong>
+      </p>
+    </ion-text>
+    <ion-button expand="block" color="danger">Export</ion-button>
+  </div>
+
+  <div padding>
+    <ion-label>
+      <h1>Reveal Passphrase</h1>
+    </ion-label>
+    <ion-text color="danger">
+      <p>
+        <strong>
+          DO NOT share this phrase with anyone!
+          These words can be used to steal all your accounts.
+        </strong>
+      </p>
+    </ion-text>
+    <ion-button expand="block" color="danger">Reveal</ion-button>
+  </div>
+
+  <div padding>
+    <ion-label>
+      <h1>Initialization</h1>
+    </ion-label>
+    <ion-text color="danger">
+      <p>
+        <strong>
+          All account and settings will be removed from your wallet.
+          Please make sure you have the original seed phrase before continuing.
+        </strong>
+      </p>
+    </ion-text>
+    <ion-button (click)="initMpurse()" expand="block" color="danger">Initialize</ion-button>
+  </div>
+  
+</ion-content>
