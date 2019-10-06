@@ -86,27 +86,15 @@ export class InAppBrowserService {
     }
   }
 
-  getFavorites(): {
-    href: string;
-    origin: string;
-    title: string;
-    icon: string;
-  }[] {
+  getFavorites(): AppInfo[] {
     return this.favorites;
   }
 
-  setFavorites(
-    favorites: { href: string; origin: string; title: string; icon: string }[]
-  ): void {
+  setFavorites(favorites: AppInfo[]): void {
     this.favorites = favorites;
   }
 
-  addFavorite(favorite: {
-    href: string;
-    origin: string;
-    title: string;
-    icon: string;
-  }): void {
+  addFavorite(favorite: AppInfo): void {
     if (favorite) {
       this.favorites.push(favorite);
     }
@@ -116,21 +104,11 @@ export class InAppBrowserService {
     this.favorites = this.favorites.filter(v => v.href !== favorite);
   }
 
-  getHistories(): {
-    href: string;
-    origin: string;
-    title: string;
-    icon: string;
-  }[] {
+  getHistories(): AppInfo[] {
     return this.histories;
   }
 
-  addHistory(history: {
-    href: string;
-    origin: string;
-    title: string;
-    icon: string;
-  }): void {
+  addHistory(history: AppInfo): void {
     if (history) {
       this.histories.unshift(history);
     }
