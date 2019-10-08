@@ -56,16 +56,26 @@
       <app-balance *ngIf="xmpBalance" [asset]="xmpBalance"></app-balance>
 
       <ion-item>
-        <ion-input type="search" placeholder="Search Asset" (keyup.enter)="search()"  ></ion-input>
+        <ion-input
+          type="search"
+          placeholder="Search Asset"
+          [formControl]="searchAssetStr"
+          (keyup.enter)="search()">
+        </ion-input>
         <ion-icon name="search" slot="start"> </ion-icon>
       </ion-item>
 
-      <app-balance *ngIf="searchedAsset" [asset]="searchedAsset"></app-balance>
+      <app-balance *ngIf="searchedAsset" [asset]="searchedAsset" searched="true"></app-balance>
       
       <ng-container *ngFor="let balance of assetBalances">
         <app-balance [asset]="balance"></app-balance>
       </ng-container>
-      
+
+      <ion-infinite-scroll #infinite threshold="1%" (ionInfinite)="loadNextBalances()">
+        <ion-infinite-scroll-content
+          loadingSpinner="circles">
+        </ion-infinite-scroll-content>
+      </ion-infinite-scroll>
   </ion-list>
   
 </ion-content>

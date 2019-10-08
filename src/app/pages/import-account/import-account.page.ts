@@ -4,6 +4,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { KeyringService } from 'src/app/services/keyring.service';
 import { from } from 'rxjs';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-import-account',
@@ -23,7 +24,8 @@ export class ImportAccountPage implements OnInit {
     private keyringService: KeyringService,
     public modalController: ModalController,
     private preferenceService: PreferenceService,
-    public toastController: ToastController
+    public toastController: ToastController,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -43,7 +45,10 @@ export class ImportAccountPage implements OnInit {
         this.privatekeyFormControl.value
       )
       .subscribe({
-        next: () => {},
+        next: (address: string) => {
+          this.preferenceService.changeAddress(address);
+          this.location.back();
+        },
         error: error => {
           from(
             this.toastController.create({

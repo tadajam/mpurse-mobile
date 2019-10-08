@@ -9,6 +9,7 @@ import { Decimal } from 'decimal.js';
 })
 export class BalanceComponent {
   @Input() asset: MpchainAssetBalance;
+  @Input() searched: boolean;
 
   reflectUnconfirmed(): number {
     return new Decimal(this.asset.quantity)

@@ -2,6 +2,7 @@ import { MpchainAddressInfo } from '../interfaces/mpchain-address-info';
 import { MpchainAsset } from '../interfaces/mpchain-asset';
 import { MpchainBalance } from '../interfaces/mpchain-balance';
 import { MpchainAPIParams } from '../interfaces/mpchain-apiparams';
+import { MpchainAssetBalance } from '../interfaces/mpchain-asset-balance';
 
 export class MpchainUtil {
   static API_URL = 'https://mpchain.info/api/';
@@ -121,6 +122,13 @@ export class MpchainUtil {
 
   static getAsset(asset: string): Promise<MpchainAsset> {
     return this.mp('asset', { asset: asset });
+  }
+
+  static getBalance(
+    address: string,
+    asset: string
+  ): Promise<MpchainAssetBalance> {
+    return this.mp('balance', { address: address, asset: asset });
   }
 
   static getBalances(

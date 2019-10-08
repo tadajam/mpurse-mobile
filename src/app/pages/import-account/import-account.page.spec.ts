@@ -8,6 +8,7 @@ import { KeychainTouchId } from '@ionic-native/keychain-touch-id/ngx';
 import { TranslateModule, TranslateStore } from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
 import { ModalController, AngularDelegate, IonicModule } from '@ionic/angular';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ImportAccountPage', () => {
   let component: ImportAccountPage;
@@ -21,6 +22,7 @@ describe('ImportAccountPage', () => {
         IonicModule,
         HttpClientModule,
         ReactiveFormsModule,
+        RouterTestingModule,
         TranslateModule.forChild(),
         IonicStorageModule.forRoot()
       ],

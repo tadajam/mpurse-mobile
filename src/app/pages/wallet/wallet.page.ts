@@ -1,14 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { KeyringService } from 'src/app/services/keyring.service';
-import { ModalController, ToastController } from '@ionic/angular';
+import {
+  ModalController,
+  ToastController,
+  IonInfiniteScroll
+} from '@ionic/angular';
 import { AccountsPage } from '../accounts/accounts.page';
 import { from, Subscription, Observable } from 'rxjs';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { MpchainUtil } from 'src/app/classes/mpchain-util';
 import { MpchainAddressInfo } from 'src/app/interfaces/mpchain-address-info';
-import { flatMap, tap } from 'rxjs/operators';
+import { flatMap, tap, map } from 'rxjs/operators';
 import { MpchainAssetBalance } from 'src/app/interfaces/mpchain-asset-balance';
+import { MpchainBalance } from 'src/app/interfaces/mpchain-balance';
+import { FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-wallet',
@@ -16,6 +22,7 @@ import { MpchainAssetBalance } from 'src/app/interfaces/mpchain-asset-balance';
   styleUrls: ['./wallet.page.scss']
 })
 export class WalletPage implements OnInit {
+  @ViewChild('infinite', { static: false }) infiniteScroll: IonInfiniteScroll;
   loading = false;
   address = '';
   accountName = '';
@@ -23,7 +30,11 @@ export class WalletPage implements OnInit {
   addressInfo: MpchainAddressInfo;
   monaBalance: MpchainAssetBalance;
   xmpBalance: MpchainAssetBalance;
+  page = 1;
+  limit = 10;
+  total = 0;
   assetBalances: MpchainAssetBalance[] = [];
+  searchAssetStr = new FormControl('', Validators.required);
   searchedAsset: MpchainAssetBalance;
   private subscriptions = new Subscription();
 
@@ -39,11 +50,17 @@ export class WalletPage implements OnInit {
     this.loading = true;
     this.isEditable = false;
     this.updateAddress(this.preferenceService.getSelectedAddress()).subscribe({
-      next: (info: MpchainAddressInfo) => {
-        this.addressInfo = info;
+      next: () => {
         this.loading = false;
       },
-      error: error => console.log(error)
+      error: error => {
+        from(
+          this.toastController.create({
+            message: error.toString(),
+            duration: 2000
+          })
+        ).subscribe(toast => toast.present());
+      }
     });
 
     this.subscriptions.add(
@@ -53,11 +70,17 @@ export class WalletPage implements OnInit {
           flatMap((address: string) => this.updateAddress(address))
         )
         .subscribe({
-          next: (info: MpchainAddressInfo) => {
-            this.addressInfo = info;
+          next: () => {
             this.loading = false;
           },
-          error: error => console.log(error)
+          error: error => {
+            from(
+              this.toastController.create({
+                message: error.toString(),
+                duration: 2000
+              })
+            ).subscribe(toast => toast.present());
+          }
         })
     );
   }
@@ -66,7 +89,7 @@ export class WalletPage implements OnInit {
     this.subscriptions.unsubscribe();
   }
 
-  updateAddress(address: string): Observable<MpchainAddressInfo> {
+  updateAddress(address: string): Observable<void> {
     this.address = address;
     const identity = this.preferenceService.getIdentity(this.address);
     this.accountName = identity ? identity.name : '';
@@ -74,9 +97,10 @@ export class WalletPage implements OnInit {
     return this.updateBalance();
   }
 
-  updateBalance(): Observable<MpchainAddressInfo> {
+  updateBalance(): Observable<void> {
     return from(MpchainUtil.getAddressInfo(this.address)).pipe(
-      tap((info: MpchainAddressInfo) => {
+      map((info: MpchainAddressInfo) => {
+        this.addressInfo = info;
         this.monaBalance = {
           asset: 'MONA',
           asset_longname: null,
@@ -93,6 +117,13 @@ export class WalletPage implements OnInit {
           quantity: info.xmp_balance,
           unconfirmed_quantity: info.unconfirmed_xmp_balance
         };
+      }),
+      flatMap(() => MpchainUtil.getBalances(this.address, 1, this.limit)),
+      map((balances: MpchainBalance) => {
+        this.page = 1;
+        this.total = balances.total;
+        this.assetBalances = balances.data;
+        this.searchedAsset = null;
       })
     );
   }
@@ -105,6 +136,21 @@ export class WalletPage implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  loadNextBalances(): void {
+    if (this.assetBalances.length < this.total) {
+      from(
+        MpchainUtil.getBalances(this.address, ++this.page, this.limit)
+      ).subscribe({
+        next: (balances: MpchainBalance) => {
+          this.infiniteScroll.complete();
+          Array.prototype.push.apply(this.assetBalances, balances.data);
+        }
+      });
+    } else {
+      this.infiniteScroll.complete();
+    }
   }
 
   openAccountsPage(): void {
@@ -158,6 +204,22 @@ export class WalletPage implements OnInit {
   }
 
   search(): void {
-    console.log('search');
+    from(
+      MpchainUtil.getBalance(this.address, this.searchAssetStr.value)
+    ).subscribe({
+      next: (asset: MpchainAssetBalance) => {
+        if (!('error' in asset)) {
+          this.searchedAsset = asset;
+        } else {
+          from(
+            this.toastController.create({
+              message: asset['error'],
+              duration: 2000
+            })
+          ).subscribe(toast => toast.present());
+          this.searchedAsset = null;
+        }
+      }
+    });
   }
 }
