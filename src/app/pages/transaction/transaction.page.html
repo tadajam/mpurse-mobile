@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Sign Message</ion-title>
+    <ion-title>Sign Transaction</ion-title>
     <ion-buttons slot="end" (click)="openAccountsPage()" margin-end>
       <ion-item lines="none" class="identicon" button>
         <app-ident-icon [address]="address" diameter="40"></app-ident-icon>
@@ -35,23 +35,24 @@
     </ion-item>
   </ng-container>
 
+  
   <form [formGroup]="signatureForm" (ngSubmit)="sign()">
     <ion-item>
-      <ion-label position="floating">Message</ion-label>
+      <ion-label position="floating">Raw Transaction</ion-label>
       <ion-textarea
-        formControlName="message"
+        formControlName="unsignedTx"
         [readonly]="request"
         autoGrow="true"
-        (paste)="signatureFormControl.setValue('')"
-        (cut)="signatureFormControl.setValue('')"
-        (keyup)="signatureFormControl.setValue('')"
+        (paste)="signedTxFormControl.setValue('')"
+        (cut)="signedTxFormControl.setValue('')"
+        (keyup)="signedTxFormControl.setValue('')"
       ></ion-textarea>
     </ion-item>
 
-    <ion-item *ngIf="signatureFormControl.value">
-      <ion-label position="floating">Signature</ion-label>
+    <ion-item *ngIf="signedTxFormControl.value">
+      <ion-label position="floating">Signed Transaction</ion-label>
       <ion-textarea
-        formControlName="signature"
+        formControlName="signedTx"
         autoGrow="true"
         readonly="true"
       ></ion-textarea>
@@ -66,18 +67,24 @@
         <ion-button (click)="cancel()" expand="block" color="light">CANCEL</ion-button>
       </ion-col>
       <ion-col>
-        <ng-container *ngIf="signatureFormControl.value; then signed; else signButton"></ng-container>
+        <ng-container *ngIf="signedTxFormControl.value; then signed; else signButton"></ng-container>
         <ng-template #signed>
           <ng-container *ngIf="requestId; then sendButton; else copyButton"></ng-container>
           <ng-template #sendButton>
-            <ion-button (click)="sendToWeb()" expand="block" color="secondary">SEND TO WEB</ion-button>
+            <ng-container *ngIf="request.action === 'mpurse.sign.tx.request'; then signRequest; else sendRequest"></ng-container>
+            <ng-template #signRequest>
+              <ion-button (click)="sendToWeb()" expand="block" color="secondary">SEND TO WEB</ion-button>
+            </ng-template>
+            <ng-template #sendRequest>
+              <ion-button (click)="broadcast()" expand="block" color="secondary">BROADCAST</ion-button>
+            </ng-template>
           </ng-template>
           <ng-template #copyButton>
             <ion-button (click)="copy()" expand="block" color="secondary">COPY</ion-button>
           </ng-template>
         </ng-template>
         <ng-template #signButton>
-          <ion-button (click)="sign()" expand="block" color="primary">SIGN</ion-button>
+          <ion-button (click)="sign()" [disabled]="!signatureForm.valid" expand="block" color="primary">SIGN</ion-button>
         </ng-template>
       </ion-col>
     </ion-row>

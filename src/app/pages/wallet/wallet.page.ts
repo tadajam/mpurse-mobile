@@ -6,7 +6,7 @@ import {
   IonInfiniteScroll
 } from '@ionic/angular';
 import { AccountsPage } from '../accounts/accounts.page';
-import { from, Subscription, Observable } from 'rxjs';
+import { from, Subscription, Observable, of } from 'rxjs';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { MpchainUtil } from 'src/app/classes/mpchain-util';
@@ -204,22 +204,39 @@ export class WalletPage implements OnInit {
   }
 
   search(): void {
-    from(
-      MpchainUtil.getBalance(this.address, this.searchAssetStr.value)
-    ).subscribe({
-      next: (asset: MpchainAssetBalance) => {
-        if (!('error' in asset)) {
+    from(MpchainUtil.getBalance(this.address, this.searchAssetStr.value))
+      .pipe(
+        flatMap((asset: MpchainAssetBalance) => {
+          if (!('error' in asset)) {
+            return of(asset);
+          } else {
+            return MpchainUtil.getBalance(
+              this.address,
+              this.searchAssetStr.value.toUpperCase()
+            );
+          }
+        }),
+        tap((asset: MpchainAssetBalance) => {
+          if (!('error' in asset)) {
+            return asset;
+          } else {
+            throw new Error(asset['error']);
+          }
+        })
+      )
+      .subscribe({
+        next: (asset: MpchainAssetBalance) => {
           this.searchedAsset = asset;
-        } else {
+        },
+        error: error => {
           from(
             this.toastController.create({
-              message: asset['error'],
+              message: error,
               duration: 2000
             })
           ).subscribe(toast => toast.present());
           this.searchedAsset = null;
         }
-      }
-    });
+      });
   }
 }

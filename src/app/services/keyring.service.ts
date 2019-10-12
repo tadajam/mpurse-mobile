@@ -15,6 +15,7 @@ import { Hdkey } from '../interfaces/hdkey';
 import { KeyringKey } from '../enum/keyring-key.enum';
 import { MpurseAccount } from '../interfaces/mpurse-account';
 import { Identity } from '../interfaces/identity';
+import { MpchainUtil } from '../classes/mpchain-util';
 
 interface Vault {
   version: number;
@@ -229,8 +230,18 @@ export class KeyringService {
     );
   }
 
-  // signRawTransaction() {}
-  // sendRawTransaction() {}
+  signRawTransaction(unsignedTx: string): Observable<string> {
+    return from(
+      this.keyring.signTransaction(
+        unsignedTx,
+        this.preferenceService.getSelectedAddress()
+      )
+    );
+  }
+
+  sendTransaction(signedTx: string): Observable<string> {
+    return from(MpchainUtil.sendTx(signedTx));
+  }
 
   // send() {}
 

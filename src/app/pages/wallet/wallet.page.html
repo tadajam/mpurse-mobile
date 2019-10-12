@@ -60,7 +60,7 @@
           type="search"
           placeholder="Search Asset"
           [formControl]="searchAssetStr"
-          (keyup.enter)="search()">
+          (keyup.enter)="searchAssetStr.value ? search() : {}">
         </ion-input>
         <ion-icon name="search" slot="start"> </ion-icon>
       </ion-item>

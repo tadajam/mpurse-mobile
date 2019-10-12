@@ -1,33 +1,34 @@
 import { Component, OnInit } from '@angular/core';
-import { BackgroundService } from 'src/app/services/background.service';
-import { PreferenceService } from 'src/app/services/preference.service';
 import { Identity } from 'src/app/interfaces/identity';
-import { ActivatedRoute } from '@angular/router';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription, from } from 'rxjs';
-import { ModalController, ToastController } from '@ionic/angular';
-import { AccountsPage } from '../accounts/accounts.page';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { KeyringService } from 'src/app/services/keyring.service';
+import { ActivatedRoute } from '@angular/router';
+import { PreferenceService } from 'src/app/services/preference.service';
 import { Location } from '@angular/common';
+import { ModalController, ToastController } from '@ionic/angular';
+import { BackgroundService } from 'src/app/services/background.service';
+import { AccountsPage } from '../accounts/accounts.page';
+import { KeyringService } from 'src/app/services/keyring.service';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
+import { MpchainUtil } from 'src/app/classes/mpchain-util';
 import { flatMap } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-signature',
-  templateUrl: './signature.page.html',
-  styleUrls: ['./signature.page.scss']
+  selector: 'app-transaction',
+  templateUrl: './transaction.page.html',
+  styleUrls: ['./transaction.page.scss']
 })
-export class SignaturePage implements OnInit {
+export class TransactionPage implements OnInit {
   requestId: number;
   address: string;
   identity: Identity;
   request: any;
-  messageFormControl = new FormControl('', []);
-  signatureFormControl = new FormControl('', []);
+  unsignedTxFormControl = new FormControl('', [Validators.required]);
+  signedTxFormControl = new FormControl('', []);
 
   signatureForm = new FormGroup({
-    message: this.messageFormControl,
-    signature: this.signatureFormControl
+    unsignedTx: this.unsignedTxFormControl,
+    signedTx: this.signedTxFormControl
   });
   private subscriptions = new Subscription();
 
@@ -51,7 +52,7 @@ export class SignaturePage implements OnInit {
           );
           if (this.request) {
             this.requestId = this.request.id;
-            this.messageFormControl.setValue(this.request.message.message);
+            this.unsignedTxFormControl.setValue(this.request.message.tx);
           }
         }
       }
@@ -66,7 +67,7 @@ export class SignaturePage implements OnInit {
           if (this.request) {
             this.cancel();
           } else {
-            this.signatureFormControl.setValue('');
+            this.signedTxFormControl.setValue('');
             this.address = address;
             this.identity = this.preferenceService.getIdentity(this.address);
           }
@@ -87,13 +88,24 @@ export class SignaturePage implements OnInit {
   }
 
   sign(): void {
-    this.signatureFormControl.setValue(
-      this.keyringService.signMessage(this.messageFormControl.value)
-    );
+    this.keyringService
+      .signRawTransaction(this.unsignedTxFormControl.value)
+      .subscribe({
+        next: signedTx => this.signedTxFormControl.setValue(signedTx),
+        error: error =>
+          from(
+            this.toastController.create({
+              translucent: true,
+              message: error,
+              duration: 2000,
+              position: 'top'
+            })
+          ).subscribe(toast => toast.present())
+      });
   }
 
   copy(): void {
-    from(this.clipboard.copy(this.signatureFormControl.value))
+    from(this.clipboard.copy(this.signedTxFormControl.value))
       .pipe(
         flatMap(() =>
           this.toastController.create({
@@ -107,9 +119,26 @@ export class SignaturePage implements OnInit {
       .subscribe(toast => toast.present());
   }
 
+  broadcast(): void {
+    this.keyringService
+      .sendTransaction(this.signedTxFormControl.value)
+      .subscribe({
+        next: txHash => {
+          this.backgroundService.sendResponse(
+            this.request.action,
+            this.request.id,
+            {
+              txHash: txHash
+            }
+          );
+          this.location.back();
+        }
+      });
+  }
+
   sendToWeb(): void {
     this.backgroundService.sendResponse(this.request.action, this.request.id, {
-      signature: this.signatureFormControl.value
+      signedTx: this.signedTxFormControl.value
     });
     this.location.back();
   }

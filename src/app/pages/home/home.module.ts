@@ -38,6 +38,10 @@ const routes: Routes = [
       {
         path: 'signature',
         loadChildren: '../signature/signature.module#SignaturePageModule'
+      },
+      {
+        path: 'transaction',
+        loadChildren: '../transaction/transaction.module#TransactionPageModule'
       }
     ]
   }
