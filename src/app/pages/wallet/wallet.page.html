@@ -59,8 +59,8 @@
         <ion-input
           type="search"
           placeholder="Search Asset"
-          [formControl]="searchAssetStr"
-          (keyup.enter)="searchAssetStr.value ? search() : {}">
+          [formControl]="searchAssetStrControl"
+          (keyup.enter)="searchAssetStrControl.value ? search() : {}">
         </ion-input>
         <ion-icon name="search" slot="start"> </ion-icon>
       </ion-item>

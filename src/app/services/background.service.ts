@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 import { PreferenceService } from './preference.service';
 import { ApprovePage } from '../pages/approve/approve.page';
 import { ModalController } from '@ionic/angular';
-import { MpchainUtil } from '../classes/mpchain-util';
+import { MpchainService } from './mpchain.service';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +25,8 @@ export class BackgroundService {
     private preferenceService: PreferenceService,
     private inAppBrowserService: InAppBrowserService,
     private modalController: ModalController,
-    private router: Router
+    private router: Router,
+    private mpchainService: MpchainService
   ) {
     this.inAppBrowserService.inAppBrowserObjectState.subscribe(
       (inAppBrowser: InAppBrowserObject) => {
@@ -110,31 +111,25 @@ export class BackgroundService {
             case InPageMessage.MpchainRequest:
               return this.mpchainApi(
                 event['data'],
-                from(
-                  MpchainUtil.mp(
-                    event['data'].message.method,
-                    event['data'].message.params
-                  )
+                this.mpchainService.mp(
+                  event['data'].message.method,
+                  event['data'].message.params
                 )
               );
             case InPageMessage.CounterBlockRequest:
               return this.mpchainApi(
                 event['data'],
-                from(
-                  MpchainUtil.cb(
-                    event['data'].message.method,
-                    event['data'].message.params
-                  )
+                this.mpchainService.cb(
+                  event['data'].message.method,
+                  event['data'].message.params
                 )
               );
             case InPageMessage.CounterPartyRequest:
               return this.mpchainApi(
                 event['data'],
-                from(
-                  MpchainUtil.cp(
-                    event['data'].message.method,
-                    event['data'].message.params
-                  )
+                this.mpchainService.cp(
+                  event['data'].message.method,
+                  event['data'].message.params
                 )
               );
           }

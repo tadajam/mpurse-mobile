@@ -43,13 +43,13 @@
         formControlName="unsignedTx"
         [readonly]="request"
         autoGrow="true"
-        (paste)="signedTxFormControl.setValue('')"
-        (cut)="signedTxFormControl.setValue('')"
-        (keyup)="signedTxFormControl.setValue('')"
+        (paste)="signedTxControl.setValue('')"
+        (cut)="signedTxControl.setValue('')"
+        (keyup)="signedTxControl.setValue('')"
       ></ion-textarea>
     </ion-item>
 
-    <ion-item *ngIf="signedTxFormControl.value">
+    <ion-item *ngIf="signedTxControl.value">
       <ion-label position="floating">Signed Transaction</ion-label>
       <ion-textarea
         formControlName="signedTx"
@@ -67,7 +67,7 @@
         <ion-button (click)="cancel()" expand="block" color="light">CANCEL</ion-button>
       </ion-col>
       <ion-col>
-        <ng-container *ngIf="signedTxFormControl.value; then signed; else signButton"></ng-container>
+        <ng-container *ngIf="signedTxControl.value; then signed; else signButton"></ng-container>
         <ng-template #signed>
           <ng-container *ngIf="requestId; then sendButton; else copyButton"></ng-container>
           <ng-template #sendButton>

@@ -15,7 +15,7 @@ import { Hdkey } from '../interfaces/hdkey';
 import { KeyringKey } from '../enum/keyring-key.enum';
 import { MpurseAccount } from '../interfaces/mpurse-account';
 import { Identity } from '../interfaces/identity';
-import { MpchainUtil } from '../classes/mpchain-util';
+import { MpchainService } from './mpchain.service';
 
 interface Vault {
   version: number;
@@ -34,7 +34,8 @@ export class KeyringService {
   constructor(
     private storage: Storage,
     private keychainTouchId: KeychainTouchId,
-    private preferenceService: PreferenceService
+    private preferenceService: PreferenceService,
+    private mpchainService: MpchainService
   ) {
     this.keychainTouchId.setLocale(this.preferenceService.getLanguage());
     this.keyring = new Keyring();
@@ -238,12 +239,6 @@ export class KeyringService {
       )
     );
   }
-
-  sendTransaction(signedTx: string): Observable<string> {
-    return from(MpchainUtil.sendTx(signedTx));
-  }
-
-  // send() {}
 
   createIdentIcon(address: string, diameter: number): string {
     if (address) {

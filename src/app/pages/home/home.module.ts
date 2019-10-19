@@ -42,6 +42,10 @@ const routes: Routes = [
       {
         path: 'transaction',
         loadChildren: '../transaction/transaction.module#TransactionPageModule'
+      },
+      {
+        path: 'send-asset',
+        loadChildren: '../send-asset/send-asset.module#SendAssetPageModule'
       }
     ]
   }

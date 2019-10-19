@@ -9,12 +9,12 @@ import { AccountsPage } from '../accounts/accounts.page';
 import { from, Subscription, Observable, of } from 'rxjs';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
-import { MpchainUtil } from 'src/app/classes/mpchain-util';
 import { MpchainAddressInfo } from 'src/app/interfaces/mpchain-address-info';
 import { flatMap, tap, map } from 'rxjs/operators';
 import { MpchainAssetBalance } from 'src/app/interfaces/mpchain-asset-balance';
 import { MpchainBalance } from 'src/app/interfaces/mpchain-balance';
 import { FormControl, Validators } from '@angular/forms';
+import { MpchainService } from 'src/app/services/mpchain.service';
 
 @Component({
   selector: 'app-wallet',
@@ -34,7 +34,7 @@ export class WalletPage implements OnInit {
   limit = 10;
   total = 0;
   assetBalances: MpchainAssetBalance[] = [];
-  searchAssetStr = new FormControl('', Validators.required);
+  searchAssetStrControl = new FormControl('', Validators.required);
   searchedAsset: MpchainAssetBalance;
   private subscriptions = new Subscription();
 
@@ -43,7 +43,8 @@ export class WalletPage implements OnInit {
     private preferenceService: PreferenceService,
     private modalController: ModalController,
     private clipboard: Clipboard,
-    public toastController: ToastController
+    public toastController: ToastController,
+    private mpchainService: MpchainService
   ) {}
 
   ngOnInit(): void {
@@ -98,7 +99,7 @@ export class WalletPage implements OnInit {
   }
 
   updateBalance(): Observable<void> {
-    return from(MpchainUtil.getAddressInfo(this.address)).pipe(
+    return this.mpchainService.getAddressInfo(this.address).pipe(
       map((info: MpchainAddressInfo) => {
         this.addressInfo = info;
         this.monaBalance = {
@@ -118,7 +119,9 @@ export class WalletPage implements OnInit {
           unconfirmed_quantity: info.unconfirmed_xmp_balance
         };
       }),
-      flatMap(() => MpchainUtil.getBalances(this.address, 1, this.limit)),
+      flatMap(() =>
+        this.mpchainService.getBalances(this.address, 1, this.limit)
+      ),
       map((balances: MpchainBalance) => {
         this.page = 1;
         this.total = balances.total;
@@ -140,14 +143,14 @@ export class WalletPage implements OnInit {
 
   loadNextBalances(): void {
     if (this.assetBalances.length < this.total) {
-      from(
-        MpchainUtil.getBalances(this.address, ++this.page, this.limit)
-      ).subscribe({
-        next: (balances: MpchainBalance) => {
-          this.infiniteScroll.complete();
-          Array.prototype.push.apply(this.assetBalances, balances.data);
-        }
-      });
+      this.mpchainService
+        .getBalances(this.address, ++this.page, this.limit)
+        .subscribe({
+          next: (balances: MpchainBalance) => {
+            this.infiniteScroll.complete();
+            Array.prototype.push.apply(this.assetBalances, balances.data);
+          }
+        });
     } else {
       this.infiniteScroll.complete();
     }
@@ -204,22 +207,21 @@ export class WalletPage implements OnInit {
   }
 
   search(): void {
-    from(MpchainUtil.getBalance(this.address, this.searchAssetStr.value))
+    this.mpchainService
+      .getBalance(this.address, this.searchAssetStrControl.value)
       .pipe(
         flatMap((asset: MpchainAssetBalance) => {
           if (!('error' in asset)) {
             return of(asset);
           } else {
-            return MpchainUtil.getBalance(
+            return this.mpchainService.getBalance(
               this.address,
-              this.searchAssetStr.value.toUpperCase()
+              this.searchAssetStrControl.value.toUpperCase()
             );
           }
         }),
         tap((asset: MpchainAssetBalance) => {
-          if (!('error' in asset)) {
-            return asset;
-          } else {
+          if ('error' in asset) {
             throw new Error(asset['error']);
           }
         })

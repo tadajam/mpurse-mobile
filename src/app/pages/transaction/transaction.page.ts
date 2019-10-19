@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Identity } from 'src/app/interfaces/identity';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Subscription, from } from 'rxjs';
@@ -10,25 +10,24 @@ import { BackgroundService } from 'src/app/services/background.service';
 import { AccountsPage } from '../accounts/accounts.page';
 import { KeyringService } from 'src/app/services/keyring.service';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
-import { MpchainUtil } from 'src/app/classes/mpchain-util';
-import { flatMap } from 'rxjs/operators';
+import { flatMap, filter } from 'rxjs/operators';
+import { MpchainService } from 'src/app/services/mpchain.service';
 
 @Component({
   selector: 'app-transaction',
   templateUrl: './transaction.page.html',
   styleUrls: ['./transaction.page.scss']
 })
-export class TransactionPage implements OnInit {
-  requestId: number;
+export class TransactionPage {
   address: string;
   identity: Identity;
   request: any;
-  unsignedTxFormControl = new FormControl('', [Validators.required]);
-  signedTxFormControl = new FormControl('', []);
+  unsignedTxControl = new FormControl('', [Validators.required]);
+  signedTxControl = new FormControl('', []);
 
   signatureForm = new FormGroup({
-    unsignedTx: this.unsignedTxFormControl,
-    signedTx: this.signedTxFormControl
+    unsignedTx: this.unsignedTxControl,
+    signedTx: this.signedTxControl
   });
   private subscriptions = new Subscription();
 
@@ -40,23 +39,23 @@ export class TransactionPage implements OnInit {
     private keyringService: KeyringService,
     private location: Location,
     private clipboard: Clipboard,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private mpchainService: MpchainService
   ) {}
 
-  ngOnInit(): void {
-    this.activatedRoute.queryParams.subscribe({
-      next: params => {
-        if (params.id) {
+  ionViewDidEnter(): void {
+    this.activatedRoute.queryParams
+      .pipe(filter(params => params.id))
+      .subscribe({
+        next: params => {
           this.request = this.backgroundService.getPendingRequest(
             parseFloat(params.id)
           );
           if (this.request) {
-            this.requestId = this.request.id;
-            this.unsignedTxFormControl.setValue(this.request.message.tx);
+            this.unsignedTxControl.setValue(this.request.message.tx);
           }
         }
-      }
-    });
+      });
 
     this.address = this.preferenceService.getSelectedAddress();
     this.identity = this.preferenceService.getIdentity(this.address);
@@ -67,7 +66,7 @@ export class TransactionPage implements OnInit {
           if (this.request) {
             this.cancel();
           } else {
-            this.signedTxFormControl.setValue('');
+            this.signedTxControl.setValue('');
             this.address = address;
             this.identity = this.preferenceService.getIdentity(this.address);
           }
@@ -76,8 +75,12 @@ export class TransactionPage implements OnInit {
     );
   }
 
-  ngOnDestroy(): void {
-    this.backgroundService.cancelPendingRequest(this.requestId);
+  ionViewWillLeave(): void {
+    this.unsignedTxControl.setValue('');
+    this.signedTxControl.setValue('');
+    if (this.request) {
+      this.backgroundService.cancelPendingRequest(this.request.id);
+    }
     this.subscriptions.unsubscribe();
   }
 
@@ -89,9 +92,9 @@ export class TransactionPage implements OnInit {
 
   sign(): void {
     this.keyringService
-      .signRawTransaction(this.unsignedTxFormControl.value)
+      .signRawTransaction(this.unsignedTxControl.value)
       .subscribe({
-        next: signedTx => this.signedTxFormControl.setValue(signedTx),
+        next: signedTx => this.signedTxControl.setValue(signedTx),
         error: error =>
           from(
             this.toastController.create({
@@ -105,7 +108,7 @@ export class TransactionPage implements OnInit {
   }
 
   copy(): void {
-    from(this.clipboard.copy(this.signedTxFormControl.value))
+    from(this.clipboard.copy(this.signedTxControl.value))
       .pipe(
         flatMap(() =>
           this.toastController.create({
@@ -120,25 +123,32 @@ export class TransactionPage implements OnInit {
   }
 
   broadcast(): void {
-    this.keyringService
-      .sendTransaction(this.signedTxFormControl.value)
-      .subscribe({
-        next: txHash => {
-          this.backgroundService.sendResponse(
-            this.request.action,
-            this.request.id,
-            {
-              txHash: txHash
-            }
-          );
-          this.location.back();
-        }
-      });
+    this.mpchainService.sendTransaction(this.signedTxControl.value).subscribe({
+      next: txHash => {
+        this.backgroundService.sendResponse(
+          this.request.action,
+          this.request.id,
+          {
+            txHash: txHash
+          }
+        );
+        this.location.back();
+      },
+      error: error =>
+        from(
+          this.toastController.create({
+            translucent: true,
+            message: error,
+            duration: 2000,
+            position: 'top'
+          })
+        ).subscribe(toast => toast.present())
+    });
   }
 
   sendToWeb(): void {
     this.backgroundService.sendResponse(this.request.action, this.request.id, {
-      signedTx: this.signedTxFormControl.value
+      signedTx: this.signedTxControl.value
     });
     this.location.back();
   }

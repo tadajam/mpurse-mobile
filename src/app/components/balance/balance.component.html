@@ -1,4 +1,8 @@
-<ion-item *ngIf="asset" [lines]="searched ? 'full' : 'none'">
+<ion-item
+  *ngIf="asset"
+  [routerLink]="['/home/send-asset']"
+  [queryParams]="{ asset: asset.asset }"
+  [lines]="searched ? 'full' : 'none'">
   <ion-avatar slot="start">
     <img src="https://mpchain.info/icon/{{asset.asset}}.png">
   </ion-avatar>

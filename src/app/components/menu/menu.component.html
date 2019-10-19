@@ -37,27 +37,32 @@
             <ion-label>Browser</ion-label>
           </ion-item>
 
-          <ion-item routerLink="/home/wallet" routerDirection="root" (click)="menuClose()">
+          <ion-item routerLink="/home/wallet" (click)="menuClose()">
             <ion-icon name="wallet" slot="start"></ion-icon>
             <ion-label>Wallet</ion-label>
           </ion-item>
 
-          <ion-item routerLink="/home/signature" routerDirection="root" (click)="menuClose()">
+          <ion-item routerLink="/home/send-asset" (click)="menuClose()">
+            <ion-icon name="arrow-round-up" slot="start"></ion-icon>
+            <ion-label>Send</ion-label>
+          </ion-item>
+
+          <ion-item routerLink="/home/signature" (click)="menuClose()">
             <ion-icon name="create" slot="start"></ion-icon>
             <ion-label>Sign Message</ion-label>
           </ion-item>
 
-          <ion-item routerLink="/home/transaction" routerDirection="root" (click)="menuClose()">
+          <ion-item routerLink="/home/transaction" (click)="menuClose()">
             <ion-icon name="create" slot="start"></ion-icon>
             <ion-label>Sign Transaction</ion-label>
           </ion-item>
 
-          <ion-item routerLink="/home/settings" routerDirection="root" (click)="menuClose()">
+          <ion-item routerLink="/home/settings" (click)="menuClose()">
             <ion-icon name="settings" slot="start"></ion-icon>
             <ion-label>Settings</ion-label>
           </ion-item>
 
-          <ion-item routerLink="/home/info" routerDirection="root" (click)="menuClose()">
+          <ion-item routerLink="/home/info" (click)="menuClose()">
             <ion-icon name="information-circle-outline" slot="start"></ion-icon>
             <ion-label>Infomation</ion-label>
           </ion-item>

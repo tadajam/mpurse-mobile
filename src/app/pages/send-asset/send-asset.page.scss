@@ -1,0 +1,22 @@
+.identicon {
+  --border-radius: 50px;
+  --padding-start: 4px;
+  --inner-padding-end: 4px;
+  --inner-padding-top: 4px;
+}
+
+.margin-auto {
+  margin: auto;
+}
+
+.fee-grid {
+  padding: 0;
+  width: 100%;
+  .fee-range-col {
+    padding: 0;
+    .fee-range {
+      padding-top: 0;
+      padding-right:1rem;
+    }
+  }
+}

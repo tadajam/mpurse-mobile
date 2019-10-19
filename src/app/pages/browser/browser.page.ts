@@ -16,7 +16,7 @@ import { BackgroundService } from 'src/app/services/background.service';
 export class BrowserPage implements OnInit {
   private subscriptions = new Subscription();
   address: string;
-  searchStr = new FormControl('');
+  searchStrControl = new FormControl('');
   appList: { href: string; title: string; icon: string }[] = [
     {
       href: 'https://web3.askmona.org/',
@@ -59,8 +59,8 @@ export class BrowserPage implements OnInit {
   }
 
   search(): void {
-    if (this.searchStr.value !== '') {
-      this.open(this.searchStr.value);
+    if (this.searchStrControl.value !== '') {
+      this.open(this.searchStrControl.value);
     }
   }
 }

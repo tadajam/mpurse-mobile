@@ -42,13 +42,13 @@
         formControlName="message"
         [readonly]="request"
         autoGrow="true"
-        (paste)="signatureFormControl.setValue('')"
-        (cut)="signatureFormControl.setValue('')"
-        (keyup)="signatureFormControl.setValue('')"
+        (paste)="signatureControl.setValue('')"
+        (cut)="signatureControl.setValue('')"
+        (keyup)="signatureControl.setValue('')"
       ></ion-textarea>
     </ion-item>
 
-    <ion-item *ngIf="signatureFormControl.value">
+    <ion-item *ngIf="signatureControl.value">
       <ion-label position="floating">Signature</ion-label>
       <ion-textarea
         formControlName="signature"
@@ -66,7 +66,7 @@
         <ion-button (click)="cancel()" expand="block" color="light">CANCEL</ion-button>
       </ion-col>
       <ion-col>
-        <ng-container *ngIf="signatureFormControl.value; then signed; else signButton"></ng-container>
+        <ng-container *ngIf="signatureControl.value; then signed; else signButton"></ng-container>
         <ng-template #signed>
           <ng-container *ngIf="requestId; then sendButton; else copyButton"></ng-container>
           <ng-template #sendButton>

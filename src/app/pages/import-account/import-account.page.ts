@@ -12,12 +12,12 @@ import { Location } from '@angular/common';
   styleUrls: ['./import-account.page.scss']
 })
 export class ImportAccountPage implements OnInit {
-  nameFormControl = new FormControl('');
-  privatekeyFormControl = new FormControl('', [Validators.required]);
+  nameControl = new FormControl('');
+  privatekeyControl = new FormControl('', [Validators.required]);
 
   importForm = new FormGroup({
-    name: this.nameFormControl,
-    privatekey: this.privatekeyFormControl
+    name: this.nameControl,
+    privatekey: this.privatekeyControl
   });
 
   constructor(
@@ -29,9 +29,7 @@ export class ImportAccountPage implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.nameFormControl.setValue(
-      this.preferenceService.incrementAccountName()
-    );
+    this.nameControl.setValue(this.preferenceService.incrementAccountName());
   }
 
   closeModal(): void {
@@ -40,10 +38,7 @@ export class ImportAccountPage implements OnInit {
 
   importAccount(): void {
     this.keyringService
-      .importAccount(
-        this.nameFormControl.value,
-        this.privatekeyFormControl.value
-      )
+      .importAccount(this.nameControl.value, this.privatekeyControl.value)
       .subscribe({
         next: (address: string) => {
           this.preferenceService.changeAddress(address);

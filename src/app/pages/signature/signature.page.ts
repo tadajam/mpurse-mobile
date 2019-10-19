@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { BackgroundService } from 'src/app/services/background.service';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { Identity } from 'src/app/interfaces/identity';
@@ -6,28 +6,27 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription, from } from 'rxjs';
 import { ModalController, ToastController } from '@ionic/angular';
 import { AccountsPage } from '../accounts/accounts.page';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { KeyringService } from 'src/app/services/keyring.service';
 import { Location } from '@angular/common';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
-import { flatMap } from 'rxjs/operators';
+import { flatMap, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-signature',
   templateUrl: './signature.page.html',
   styleUrls: ['./signature.page.scss']
 })
-export class SignaturePage implements OnInit {
-  requestId: number;
+export class SignaturePage {
   address: string;
   identity: Identity;
   request: any;
-  messageFormControl = new FormControl('', []);
-  signatureFormControl = new FormControl('', []);
+  messageControl = new FormControl('', []);
+  signatureControl = new FormControl('', []);
 
   signatureForm = new FormGroup({
-    message: this.messageFormControl,
-    signature: this.signatureFormControl
+    message: this.messageControl,
+    signature: this.signatureControl
   });
   private subscriptions = new Subscription();
 
@@ -42,20 +41,19 @@ export class SignaturePage implements OnInit {
     private toastController: ToastController
   ) {}
 
-  ngOnInit(): void {
-    this.activatedRoute.queryParams.subscribe({
-      next: params => {
-        if (params.id) {
+  ionViewDidEnter(): void {
+    this.activatedRoute.queryParams
+      .pipe(filter(params => params.id))
+      .subscribe({
+        next: params => {
           this.request = this.backgroundService.getPendingRequest(
             parseFloat(params.id)
           );
           if (this.request) {
-            this.requestId = this.request.id;
-            this.messageFormControl.setValue(this.request.message.message);
+            this.messageControl.setValue(this.request.message.message);
           }
         }
-      }
-    });
+      });
 
     this.address = this.preferenceService.getSelectedAddress();
     this.identity = this.preferenceService.getIdentity(this.address);
@@ -66,7 +64,7 @@ export class SignaturePage implements OnInit {
           if (this.request) {
             this.cancel();
           } else {
-            this.signatureFormControl.setValue('');
+            this.signatureControl.setValue('');
             this.address = address;
             this.identity = this.preferenceService.getIdentity(this.address);
           }
@@ -75,8 +73,12 @@ export class SignaturePage implements OnInit {
     );
   }
 
-  ngOnDestroy(): void {
-    this.backgroundService.cancelPendingRequest(this.requestId);
+  ionViewWillLeave(): void {
+    this.messageControl.setValue('');
+    this.signatureControl.setValue('');
+    if (this.request) {
+      this.backgroundService.cancelPendingRequest(this.request.id);
+    }
     this.subscriptions.unsubscribe();
   }
 
@@ -87,13 +89,13 @@ export class SignaturePage implements OnInit {
   }
 
   sign(): void {
-    this.signatureFormControl.setValue(
-      this.keyringService.signMessage(this.messageFormControl.value)
+    this.signatureControl.setValue(
+      this.keyringService.signMessage(this.messageControl.value)
     );
   }
 
   copy(): void {
-    from(this.clipboard.copy(this.signatureFormControl.value))
+    from(this.clipboard.copy(this.signatureControl.value))
       .pipe(
         flatMap(() =>
           this.toastController.create({
@@ -109,7 +111,7 @@ export class SignaturePage implements OnInit {
 
   sendToWeb(): void {
     this.backgroundService.sendResponse(this.request.action, this.request.id, {
-      signature: this.signatureFormControl.value
+      signature: this.signatureControl.value
     });
     this.location.back();
   }

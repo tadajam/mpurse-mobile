@@ -1,0 +1,148 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Send Asset</ion-title>
+    <ion-buttons slot="end" (click)="openAccountsPage()" margin-end>
+      <ion-item lines="none" class="identicon" button>
+        <app-ident-icon [address]="address" diameter="40"></app-ident-icon>
+      </ion-item>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="request">
+    <ion-item lines="none" text-center>
+      <ion-label>
+        <h1>Request From</h1>
+      </ion-label>
+    </ion-item>
+  
+    <ion-row justify-content-center>
+      <ion-avatar>
+        <ion-img [src]="request.icon"></ion-img>
+      </ion-avatar>
+    </ion-row>
+  
+    <ion-item lines="none" text-center>
+      <ion-label>
+        <h2>{{request.origin}}</h2>
+        <p>{{request.title}}</p>
+        <p>{{request.href}}</p>
+      </ion-label>
+    </ion-item>
+  </ng-container>
+
+  <form [formGroup]="sendAssetForm" (ngSubmit)="sendAsset()">
+    <ion-item>
+      <ion-label position="floating">Destination Address</ion-label>
+      <ion-input formControlName="to" placeholder="Address or Asset Name"></ion-input>
+      <ion-icon name="happy" (click)="getIssuer()" slot="end" color="primary" class="margin-auto"></ion-icon>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Asset</ion-label>
+      <ng-container *ngIf="assetHasAssigned; then fixAsset; else selectAsset"></ng-container>
+      <ng-template #fixAsset>
+        <ion-input [value]="getAssetName(assetControl.value)" readonly="true"></ion-input>
+      </ng-template>
+      <ng-template #selectAsset>
+        <ion-select formControlName="asset" interface="action-sheet" ngDefaultControl>
+          <ion-select-option *ngFor="let asset of assets" [value]="asset.asset">
+            {{asset.asset_longname ? asset.asset_longname : asset.asset}}
+          </ion-select-option>
+        </ion-select>
+      </ng-template>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Amount</ion-label>
+      <ion-input formControlName="amount"></ion-input>
+      <ion-chip (click)="setAvailableAllFunds()" color="primary" slot="end" class="margin-auto">
+        Available: {{getAvailable(assetControl.value)}}
+      </ion-chip>
+    </ion-item>
+
+    <ng-container formGroupName="memo" *ngIf="assetControl.value !== 'MONA'">
+      <ion-item>
+        <ion-label position="floating">Memo Type</ion-label>
+        <ng-container *ngIf="memoTypeHasAssigned; then fixType; else selectType"></ng-container>
+        <ng-template #fixType>
+          <ng-container [ngSwitch]="memoTypeControl.value">
+            <ion-input *ngSwitchCase="'no'" readonly="true" value="No Memo"></ion-input>
+            <ion-input *ngSwitchCase="'hex'" readonly="true" value="Data Memo"></ion-input>
+            <ion-input *ngSwitchCase="'plain'" readonly="true" value="Plain Text Memo"></ion-input>
+          </ng-container>
+        </ng-template>
+        <ng-template #selectType>
+          <ion-select formControlName="memoType" interface="action-sheet" ngDefaultControl>
+            <ion-select-option value="no">No Memo</ion-select-option>
+            <ion-select-option value="hex">Data Memo</ion-select-option>
+            <ion-select-option value="plain">Plain Text Memo</ion-select-option>
+          </ion-select>
+        </ng-template>
+      </ion-item>
+  
+      <ion-item *ngIf="memoTypeControl.value === 'hex' || memoTypeControl.value === 'plain'">
+        <ion-label position="floating">Memo</ion-label>
+        <ion-input formControlName="memoValue"></ion-input>
+        <ion-text *ngIf="memoGroup.invalid" color="danger" padding-bottom>
+          Invalid memo string
+        </ion-text>
+      </ion-item>
+    </ng-container>
+
+    <ion-item>
+      <ion-label position="floating">Fee Watanabes/Byte</ion-label>
+      <ion-grid class="fee-grid">
+        <ion-row>
+          <ion-col size="5">
+            <ion-input formControlName="fee"></ion-input>
+          </ion-col>
+          <ion-col size="7" class="fee-range-col">
+            <ion-range
+              (touchend)="feeControl.setValue($event.target.value)"
+              [value]="feeControl.value"
+              min="10"
+              max="200"
+              class="fee-range"
+              [color]="feeControl.value <= 100 ? 'warning' : 'primary'"
+              pin="true">
+            </ion-range>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </form>
+
+  <ng-container *ngIf="unsignedTx">
+    <ion-item lines="none" padding-top>
+      <p>Transaction fee: {{calculatedFee / 100000000 | number:'1.8-8'}} MONA</p>
+    </ion-item>
+    <ion-item lines="none">
+      <ng-container *ngIf="assetControl.value === 'MONA'; then sendMona; else sendAsset"></ng-container>
+      <ng-template #sendMona>
+        After sending, you will have {{(getAvailableNumber('MONA') - amountControl.value - calculatedFee / 100000000) | number:'1.8-8'}} MONA remaining at this address.
+      </ng-template>
+      <ng-template #sendAsset>
+        After sending, you will have {{(getAvailableNumber('MONA') - calculatedFee / 100000000) | number:'1.8-8'}} MONA remaining at this address.
+      </ng-template>
+    </ion-item>
+  </ng-container>
+  
+</ion-content>
+
+<ion-footer>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button (click)="cancel()" expand="block" color="light">CANCEL</ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button (click)="sendAsset()" expand="block" color="primary" [disabled]="unsignedTx === ''">SEND</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>
