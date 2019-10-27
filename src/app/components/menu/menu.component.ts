@@ -1,7 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { MenuController, ModalController } from '@ionic/angular';
+import { CommonService } from 'src/app/services/common.service';
 import { from } from 'rxjs';
-import { AccountsPage } from '../../pages/accounts/accounts.page';
+import { AccountsPage } from 'src/app/pages/accounts/accounts.page';
 
 @Component({
   selector: 'app-menu',
@@ -12,10 +13,12 @@ export class MenuComponent {
   @Input() address: string;
   @Input() accountName: string;
 
+  // To avoid freezing.
   isSwipeEnabled = true;
 
   constructor(
     private menuController: MenuController,
+    private commonService: CommonService,
     private modalController: ModalController
   ) {}
 
@@ -31,8 +34,8 @@ export class MenuComponent {
 
   openAccountsPage(): void {
     this.menuClose();
-    from(this.modalController.create({ component: AccountsPage })).subscribe(
-      modal => modal.present()
-    );
+    from(this.modalController.create({ component: AccountsPage })).subscribe({
+      next: modal => modal.present()
+    });
   }
 }

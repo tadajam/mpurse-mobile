@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { KeyringService } from 'src/app/services/keyring.service';
 import { Router } from '@angular/router';
 import { map } from 'rxjs/operators';
+import { CommonService } from 'src/app/services/common.service';
 
 @Component({
   selector: 'app-start',
@@ -11,7 +12,11 @@ import { map } from 'rxjs/operators';
 export class StartPage {
   private isDisable = false;
 
-  constructor(private router: Router, private keyringService: KeyringService) {}
+  constructor(
+    private router: Router,
+    private keyringService: KeyringService,
+    private commonService: CommonService
+  ) {}
 
   createNew(): void {
     this.isDisable = true;
@@ -28,7 +33,7 @@ export class StartPage {
       )
       .subscribe({
         next: () => this.router.navigateByUrl('/'),
-        error: error => console.log(error)
+        error: error => this.commonService.presentErrorToast(error.toString())
       });
   }
 }

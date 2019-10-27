@@ -27,7 +27,6 @@ export class PreferenceService {
     from(this.storage.get(PreferenceKey.Language))
       .pipe(
         map(lang => {
-          console.log(lang);
           let l = lang || this.translateService.getBrowserLang();
           l = /(en|ja)/gi.test(l) ? l : 'en';
           return l;

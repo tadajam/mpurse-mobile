@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { KeyringService } from 'src/app/services/keyring.service';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { flatMap } from 'rxjs/operators';
@@ -11,7 +11,7 @@ import { from, Subscription } from 'rxjs';
   templateUrl: './settings.page.html',
   styleUrls: ['./settings.page.scss']
 })
-export class SettingsPage implements OnInit {
+export class SettingsPage {
   private subscriptions = new Subscription();
   lang = 'en';
   searchEngine = 'google';
@@ -25,7 +25,7 @@ export class SettingsPage implements OnInit {
     public alertController: AlertController
   ) {}
 
-  ngOnInit(): void {
+  ionViewDidEnter(): void {
     this.lang = this.preferenceService.getLanguage();
     this.updateAddress(this.preferenceService.getSelectedAddress());
 
@@ -33,13 +33,12 @@ export class SettingsPage implements OnInit {
       this.preferenceService.selectedAddressState.subscribe({
         next: (address: string) => {
           this.updateAddress(address);
-        },
-        error: error => console.log(error)
+        }
       })
     );
   }
 
-  ngOnDestroy(): void {
+  ionViewWillLeave(): void {
     this.subscriptions.unsubscribe();
   }
 
@@ -74,6 +73,6 @@ export class SettingsPage implements OnInit {
         message: 'Are you sure you want to remove all?',
         buttons: buttons
       })
-    ).subscribe(alert => alert.present());
+    ).subscribe({ next: alert => alert.present() });
   }
 }

@@ -5,13 +5,14 @@ import { Subscription, from } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { Location } from '@angular/common';
-import { ModalController, ToastController } from '@ionic/angular';
 import { BackgroundService } from 'src/app/services/background.service';
-import { AccountsPage } from '../accounts/accounts.page';
 import { KeyringService } from 'src/app/services/keyring.service';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
-import { flatMap, filter } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { MpchainService } from 'src/app/services/mpchain.service';
+import { CommonService } from 'src/app/services/common.service';
+import { AccountsPage } from '../accounts/accounts.page';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-transaction',
@@ -34,13 +35,13 @@ export class TransactionPage {
   constructor(
     private activatedRoute: ActivatedRoute,
     private preferenceService: PreferenceService,
-    private modalController: ModalController,
     private backgroundService: BackgroundService,
     private keyringService: KeyringService,
     private location: Location,
     private clipboard: Clipboard,
-    private toastController: ToastController,
-    private mpchainService: MpchainService
+    private mpchainService: MpchainService,
+    private commonService: CommonService,
+    private modalController: ModalController
   ) {}
 
   ionViewDidEnter(): void {
@@ -85,9 +86,9 @@ export class TransactionPage {
   }
 
   openAccountsPage(): void {
-    from(this.modalController.create({ component: AccountsPage })).subscribe(
-      modal => modal.present()
-    );
+    from(this.modalController.create({ component: AccountsPage })).subscribe({
+      next: modal => modal.present()
+    });
   }
 
   sign(): void {
@@ -95,31 +96,14 @@ export class TransactionPage {
       .signRawTransaction(this.unsignedTxControl.value)
       .subscribe({
         next: signedTx => this.signedTxControl.setValue(signedTx),
-        error: error =>
-          from(
-            this.toastController.create({
-              translucent: true,
-              message: error,
-              duration: 2000,
-              position: 'top'
-            })
-          ).subscribe(toast => toast.present())
+        error: error => this.commonService.presentErrorToast(error.toString())
       });
   }
 
   copy(): void {
-    from(this.clipboard.copy(this.signedTxControl.value))
-      .pipe(
-        flatMap(() =>
-          this.toastController.create({
-            translucent: true,
-            message: 'Copied',
-            duration: 2000,
-            position: 'top'
-          })
-        )
-      )
-      .subscribe(toast => toast.present());
+    from(this.clipboard.copy(this.signedTxControl.value)).subscribe({
+      next: () => this.commonService.presentSuccessToast('Copied')
+    });
   }
 
   broadcast(): void {
@@ -134,15 +118,7 @@ export class TransactionPage {
         );
         this.location.back();
       },
-      error: error =>
-        from(
-          this.toastController.create({
-            translucent: true,
-            message: error,
-            duration: 2000,
-            position: 'top'
-          })
-        ).subscribe(toast => toast.present())
+      error: error => this.commonService.presentErrorToast(error.toString())
     });
   }
 

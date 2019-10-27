@@ -7,7 +7,6 @@ import { IonicModule } from '@ionic/angular';
 
 import { AccountsPage } from './accounts.page';
 import { ComponentModule } from 'src/app/components/component.module';
-import { ImportAccountPageModule } from '../import-account/import-account.module';
 
 const routes: Routes = [
   {
@@ -22,8 +21,7 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     RouterModule.forChild(routes),
-    ComponentModule,
-    ImportAccountPageModule
+    ComponentModule
   ],
   declarations: [AccountsPage]
 })

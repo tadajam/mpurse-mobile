@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
-import { Observable, from, of } from 'rxjs';
+import { Observable, of, from } from 'rxjs';
 import { InPageMessage } from '../enum/in-page-message.enum';
 import { InAppBrowserService } from './in-app-browser.service';
 import { InAppBrowserObject } from '@ionic-native/in-app-browser/ngx';
 import { flatMap, map, filter, catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { PreferenceService } from './preference.service';
+import { MpchainService } from './mpchain.service';
+import { CommonService } from './common.service';
 import { ApprovePage } from '../pages/approve/approve.page';
 import { ModalController } from '@ionic/angular';
-import { MpchainService } from './mpchain.service';
 
 @Injectable({
   providedIn: 'root'
@@ -24,9 +25,10 @@ export class BackgroundService {
   constructor(
     private preferenceService: PreferenceService,
     private inAppBrowserService: InAppBrowserService,
-    private modalController: ModalController,
     private router: Router,
-    private mpchainService: MpchainService
+    private mpchainService: MpchainService,
+    private commonService: CommonService,
+    private modalController: ModalController
   ) {
     this.inAppBrowserService.inAppBrowserObjectState.subscribe(
       (inAppBrowser: InAppBrowserObject) => {
@@ -167,9 +169,9 @@ export class BackgroundService {
   }
 
   openApprovePage(): void {
-    from(this.modalController.create({ component: ApprovePage })).subscribe(
-      modal => modal.present()
-    );
+    from(this.modalController.create({ component: ApprovePage })).subscribe({
+      next: modal => modal.present()
+    });
   }
 
   getPendingRequests(): any[] {

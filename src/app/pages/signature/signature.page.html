@@ -68,7 +68,7 @@
       <ion-col>
         <ng-container *ngIf="signatureControl.value; then signed; else signButton"></ng-container>
         <ng-template #signed>
-          <ng-container *ngIf="requestId; then sendButton; else copyButton"></ng-container>
+          <ng-container *ngIf="request; then sendButton; else copyButton"></ng-container>
           <ng-template #sendButton>
             <ion-button (click)="sendToWeb()" expand="block" color="secondary">SEND TO WEB</ion-button>
           </ng-template>

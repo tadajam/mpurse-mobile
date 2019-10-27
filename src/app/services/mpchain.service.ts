@@ -86,7 +86,7 @@ export class MpchainService {
     memoValue: string,
     feePerB: string,
     disableUtxoLocks: boolean
-  ): Observable<string> {
+  ): Observable<any> {
     return this.getAssetInfo(asset).pipe(
       flatMap(assetInfo => {
         let amount: number;

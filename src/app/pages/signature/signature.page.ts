@@ -4,13 +4,14 @@ import { PreferenceService } from 'src/app/services/preference.service';
 import { Identity } from 'src/app/interfaces/identity';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription, from } from 'rxjs';
-import { ModalController, ToastController } from '@ionic/angular';
-import { AccountsPage } from '../accounts/accounts.page';
 import { FormGroup, FormControl } from '@angular/forms';
 import { KeyringService } from 'src/app/services/keyring.service';
 import { Location } from '@angular/common';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
-import { flatMap, filter } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
+import { AccountsPage } from '../accounts/accounts.page';
+import { CommonService } from 'src/app/services/common.service';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-signature',
@@ -33,12 +34,12 @@ export class SignaturePage {
   constructor(
     private activatedRoute: ActivatedRoute,
     private preferenceService: PreferenceService,
-    private modalController: ModalController,
     private backgroundService: BackgroundService,
     private keyringService: KeyringService,
     private location: Location,
     private clipboard: Clipboard,
-    private toastController: ToastController
+    private commonService: CommonService,
+    private modalController: ModalController
   ) {}
 
   ionViewDidEnter(): void {
@@ -83,9 +84,9 @@ export class SignaturePage {
   }
 
   openAccountsPage(): void {
-    from(this.modalController.create({ component: AccountsPage })).subscribe(
-      modal => modal.present()
-    );
+    from(this.modalController.create({ component: AccountsPage })).subscribe({
+      next: modal => modal.present()
+    });
   }
 
   sign(): void {
@@ -95,18 +96,9 @@ export class SignaturePage {
   }
 
   copy(): void {
-    from(this.clipboard.copy(this.signatureControl.value))
-      .pipe(
-        flatMap(() =>
-          this.toastController.create({
-            translucent: true,
-            message: 'Copied',
-            duration: 2000,
-            position: 'top'
-          })
-        )
-      )
-      .subscribe(toast => toast.present());
+    from(this.clipboard.copy(this.signatureControl.value)).subscribe({
+      next: () => this.commonService.presentSuccessToast('Copied')
+    });
   }
 
   sendToWeb(): void {

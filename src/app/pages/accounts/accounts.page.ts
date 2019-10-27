@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { KeyringService } from 'src/app/services/keyring.service';
 import { PreferenceService } from 'src/app/services/preference.service';
-import { from } from 'rxjs';
 import { Identity } from 'src/app/interfaces/identity';
 import { ModalController } from '@ionic/angular';
+import { CommonService } from 'src/app/services/common.service';
+import { from } from 'rxjs';
 import { ImportAccountPage } from '../import-account/import-account.page';
 
 @Component({
@@ -11,7 +12,7 @@ import { ImportAccountPage } from '../import-account/import-account.page';
   templateUrl: './accounts.page.html',
   styleUrls: ['./accounts.page.scss']
 })
-export class AccountsPage implements OnInit {
+export class AccountsPage {
   isDisable = false;
   identities: Identity[] = [];
   selectedAddress = '';
@@ -19,10 +20,11 @@ export class AccountsPage implements OnInit {
   constructor(
     private keyringService: KeyringService,
     private preferenceService: PreferenceService,
-    public modalController: ModalController
+    private modalController: ModalController,
+    private commonService: CommonService
   ) {}
 
-  ngOnInit(): void {
+  ionViewDidEnter(): void {
     this.identities = this.preferenceService.getIdentities();
     this.selectedAddress = this.preferenceService.getSelectedAddress();
   }
@@ -40,10 +42,14 @@ export class AccountsPage implements OnInit {
   }
 
   openImportPage(): void {
+    this.isDisable = true;
     this.modalController.dismiss();
     from(
       this.modalController.create({ component: ImportAccountPage })
-    ).subscribe(modal => modal.present());
+    ).subscribe({
+      next: modal => modal.present()
+    });
+    this.isDisable = false;
   }
 
   closeModal(): void {

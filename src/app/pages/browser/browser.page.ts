@@ -1,19 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { Subscription, from } from 'rxjs';
-import { ModalController } from '@ionic/angular';
-import { AccountsPage } from '../accounts/accounts.page';
 import { KeyringService } from 'src/app/services/keyring.service';
 import { InAppBrowserService } from 'src/app/services/in-app-browser.service';
 import { FormControl } from '@angular/forms';
 import { BackgroundService } from 'src/app/services/background.service';
+import { CommonService } from 'src/app/services/common.service';
+import { AccountsPage } from '../accounts/accounts.page';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-browser',
   templateUrl: './browser.page.html',
   styleUrls: ['./browser.page.scss']
 })
-export class BrowserPage implements OnInit {
+export class BrowserPage {
   private subscriptions = new Subscription();
   address: string;
   searchStrControl = new FormControl('');
@@ -28,34 +29,34 @@ export class BrowserPage implements OnInit {
   constructor(
     private keyringService: KeyringService,
     private preferenceService: PreferenceService,
-    private modalController: ModalController,
     private inAppBrowserService: InAppBrowserService,
-    private backgroundService: BackgroundService
+    private backgroundService: BackgroundService,
+    private commonService: CommonService,
+    private modalController: ModalController
   ) {}
 
-  ngOnInit(): void {
+  ionViewDidEnter(): void {
     this.address = this.preferenceService.getSelectedAddress();
 
     this.subscriptions.add(
       this.preferenceService.selectedAddressState.subscribe({
-        next: (address: string) => (this.address = address),
-        error: error => console.log(error)
+        next: (address: string) => (this.address = address)
       })
     );
   }
 
-  ngOnDestroy(): void {
+  ionViewWillLeave(): void {
     this.subscriptions.unsubscribe();
   }
 
   openAccountsPage(): void {
-    from(this.modalController.create({ component: AccountsPage })).subscribe(
-      modal => modal.present()
-    );
+    from(this.modalController.create({ component: AccountsPage })).subscribe({
+      next: modal => modal.present()
+    });
   }
 
-  open(url: string): void {
-    this.inAppBrowserService.open(url);
+  open(searchStr: string): void {
+    this.inAppBrowserService.open(searchStr);
   }
 
   search(): void {

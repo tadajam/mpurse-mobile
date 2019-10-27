@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { KeyringService } from 'src/app/services/keyring.service';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { Subscription } from 'rxjs';
@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss']
 })
-export class HomePage implements OnInit {
+export class HomePage {
   address = '';
   accountName = '';
   private subscriptions = new Subscription();
@@ -18,18 +18,17 @@ export class HomePage implements OnInit {
     private preferenceService: PreferenceService
   ) {}
 
-  ngOnInit(): void {
+  ionViewDidEnter(): void {
     this.updateAddress(this.preferenceService.getSelectedAddress());
 
     this.subscriptions.add(
       this.preferenceService.selectedAddressState.subscribe({
-        next: (address: string) => this.updateAddress(address),
-        error: error => console.log(error)
+        next: (address: string) => this.updateAddress(address)
       })
     );
   }
 
-  ngOnDestroy(): void {
+  ionViewWillLeave(): void {
     this.subscriptions.unsubscribe();
   }
 

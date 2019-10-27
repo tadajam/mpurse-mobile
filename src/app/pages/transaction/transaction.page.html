@@ -69,7 +69,7 @@
       <ion-col>
         <ng-container *ngIf="signedTxControl.value; then signed; else signButton"></ng-container>
         <ng-template #signed>
-          <ng-container *ngIf="requestId; then sendButton; else copyButton"></ng-container>
+          <ng-container *ngIf="request; then sendButton; else copyButton"></ng-container>
           <ng-template #sendButton>
             <ng-container *ngIf="request.action === 'mpurse.sign.tx.request'; then signRequest; else sendRequest"></ng-container>
             <ng-template #signRequest>

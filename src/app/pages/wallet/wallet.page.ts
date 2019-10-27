@@ -1,11 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { KeyringService } from 'src/app/services/keyring.service';
-import {
-  ModalController,
-  ToastController,
-  IonInfiniteScroll
-} from '@ionic/angular';
-import { AccountsPage } from '../accounts/accounts.page';
+import { Component, ViewChild } from '@angular/core';
+import { IonInfiniteScroll, ModalController } from '@ionic/angular';
 import { from, Subscription, Observable, of } from 'rxjs';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
@@ -15,13 +9,15 @@ import { MpchainAssetBalance } from 'src/app/interfaces/mpchain-asset-balance';
 import { MpchainBalance } from 'src/app/interfaces/mpchain-balance';
 import { FormControl, Validators } from '@angular/forms';
 import { MpchainService } from 'src/app/services/mpchain.service';
+import { AccountsPage } from '../accounts/accounts.page';
+import { CommonService } from 'src/app/services/common.service';
 
 @Component({
   selector: 'app-wallet',
   templateUrl: './wallet.page.html',
   styleUrls: ['./wallet.page.scss']
 })
-export class WalletPage implements OnInit {
+export class WalletPage {
   @ViewChild('infinite', { static: false }) infiniteScroll: IonInfiniteScroll;
   loading = false;
   address = '';
@@ -39,29 +35,21 @@ export class WalletPage implements OnInit {
   private subscriptions = new Subscription();
 
   constructor(
-    private keyringService: KeyringService,
     private preferenceService: PreferenceService,
-    private modalController: ModalController,
     private clipboard: Clipboard,
-    public toastController: ToastController,
-    private mpchainService: MpchainService
+    private mpchainService: MpchainService,
+    private commonService: CommonService,
+    private modalController: ModalController
   ) {}
 
-  ngOnInit(): void {
+  ionViewDidEnter(): void {
     this.loading = true;
     this.isEditable = false;
     this.updateAddress(this.preferenceService.getSelectedAddress()).subscribe({
       next: () => {
         this.loading = false;
       },
-      error: error => {
-        from(
-          this.toastController.create({
-            message: error.toString(),
-            duration: 2000
-          })
-        ).subscribe(toast => toast.present());
-      }
+      error: error => this.commonService.presentErrorToast(error.toString())
     });
 
     this.subscriptions.add(
@@ -74,19 +62,12 @@ export class WalletPage implements OnInit {
           next: () => {
             this.loading = false;
           },
-          error: error => {
-            from(
-              this.toastController.create({
-                message: error.toString(),
-                duration: 2000
-              })
-            ).subscribe(toast => toast.present());
-          }
+          error: error => this.commonService.presentErrorToast(error.toString())
         })
     );
   }
 
-  ngOnDestroy(): void {
+  ionViewWillLeave(): void {
     this.subscriptions.unsubscribe();
   }
 
@@ -157,9 +138,9 @@ export class WalletPage implements OnInit {
   }
 
   openAccountsPage(): void {
-    from(this.modalController.create({ component: AccountsPage })).subscribe(
-      modal => modal.present()
-    );
+    from(this.modalController.create({ component: AccountsPage })).subscribe({
+      next: modal => modal.present()
+    });
   }
 
   editName(): void {
@@ -185,25 +166,14 @@ export class WalletPage implements OnInit {
     if (e !== '') {
       this.preferenceService.setAccountName(this.accountName);
     } else {
-      from(
-        this.toastController.create({
-          translucent: true,
-          message: e,
-          duration: 2000
-        })
-      ).subscribe(toast => toast.present());
+      this.commonService.presentErrorToast(e);
     }
   }
 
   copyAddress(): void {
-    this.clipboard.copy(this.address);
-    from(
-      this.toastController.create({
-        translucent: true,
-        message: 'Copied',
-        duration: 2000
-      })
-    ).subscribe(toast => toast.present());
+    from(this.clipboard.copy(this.address)).subscribe({
+      next: () => this.commonService.presentSuccessToast('Copied')
+    });
   }
 
   search(): void {
@@ -227,16 +197,9 @@ export class WalletPage implements OnInit {
         })
       )
       .subscribe({
-        next: (asset: MpchainAssetBalance) => {
-          this.searchedAsset = asset;
-        },
+        next: (asset: MpchainAssetBalance) => (this.searchedAsset = asset),
         error: error => {
-          from(
-            this.toastController.create({
-              message: error,
-              duration: 2000
-            })
-          ).subscribe(toast => toast.present());
+          this.commonService.presentErrorToast(error.toString());
           this.searchedAsset = null;
         }
       });

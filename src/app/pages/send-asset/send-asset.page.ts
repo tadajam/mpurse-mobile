@@ -6,17 +6,26 @@ import {
   Validators,
   ValidationErrors
 } from '@angular/forms';
-import { Subscription, from, Observable } from 'rxjs';
-import { ToastController, ModalController } from '@ionic/angular';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription, from, Observable, of } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { BackgroundService } from 'src/app/services/background.service';
 import { Location } from '@angular/common';
-import { AccountsPage } from '../accounts/accounts.page';
 import { MpchainAssetBalance } from 'src/app/interfaces/mpchain-asset-balance';
-import { flatMap, tap, filter, map, toArray } from 'rxjs/operators';
+import {
+  flatMap,
+  tap,
+  filter,
+  map,
+  toArray,
+  repeat,
+  catchError
+} from 'rxjs/operators';
 import { MpchainService } from 'src/app/services/mpchain.service';
 import { KeyringService } from 'src/app/services/keyring.service';
+import { CommonService } from 'src/app/services/common.service';
+import { AccountsPage } from '../accounts/accounts.page';
+import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-send-asset',
@@ -98,14 +107,13 @@ export class SendAssetPage {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private router: Router,
     private preferenceService: PreferenceService,
-    private modalController: ModalController,
     private backgroundService: BackgroundService,
     private location: Location,
-    private toastController: ToastController,
     private mpchainService: MpchainService,
-    private keyringService: KeyringService
+    private keyringService: KeyringService,
+    private commonService: CommonService,
+    private modalController: ModalController
   ) {}
 
   ionViewDidEnter(): void {
@@ -166,7 +174,8 @@ export class SendAssetPage {
         flatMap(() => this.updateAssets())
       )
       .subscribe({
-        next: (balances: MpchainAssetBalance[]) => (this.assets = balances)
+        next: (balances: MpchainAssetBalance[]) => (this.assets = balances),
+        error: error => this.commonService.presentErrorToast(error.toString())
       });
 
     this.subscriptions.add(
@@ -193,26 +202,19 @@ export class SendAssetPage {
           this.unsignedTx = '';
           this.calculatedFee = 0;
         }),
-        filter(() => this.sendAssetForm.valid)
+        filter(() => this.sendAssetForm.valid),
+        flatMap(() => this.createSend(true)),
+        catchError(error => {
+          this.commonService.presentErrorToast(error.toString());
+          return of();
+        }),
+        repeat()
       )
       .subscribe({
-        next: () =>
-          this.createSend(true).subscribe({
-            next: result => {
-              this.unsignedTx = result['tx_hex'];
-              this.calculatedFee = result['btc_fee'];
-            },
-            error: error =>
-              from(
-                this.toastController.create({
-                  translucent: true,
-                  color: 'warning',
-                  message: error,
-                  duration: 2000,
-                  position: 'top'
-                })
-              ).subscribe(toast => toast.present())
-          })
+        next: result => {
+          this.unsignedTx = result['tx_hex'];
+          this.calculatedFee = result['btc_fee'];
+        }
       });
   }
 
@@ -235,9 +237,9 @@ export class SendAssetPage {
   }
 
   openAccountsPage(): void {
-    from(this.modalController.create({ component: AccountsPage })).subscribe(
-      modal => modal.present()
-    );
+    from(this.modalController.create({ component: AccountsPage })).subscribe({
+      next: modal => modal.present()
+    });
   }
 
   updateAddress(address: string): void {
@@ -297,30 +299,14 @@ export class SendAssetPage {
   getIssuer(): void {
     this.mpchainService.getIssuer(this.toAddressControl.value).subscribe({
       next: issuer => {
-        from(
-          this.toastController.create({
-            translucent: true,
-            message:
-              'Set ' +
-              this.toAddressControl.value +
-              ' issuer to destination address',
-            color: 'success',
-            duration: 2000,
-            position: 'top'
-          })
-        ).subscribe(toast => toast.present());
+        this.commonService.presentSuccessToast(
+          'Set ' +
+            this.toAddressControl.value +
+            ' issuer to destination address'
+        );
         this.toAddressControl.setValue(issuer);
       },
-      error: error =>
-        from(
-          this.toastController.create({
-            translucent: true,
-            message: error,
-            color: 'warning',
-            duration: 2000,
-            position: 'top'
-          })
-        ).subscribe(toast => toast.present())
+      error: error => this.commonService.presentErrorToast(error)
     });
   }
 
@@ -328,7 +314,7 @@ export class SendAssetPage {
     this.feeControl.setValue(event.target.value);
   }
 
-  createSend(disableUtxoLocks: boolean): Observable<string> {
+  createSend(disableUtxoLocks: boolean): Observable<any> {
     this.unsignedTx = '';
     this.calculatedFee = 0;
 
@@ -364,29 +350,13 @@ export class SendAssetPage {
             );
             this.location.back();
           } else {
-            from(
-              this.toastController.create({
-                translucent: true,
-                message: 'Funds sent. tx_hash: ' + result['txHash'],
-                duration: 5000,
-                position: 'top'
-              })
-            ).subscribe(toast => {
-              toast.present();
-              this.location.back();
-            });
+            this.commonService.presentSuccessToast(
+              'Funds sent. tx_hash: ' + result['txHash']
+            );
+            this.location.back();
           }
         },
-        error: error =>
-          from(
-            this.toastController.create({
-              translucent: true,
-              message: error,
-              color: 'warning',
-              duration: 2000,
-              position: 'top'
-            })
-          ).subscribe(toast => toast.present())
+        error: error => this.commonService.presentErrorToast(error.toString())
       });
   }
 

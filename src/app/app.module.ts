@@ -18,9 +18,10 @@ import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { KeychainTouchId } from '@ionic-native/keychain-touch-id/ngx';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { AccountsPageModule } from './pages/accounts/accounts.module';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
+import { AccountsPageModule } from './pages/accounts/accounts.module';
 import { ApprovePageModule } from './pages/approve/approve.module';
+import { ImportAccountPageModule } from './pages/import-account/import-account.module';
 
 export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -56,7 +57,8 @@ export class IonicGestureConfig extends HammerGestureConfig {
       }
     }),
     AccountsPageModule,
-    ApprovePageModule
+    ApprovePageModule,
+    ImportAccountPageModule
   ],
   providers: [
     StatusBar,

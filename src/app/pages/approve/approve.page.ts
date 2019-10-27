@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { BackgroundService } from 'src/app/services/background.service';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { Identity } from 'src/app/interfaces/identity';
@@ -9,7 +9,7 @@ import { ModalController } from '@ionic/angular';
   templateUrl: './approve.page.html',
   styleUrls: ['./approve.page.scss']
 })
-export class ApprovePage implements OnInit {
+export class ApprovePage {
   address: string;
   identity: Identity;
   request: any;
@@ -17,16 +17,16 @@ export class ApprovePage implements OnInit {
   constructor(
     private preferenceService: PreferenceService,
     private backgroundService: BackgroundService,
-    public modalController: ModalController
+    private modalController: ModalController
   ) {}
 
-  ngOnInit(): void {
+  ionViewDidEnter(): void {
     this.address = this.preferenceService.getSelectedAddress();
     this.identity = this.preferenceService.getIdentity(this.address);
     this.request = this.backgroundService.getPendingRequests()[0];
   }
 
-  ngOnDestroy(): void {
+  ionViewWillLeave(): void {
     if (!this.preferenceService.isApproved(this.request.origin)) {
       this.backgroundService.cancelPendingRequest(this.request.id);
     }
