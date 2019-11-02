@@ -3,8 +3,9 @@ import { KeyringService } from 'src/app/services/keyring.service';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { flatMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { from, Subscription } from 'rxjs';
+import { ExportPage } from '../export/export.page';
 
 @Component({
   selector: 'app-settings',
@@ -22,7 +23,8 @@ export class SettingsPage {
     private router: Router,
     private keyringService: KeyringService,
     private preferenceService: PreferenceService,
-    public alertController: AlertController
+    public alertController: AlertController,
+    private modalController: ModalController
   ) {}
 
   ionViewDidEnter(): void {
@@ -74,5 +76,18 @@ export class SettingsPage {
         buttons: buttons
       })
     ).subscribe({ next: alert => alert.present() });
+  }
+
+  openExportPage(isPhrase: boolean): void {
+    from(
+      this.modalController.create({
+        component: ExportPage,
+        componentProps: {
+          address: isPhrase ? '' : this.address
+        }
+      })
+    ).subscribe({
+      next: modal => modal.present()
+    });
   }
 }

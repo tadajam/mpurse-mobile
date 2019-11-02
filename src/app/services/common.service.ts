@@ -1,12 +1,16 @@
 import { Injectable } from '@angular/core';
 import { ToastController } from '@ionic/angular';
 import { from } from 'rxjs';
+import { Clipboard } from '@ionic-native/clipboard/ngx';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommonService {
-  constructor(private toastController: ToastController) {}
+  constructor(
+    private clipboard: Clipboard,
+    private toastController: ToastController
+  ) {}
 
   private presentToast(message: string, css: string): void {
     const duration = message.toString().length * 50;
@@ -28,5 +32,11 @@ export class CommonService {
 
   presentErrorToast(message: string): void {
     this.presentToast(message, 'toast-error');
+  }
+
+  copyString(targetStr: string): void {
+    from(this.clipboard.copy(targetStr)).subscribe({
+      next: () => this.presentSuccessToast('Copied')
+    });
   }
 }

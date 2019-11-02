@@ -6,6 +6,10 @@ import { IonicStorageModule } from '@ionic/storage';
 import { KeychainTouchId } from '@ionic-native/keychain-touch-id/ngx';
 import { TranslateModule, TranslateStore } from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ModalController, AngularDelegate } from '@ionic/angular';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { Clipboard } from '@ionic-native/clipboard/ngx';
 
 describe('HomePage', () => {
   let component: HomePage;
@@ -17,10 +21,18 @@ describe('HomePage', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
         HttpClientModule,
+        RouterTestingModule,
         TranslateModule.forChild(),
         IonicStorageModule.forRoot()
       ],
-      providers: [KeychainTouchId, TranslateStore]
+      providers: [
+        InAppBrowser,
+        KeychainTouchId,
+        ModalController,
+        AngularDelegate,
+        Clipboard,
+        TranslateStore
+      ]
     }).compileComponents();
   }));
 

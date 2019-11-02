@@ -1,15 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, from } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { InPageMessage } from '../enum/in-page-message.enum';
 import { InAppBrowserService } from './in-app-browser.service';
 import { InAppBrowserObject } from '@ionic-native/in-app-browser/ngx';
 import { flatMap, map, filter, catchError } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { PreferenceService } from './preference.service';
 import { MpchainService } from './mpchain.service';
-import { CommonService } from './common.service';
-import { ApprovePage } from '../pages/approve/approve.page';
-import { ModalController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -23,12 +20,11 @@ export class BackgroundService {
   private pendingRequests: any[] = [];
 
   constructor(
+    private activatedRoute: ActivatedRoute,
     private preferenceService: PreferenceService,
     private inAppBrowserService: InAppBrowserService,
     private router: Router,
-    private mpchainService: MpchainService,
-    private commonService: CommonService,
-    private modalController: ModalController
+    private mpchainService: MpchainService
   ) {
     this.inAppBrowserService.inAppBrowserObjectState.subscribe(
       (inAppBrowser: InAppBrowserObject) => {
@@ -168,12 +164,6 @@ export class BackgroundService {
     });
   }
 
-  openApprovePage(): void {
-    from(this.modalController.create({ component: ApprovePage })).subscribe({
-      next: modal => modal.present()
-    });
-  }
-
   getPendingRequests(): any[] {
     return this.pendingRequests;
   }
@@ -189,6 +179,17 @@ export class BackgroundService {
         error: 'User Cancelled'
       });
     }
+    this.setApprovalRequestId(null);
+  }
+
+  setApprovalRequestId(id: number): void {
+    this.router.navigateByUrl(
+      this.router.createUrlTree(['.'], {
+        relativeTo: this.activatedRoute,
+        queryParams: { approvalRequestId: id },
+        queryParamsHandling: 'merge'
+      })
+    );
   }
 
   sendResponse(requestAction: InPageMessage, id: number, result: any): void {
@@ -231,13 +232,13 @@ export class BackgroundService {
         return InPageMessage.CounterPartyResponse;
     }
   }
-
   navigateByPendingRequest(): void {
+    this.setApprovalRequestId(null);
     const address = this.preferenceService.getSelectedAddress();
     const identity = this.preferenceService.getIdentity(address);
     if (!identity.approvedOrigins.some(value => value === this.origin)) {
       this.inAppBrowserObject.hide();
-      this.openApprovePage();
+      this.setApprovalRequestId(this.pendingRequests[0].id);
     } else {
       if (this.pendingRequests[0].target === '') {
         this.sendResponse(

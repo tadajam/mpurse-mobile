@@ -1,26 +1,24 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { StartPage } from './start.page';
-import { HttpClientModule } from '@angular/common/http';
+import { ExportPage } from './export.page';
 import { TranslateModule, TranslateStore } from '@ngx-translate/core';
 import { IonicStorageModule } from '@ionic/storage';
 import { KeychainTouchId } from '@ionic-native/keychain-touch-id/ngx';
-import { ModalController, AngularDelegate } from '@ionic/angular';
+import { AngularDelegate, ModalController } from '@ionic/angular';
+import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { RouterTestingModule } from '@angular/router/testing';
-import { Clipboard } from '@ionic-native/clipboard/ngx';
 
-describe('StartPage', () => {
-  let component: StartPage;
-  let fixture: ComponentFixture<StartPage>;
+describe('ExportPage', () => {
+  let component: ExportPage;
+  let fixture: ComponentFixture<ExportPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [StartPage],
+      declarations: [ExportPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
-        HttpClientModule,
         RouterTestingModule,
         TranslateModule.forChild(),
         IonicStorageModule.forRoot()
@@ -30,14 +28,14 @@ describe('StartPage', () => {
         KeychainTouchId,
         ModalController,
         AngularDelegate,
-        TranslateStore,
-        Clipboard
+        Clipboard,
+        TranslateStore
       ]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(StartPage);
+    fixture = TestBed.createComponent(ExportPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -37,32 +37,28 @@
 
   <div padding>
     <ion-label>
-      <h1>Export Private Key for {{accountName}}</h1>
+      <h1>Show Private Key for "{{accountName}}"</h1>
     </ion-label>
     <ion-text color="danger">
       <p>
-        <strong>
-          DO NOT share this private key with anyone!
-          This can be used to steal your accounts.
-        </strong>
+        DO NOT share this private key with anyone!
+        This can be used to steal your accounts.
       </p>
     </ion-text>
-    <ion-button expand="block" color="danger">Export</ion-button>
+    <ion-button (click)="openExportPage(false)" expand="block" color="danger">Show</ion-button>
   </div>
 
   <div padding>
     <ion-label>
-      <h1>Reveal Passphrase</h1>
+      <h1>Show Seed Phrase</h1>
     </ion-label>
     <ion-text color="danger">
       <p>
-        <strong>
-          DO NOT share this phrase with anyone!
-          These words can be used to steal all your accounts.
-        </strong>
+        DO NOT share this phrase with anyone!
+        These words can be used to steal all your accounts.
       </p>
     </ion-text>
-    <ion-button expand="block" color="danger">Reveal</ion-button>
+    <ion-button (click)="openExportPage(true)" expand="block" color="danger">Show</ion-button>
   </div>
 
   <div padding>
@@ -71,10 +67,8 @@
     </ion-label>
     <ion-text color="danger">
       <p>
-        <strong>
-          All account and settings will be removed from your wallet.
-          Please make sure you have the original seed phrase before continuing.
-        </strong>
+        All account and settings will be removed from your wallet.
+        Please make sure you have the original seed phrase before continuing.
       </p>
     </ion-text>
     <ion-button (click)="initMpurse()" expand="block" color="danger">Initialize</ion-button>

@@ -29,7 +29,7 @@ export class SignaturePage {
     message: this.messageControl,
     signature: this.signatureControl
   });
-  private subscriptions = new Subscription();
+  subscriptions = new Subscription();
 
   constructor(
     private activatedRoute: ActivatedRoute,

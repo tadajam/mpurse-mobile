@@ -3,7 +3,6 @@ import { KeyringService } from 'src/app/services/keyring.service';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { Identity } from 'src/app/interfaces/identity';
 import { ModalController } from '@ionic/angular';
-import { CommonService } from 'src/app/services/common.service';
 import { from } from 'rxjs';
 import { ImportAccountPage } from '../import-account/import-account.page';
 
@@ -20,8 +19,7 @@ export class AccountsPage {
   constructor(
     private keyringService: KeyringService,
     private preferenceService: PreferenceService,
-    private modalController: ModalController,
-    private commonService: CommonService
+    private modalController: ModalController
   ) {}
 
   ionViewDidEnter(): void {

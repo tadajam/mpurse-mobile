@@ -31,10 +31,6 @@ const routes: Routes = [
         path: 'info',
         loadChildren: '../infomation/infomation.module#InfomationPageModule'
       },
-      // {
-      //   path: 'approve',
-      //   loadChildren: '../approve/approve.module#ApprovePageModule'
-      // },
       {
         path: 'signature',
         loadChildren: '../signature/signature.module#SignaturePageModule'

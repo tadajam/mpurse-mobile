@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()">
+        <ion-icon name="arrow-back" size="large"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{address ? 'Show Private Key' : 'Show Seed Phrase'}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-card *ngIf="privatekey">
+    <ion-card-header>
+      <ion-card-title>Your private key</ion-card-title>
+    </ion-card-header>
+    <img *ngIf="privatekeyQr" [src]="privatekeyQr" />
+    <ion-card-content>
+      <ion-item lines="none">
+        <ion-label text-wrap>{{privatekey}}</ion-label>
+      </ion-item>
+      <ion-row justify-content-center>
+        <ion-chip (click)="copy(privatekey)">
+          <ion-icon name="copy" color="dark"></ion-icon>
+          <ion-label>Copy to clipboard</ion-label>
+        </ion-chip>
+      </ion-row>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="seedPhrase">
+    <ion-card-header>
+      <ion-card-title>Your seed phrase</ion-card-title>
+      <ion-card-subtitle><h4>{{getSeedVersionName(seedPhrase.seedVersion)}}</h4></ion-card-subtitle>
+      <ion-card-subtitle>Derivation Path: {{seedPhrase.basePath}}i</ion-card-subtitle>
+    </ion-card-header>
+    <img *ngIf="seedPhraseQr" [src]="seedPhraseQr" />
+    <ion-card-content>
+      <ion-item lines="none">
+        <ion-label text-wrap>{{seedPhrase.mnemonic}}</ion-label>
+      </ion-item>
+      <ion-row justify-content-center>
+        <ion-chip (click)="copy(seedPhrase.mnemonic)">
+          <ion-icon name="copy" color="dark"></ion-icon>
+          <ion-label>Copy to clipboard</ion-label>
+        </ion-chip>
+      </ion-row>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>

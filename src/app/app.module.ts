@@ -22,6 +22,7 @@ import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { AccountsPageModule } from './pages/accounts/accounts.module';
 import { ApprovePageModule } from './pages/approve/approve.module';
 import { ImportAccountPageModule } from './pages/import-account/import-account.module';
+import { ExportPageModule } from './pages/export/export.module';
 
 export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -58,7 +59,8 @@ export class IonicGestureConfig extends HammerGestureConfig {
     }),
     AccountsPageModule,
     ApprovePageModule,
-    ImportAccountPageModule
+    ImportAccountPageModule,
+    ExportPageModule
   ],
   providers: [
     StatusBar,

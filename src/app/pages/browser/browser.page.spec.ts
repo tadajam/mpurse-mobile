@@ -9,6 +9,7 @@ import { KeychainTouchId } from '@ionic-native/keychain-touch-id/ngx';
 import { ModalController, AngularDelegate } from '@ionic/angular';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { RouterTestingModule } from '@angular/router/testing';
+import { Clipboard } from '@ionic-native/clipboard/ngx';
 
 describe('BrowserPage', () => {
   let component: BrowserPage;
@@ -29,7 +30,8 @@ describe('BrowserPage', () => {
         KeychainTouchId,
         ModalController,
         AngularDelegate,
-        TranslateStore
+        TranslateStore,
+        Clipboard
       ]
     }).compileComponents();
   }));

@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
-import { KeyringService } from 'src/app/services/keyring.service';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { Subscription } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { filter, flatMap } from 'rxjs/operators';
+import { ModalController } from '@ionic/angular';
+import { ApprovePage } from '../approve/approve.page';
 
 @Component({
   selector: 'app-home',
@@ -14,11 +17,23 @@ export class HomePage {
   private subscriptions = new Subscription();
 
   constructor(
-    private keyringService: KeyringService,
-    private preferenceService: PreferenceService
+    private activatedRoute: ActivatedRoute,
+    private preferenceService: PreferenceService,
+    private modalController: ModalController
   ) {}
 
   ionViewDidEnter(): void {
+    this.activatedRoute.queryParams
+      .pipe(
+        filter(params => params.approvalRequestId),
+        flatMap(() => this.modalController.create({ component: ApprovePage }))
+      )
+      .subscribe({
+        next: modal => {
+          modal.present();
+        }
+      });
+
     this.updateAddress(this.preferenceService.getSelectedAddress());
 
     this.subscriptions.add(

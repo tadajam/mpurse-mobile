@@ -2,7 +2,6 @@ import { Component, ViewChild } from '@angular/core';
 import { IonInfiniteScroll, ModalController } from '@ionic/angular';
 import { from, Subscription, Observable, of } from 'rxjs';
 import { PreferenceService } from 'src/app/services/preference.service';
-import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { MpchainAddressInfo } from 'src/app/interfaces/mpchain-address-info';
 import { flatMap, tap, map } from 'rxjs/operators';
 import { MpchainAssetBalance } from 'src/app/interfaces/mpchain-asset-balance';
@@ -36,7 +35,6 @@ export class WalletPage {
 
   constructor(
     private preferenceService: PreferenceService,
-    private clipboard: Clipboard,
     private mpchainService: MpchainService,
     private commonService: CommonService,
     private modalController: ModalController
@@ -147,10 +145,6 @@ export class WalletPage {
     this.isEditable = true;
   }
 
-  onInputTime(name: string): void {
-    this.accountName = name;
-  }
-
   changeAccountName(): void {
     let e = '';
     if (this.accountName === '') {
@@ -163,17 +157,16 @@ export class WalletPage {
       e = 'The account name is a duplicate';
     }
 
-    if (e !== '') {
+    if (e === '') {
       this.preferenceService.setAccountName(this.accountName);
+      this.isEditable = false;
     } else {
       this.commonService.presentErrorToast(e);
     }
   }
 
   copyAddress(): void {
-    from(this.clipboard.copy(this.address)).subscribe({
-      next: () => this.commonService.presentSuccessToast('Copied')
-    });
+    this.commonService.copyString(this.address);
   }
 
   search(): void {

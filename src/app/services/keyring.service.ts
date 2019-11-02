@@ -16,6 +16,7 @@ import { KeyringKey } from '../enum/keyring-key.enum';
 import { MpurseAccount } from '../interfaces/mpurse-account';
 import { Identity } from '../interfaces/identity';
 import { MpchainService } from './mpchain.service';
+import QRCode from 'qrcode';
 
 interface Vault {
   version: number;
@@ -134,8 +135,6 @@ export class KeyringService {
     );
   }
 
-  // getHdkey() {}
-
   // unlock() {}
 
   unlockWithTouchId(): Observable<void> {
@@ -220,7 +219,40 @@ export class KeyringService {
     });
   }
 
-  // getPrivatekey() {}
+  getPrivatekey(address: string): string {
+    return this.keyring.getPrivatekey(address);
+  }
+
+  getPrivatekeyQr(address: string): Observable<string> {
+    return from(
+      QRCode.toDataURL(this.getPrivatekey(address), {
+        errorCorrectionLevel: 'H'
+      })
+    ) as Observable<string>;
+  }
+
+  getHdkey(): Hdkey {
+    return this.keyring.getHdkey();
+  }
+
+  getSeedPhraseQr(): Observable<string> {
+    return from(QRCode.toDataURL(this.getHdkey().mnemonic)) as Observable<
+      string
+    >;
+  }
+
+  getSeedVersionName(seedVersion: string): string {
+    switch (seedVersion) {
+      case 'Electrum1':
+        return 'Electrum Seed Version 1';
+      case 'Electrum2':
+        return 'Electrum Seed Version 2';
+      case 'Bip39':
+        return 'Bip39';
+      default:
+        return 'Undefined';
+    }
+  }
 
   // removeAccount() {}
 

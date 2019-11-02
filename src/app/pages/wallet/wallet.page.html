@@ -27,10 +27,9 @@
   <ng-template #edit>
     <ion-item lines="none" text-center>
       <ion-input
-        (input)="onInputTime($event.target.value)"
         (ionBlur)="changeAccountName()"
         type="text"
-        [value]="accountName"
+        [(ngModel)]="accountName"
         [size]="accountName.length"
         class="edit-account-name">
       </ion-input>
@@ -44,9 +43,13 @@
     </ion-item>
   </ng-template>
   
-  <ion-item (click)="copyAddress()" lines="none" class="address" text-center button margin-horizontal>
-    <ion-label ><h2>{{address}}</h2></ion-label>
-  </ion-item>
+  <ion-row justify-content-center>
+    <ion-item lines="none">
+      <ion-chip (click)="copyAddress()" color="secondary">
+        <ion-label><h2>{{address}}</h2></ion-label>
+      </ion-chip>
+    </ion-item>
+  </ion-row>
 
   <ion-list>
     <ion-list-header>

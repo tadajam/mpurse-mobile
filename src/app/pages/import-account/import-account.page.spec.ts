@@ -9,6 +9,7 @@ import { TranslateModule, TranslateStore } from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
 import { ModalController, AngularDelegate, IonicModule } from '@ionic/angular';
 import { RouterTestingModule } from '@angular/router/testing';
+import { Clipboard } from '@ionic-native/clipboard/ngx';
 
 describe('ImportAccountPage', () => {
   let component: ImportAccountPage;
@@ -30,7 +31,8 @@ describe('ImportAccountPage', () => {
         KeychainTouchId,
         ModalController,
         AngularDelegate,
-        TranslateStore
+        TranslateStore,
+        Clipboard
       ]
     }).compileComponents();
   }));
