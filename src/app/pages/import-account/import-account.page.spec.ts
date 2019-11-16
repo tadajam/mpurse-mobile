@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ModalController, AngularDelegate, IonicModule } from '@ionic/angular';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
 describe('ImportAccountPage', () => {
   let component: ImportAccountPage;
@@ -32,7 +33,8 @@ describe('ImportAccountPage', () => {
         ModalController,
         AngularDelegate,
         TranslateStore,
-        Clipboard
+        Clipboard,
+        BarcodeScanner
       ]
     }).compileComponents();
   }));

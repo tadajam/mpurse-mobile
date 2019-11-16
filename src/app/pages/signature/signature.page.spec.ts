@@ -11,6 +11,7 @@ import { ModalController, AngularDelegate, IonicModule } from '@ionic/angular';
 import { RouterTestingModule } from '@angular/router/testing';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
 describe('SignaturePage', () => {
   let component: SignaturePage;
@@ -34,7 +35,8 @@ describe('SignaturePage', () => {
         ModalController,
         AngularDelegate,
         Clipboard,
-        TranslateStore
+        TranslateStore,
+        BarcodeScanner
       ]
     }).compileComponents();
   }));

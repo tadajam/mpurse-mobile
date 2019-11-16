@@ -23,6 +23,7 @@
   （　 _)　　　　　 ＼__つ　　　 ／ >　
     </pre>
   </ion-card>
+  <h3 text-center>Please use this app at your own risk.</h3>
 </ion-content>
 
 <ion-footer>  
@@ -33,8 +34,12 @@
     CREATE NEW
     <ion-icon name="add" slot="end"></ion-icon>
   </ion-button>
-  <ion-button expand="block" color="secondary" margin>
-    IMPORT YOUR WALLET
+  <ion-button (click)="generateCustomSeed()" expand="block" color="secondary" margin>
+    CUSTOM SEED
+    <ion-icon name="build" slot="end"></ion-icon>
+  </ion-button>
+  <ion-button (click)="importExistingSeed()" expand="block" color="secondary" margin>
+    IMPORT
     <ion-icon name="download" slot="end"></ion-icon>
   </ion-button>
 </ion-footer>

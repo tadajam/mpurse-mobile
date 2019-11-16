@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import { ToastController } from '@ionic/angular';
-import { from } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { filter, map } from 'rxjs/operators';
+import QRCode from 'qrcode';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +12,8 @@ import { Clipboard } from '@ionic-native/clipboard/ngx';
 export class CommonService {
   constructor(
     private clipboard: Clipboard,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private barcodeScanner: BarcodeScanner
   ) {}
 
   private presentToast(message: string, css: string): void {
@@ -38,5 +42,20 @@ export class CommonService {
     from(this.clipboard.copy(targetStr)).subscribe({
       next: () => this.presentSuccessToast('Copied')
     });
+  }
+
+  scanQrcode(): Observable<string> {
+    return from(this.barcodeScanner.scan()).pipe(
+      filter(barcodeData => !barcodeData.cancelled),
+      map(barcodeData => barcodeData.text)
+    );
+  }
+
+  createQrcode(targetStr: string): Observable<string> {
+    return from(
+      QRCode.toDataURL(targetStr, {
+        errorCorrectionLevel: 'H'
+      })
+    ) as Observable<string>;
   }
 }

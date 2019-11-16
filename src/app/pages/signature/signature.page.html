@@ -44,8 +44,8 @@
         autoGrow="true"
         (paste)="signatureControl.setValue('')"
         (cut)="signatureControl.setValue('')"
-        (keyup)="signatureControl.setValue('')"
-      ></ion-textarea>
+        (keyup)="signatureControl.setValue('')">
+      </ion-textarea>
     </ion-item>
 
     <ion-item *ngIf="signatureControl.value">
@@ -53,8 +53,8 @@
       <ion-textarea
         formControlName="signature"
         autoGrow="true"
-        readonly="true"
-      ></ion-textarea>
+        readonly="true">
+      </ion-textarea>
     </ion-item>
   </form>
 </ion-content>

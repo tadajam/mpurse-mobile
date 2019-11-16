@@ -11,7 +11,12 @@
 
 <ion-content>
   <ion-list>
-    <ion-item *ngFor="let identity of identities" (click)="changeAddress(identity.address)" lines="full" button>
+    <ion-item
+      *ngFor="let identity of identities"
+      (click)="changeAddress(identity.address)"
+      (press)="identity.isImport ? removeAccount(identity.address) : {}"
+      lines="full"
+      button>
       <ion-row justify-content-center>
         <app-ident-icon [address]="identity.address" diameter="40" margin-end></app-ident-icon>
       </ion-row>

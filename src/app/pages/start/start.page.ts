@@ -3,6 +3,7 @@ import { KeyringService } from 'src/app/services/keyring.service';
 import { Router } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { CommonService } from 'src/app/services/common.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-start',
@@ -18,22 +19,47 @@ export class StartPage {
     private commonService: CommonService
   ) {}
 
+  existsVault(): Observable<void> {
+    return this.keyringService.existsVault().pipe(
+      map(exists => {
+        if (exists) {
+          throw new Error('An account already exists.');
+        }
+      })
+    );
+  }
+
   createNew(): void {
     this.isDisable = true;
-    this.keyringService
-      .existsVault()
-      .pipe(
-        map((exists: boolean) => {
-          if (!exists) {
-            this.keyringService.createDefaultKeyring();
-          } else {
-            throw new Error('An account already exists.');
-          }
-        })
-      )
+    this.existsVault()
+      .pipe(map(() => this.keyringService.createDefaultKeyring()))
       .subscribe({
         next: () => this.router.navigateByUrl('/'),
         error: error => this.commonService.presentErrorToast(error.toString())
       });
+  }
+
+  generateCustomSeed(): void {
+    this.existsVault().subscribe({
+      next: () =>
+        this.router.navigateByUrl(
+          this.router.createUrlTree(['/password'], {
+            queryParams: { custom: true }
+          })
+        ),
+      error: error => this.commonService.presentErrorToast(error.toString())
+    });
+  }
+
+  importExistingSeed(): void {
+    this.existsVault().subscribe({
+      next: () =>
+        this.router.navigateByUrl(
+          this.router.createUrlTree(['/password'], {
+            queryParams: { import: true }
+          })
+        ),
+      error: error => this.commonService.presentErrorToast(error.toString())
+    });
   }
 }

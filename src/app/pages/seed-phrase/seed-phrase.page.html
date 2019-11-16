@@ -1,0 +1,70 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Your Seed Phrase</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="seedForm" (ngSubmit)="test()">
+    <ion-item>
+      <ion-label position="floating">Seed Type</ion-label>
+      <ion-select formControlName="seedType" (ionChange)="changeType()" interface="action-sheet" ngDefaultControl>
+        <ion-select-option
+          *ngFor="let t of seedTypes"
+          [value]="t.typeValue">
+          {{t.typeString}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item *ngIf="(!existsVault) && seedTypeControl.value === 'Bip39'">
+      <ion-label position="floating">Seed Language</ion-label>
+      <ion-select formControlName="seedLanguage" (ionChange)="changeLang()" interface="action-sheet" ngDefaultControl>
+        <ion-select-option *ngFor="let l of languages" [value]="l">
+          {{l}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Seed Phrase</ion-label>
+      <ion-textarea formControlName="seedPhrase" [readonly]="!import" autoGrow="true">
+      </ion-textarea>
+      <ion-button *ngIf="!existsVault && custom" (click)="generateRandomMnemonic()" slot="end" fill="clear" class="margin-auto">
+        <ion-icon name="refresh" color="primary" class="input-icon"></ion-icon>
+      </ion-button>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating">Base Derivation Path</ion-label>
+      <ion-input
+        formControlName="basePath"
+        [readonly]="isBasePathReadonly"
+        [color]="isBasePathReadonly ? 'medium' : 'dark'">
+      </ion-input>
+      <ion-button *ngIf="!existsVault && isBasePathReadonly" (click)="requestChagne()" slot="end" fill="clear" class="margin-auto">
+        <ion-icon name="create" color="primary" class="input-icon"></ion-icon>
+      </ion-button>
+    </ion-item>
+
+    <ion-item lines="none">
+      <ion-label>I have written down my seed phrase.</ion-label>
+      <ion-checkbox slot="end" formControlName="isSaved"></ion-checkbox>
+    </ion-item>
+  </form>
+
+
+</ion-content>
+
+<ion-footer>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button (click)="cancel()" expand="block" color="light">CANCEL</ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button (click)="finishBackup()" [disabled]="!seedForm.valid" expand="block" color="primary">OK</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

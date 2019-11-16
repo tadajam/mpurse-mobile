@@ -3,7 +3,6 @@ import { ModalController } from '@ionic/angular';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { KeyringService } from 'src/app/services/keyring.service';
-import { Location } from '@angular/common';
 import { CommonService } from 'src/app/services/common.service';
 
 @Component({
@@ -24,12 +23,17 @@ export class ImportAccountPage {
     private keyringService: KeyringService,
     private modalController: ModalController,
     private preferenceService: PreferenceService,
-    private location: Location,
     private commonService: CommonService
   ) {}
 
   ionViewDidEnter(): void {
     this.nameControl.setValue(this.preferenceService.incrementAccountName());
+  }
+
+  scanQrcode(): void {
+    this.commonService.scanQrcode().subscribe({
+      next: text => this.privatekeyControl.setValue(text)
+    });
   }
 
   closeModal(): void {
@@ -42,7 +46,7 @@ export class ImportAccountPage {
       .subscribe({
         next: (address: string) => {
           this.preferenceService.changeAddress(address);
-          this.location.back();
+          this.closeModal();
         },
         error: error => this.commonService.presentErrorToast(error.toString())
       });

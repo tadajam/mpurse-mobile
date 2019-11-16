@@ -17,6 +17,14 @@ const routes: Routes = [
     path: 'login',
     loadChildren: './pages/login/login.module#LoginPageModule'
   },
+  {
+    path: 'password',
+    loadChildren: './pages/password/password.module#PasswordPageModule'
+  },
+  {
+    path: 'seed-phrase',
+    loadChildren: './pages/seed-phrase/seed-phrase.module#SeedPhrasePageModule'
+  },
   { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
 

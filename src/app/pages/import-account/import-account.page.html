@@ -10,24 +10,31 @@
 </ion-header>
 
 <ion-content>
+  <form [formGroup]="importForm" (ngSubmit)="importAccount()">
+    <ion-item>
+      <ion-label position="floating">Account Name</ion-label>
+      <ion-input type="text" formControlName="name"></ion-input>
+    </ion-item>
 
-    <form [formGroup]="importForm" (ngSubmit)="importAccount()">
-      <ion-item>
-        <ion-label position="floating">Account Name</ion-label>
-        <ion-input type="text" formControlName="name"></ion-input>
-      </ion-item>
-
-      <ion-item>
-        <ion-label position="floating">Private Key(WIF)</ion-label>
-        <ion-input type="password" formControlName="privatekey"></ion-input>
-      </ion-item>
-    </form>
-
+    <ion-item>
+      <ion-label position="floating">Private Key(WIF)</ion-label>
+      <ion-input type="password" placeholder="Your private key" formControlName="privatekey"></ion-input>
+      <ion-button (click)="scanQrcode()" slot="end" fill="clear" class="margin-auto">
+        <ion-icon name="qr-scanner" color="primary" class="get-scanner-icon"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </form>
 </ion-content>
 
 <ion-footer>
-  <ion-button (click)="importAccount()" expand="block" color="primary">
-    Import Account
-    <ion-icon name="download" slot="end"></ion-icon>
-  </ion-button>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button (click)="importAccount()" expand="block" color="primary">
+          Import Account
+          <ion-icon name="download" slot="end"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-footer>

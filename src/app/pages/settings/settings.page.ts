@@ -23,7 +23,7 @@ export class SettingsPage {
     private router: Router,
     private keyringService: KeyringService,
     private preferenceService: PreferenceService,
-    public alertController: AlertController,
+    private alertController: AlertController,
     private modalController: ModalController
   ) {}
 
@@ -58,7 +58,7 @@ export class SettingsPage {
     const buttons: any[] = [
       { text: 'CANCEL', role: 'cancel' },
       {
-        text: 'Initialize',
+        text: 'INITIALIZE',
         handler: (): void => {
           this.keyringService
             .purgeVault()

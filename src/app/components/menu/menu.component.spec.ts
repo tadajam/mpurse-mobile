@@ -4,6 +4,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { MenuComponent } from './menu.component';
 import { ModalController, AngularDelegate } from '@ionic/angular';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
 describe('MenuComponent', () => {
   let component: MenuComponent;
@@ -13,7 +14,7 @@ describe('MenuComponent', () => {
     TestBed.configureTestingModule({
       declarations: [MenuComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [ModalController, AngularDelegate, Clipboard]
+      providers: [ModalController, AngularDelegate, Clipboard, BarcodeScanner]
     }).compileComponents();
   }));
 

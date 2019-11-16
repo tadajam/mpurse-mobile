@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { KeyringService } from 'src/app/services/keyring.service';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { Identity } from 'src/app/interfaces/identity';
-import { ModalController } from '@ionic/angular';
+import { ModalController, AlertController } from '@ionic/angular';
 import { from } from 'rxjs';
 import { ImportAccountPage } from '../import-account/import-account.page';
 
@@ -19,7 +19,8 @@ export class AccountsPage {
   constructor(
     private keyringService: KeyringService,
     private preferenceService: PreferenceService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    public alertController: AlertController
   ) {}
 
   ionViewDidEnter(): void {
@@ -48,6 +49,26 @@ export class AccountsPage {
       next: modal => modal.present()
     });
     this.isDisable = false;
+  }
+
+  removeAccount(address: string): void {
+    const buttons: any[] = [
+      { text: 'CANCEL', role: 'cancel' },
+      {
+        text: 'REMOVE',
+        handler: (): void => {
+          this.keyringService.removeAccount(address);
+          this.closeModal();
+        }
+      }
+    ];
+    from(
+      this.alertController.create({
+        header: 'REMOVE',
+        message: 'Are you sure you want to remove this account?',
+        buttons: buttons
+      })
+    ).subscribe({ next: alert => alert.present() });
   }
 
   closeModal(): void {

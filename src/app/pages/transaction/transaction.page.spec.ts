@@ -10,6 +10,7 @@ import { ModalController, AngularDelegate, IonicModule } from '@ionic/angular';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { KeychainTouchId } from '@ionic-native/keychain-touch-id/ngx';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
 describe('TransactionPage', () => {
   let component: TransactionPage;
@@ -32,7 +33,8 @@ describe('TransactionPage', () => {
         ModalController,
         AngularDelegate,
         Clipboard,
-        TranslateStore
+        TranslateStore,
+        BarcodeScanner
       ]
     }).compileComponents();
   }));

@@ -20,6 +20,8 @@ export class PreferenceService {
 
   private identities: Identity[] = [];
 
+  private useBiometrics = false;
+
   constructor(
     private storage: Storage,
     private translateService: TranslateService
@@ -54,6 +56,12 @@ export class PreferenceService {
       .subscribe({
         next: (identities: Identity[]) => (this.identities = identities)
       });
+
+    from(this.storage.get(PreferenceKey.UseBiometrics))
+      .pipe(map(useBiometrics => useBiometrics === 'true'))
+      .subscribe({
+        next: useBiometrics => (this.useBiometrics = useBiometrics)
+      });
   }
 
   syncAccount(accounts: MpurseAccount[]): void {
@@ -87,6 +95,13 @@ export class PreferenceService {
         this.identities = [];
       })
     );
+  }
+
+  // finishedBackup
+
+  finishBackup(): void {
+    this.finishedBackup = true;
+    this.storage.set(PreferenceKey.FinishedBackup, this.finishedBackup);
   }
 
   // selectedAddress
@@ -138,6 +153,9 @@ export class PreferenceService {
     this.identities = this.identities.filter(
       value => value.address !== address
     );
+    if (this.selectedAddress === address) {
+      this.changeAddress(this.identities[0].address);
+    }
     this.saveIdentityes();
   }
 
@@ -169,6 +187,7 @@ export class PreferenceService {
     return identity.approvedOrigins.some(value => value === origin);
   }
 
+  // language
   getLanguage(): string {
     return this.language;
   }
@@ -177,5 +196,21 @@ export class PreferenceService {
     this.translateService.use(lang);
     this.language = lang;
     this.storage.set(PreferenceKey.Language, lang);
+  }
+
+  // useBiometrics
+  private saveUseBiometrics(): void {
+    this.storage.set(PreferenceKey.UseBiometrics, this.useBiometrics);
+  }
+
+  getUseBiometrics(): boolean {
+    return this.useBiometrics;
+  }
+
+  setUseBiometrics(useBiometrics: boolean): void {
+    if (this.useBiometrics !== useBiometrics) {
+      this.useBiometrics = useBiometrics;
+      this.saveUseBiometrics();
+    }
   }
 }

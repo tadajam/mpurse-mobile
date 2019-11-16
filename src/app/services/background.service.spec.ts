@@ -5,7 +5,6 @@ import { TranslateModule, TranslateStore } from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
-import { ModalController, AngularDelegate } from '@ionic/angular';
 import { RouterTestingModule } from '@angular/router/testing';
 
 describe('BackgroundService', () => {
@@ -17,12 +16,7 @@ describe('BackgroundService', () => {
         TranslateModule.forChild(),
         IonicStorageModule.forRoot()
       ],
-      providers: [
-        InAppBrowser,
-        ModalController,
-        AngularDelegate,
-        TranslateStore
-      ]
+      providers: [InAppBrowser, TranslateStore]
     })
   );
 

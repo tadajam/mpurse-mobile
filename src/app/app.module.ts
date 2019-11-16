@@ -23,6 +23,7 @@ import { AccountsPageModule } from './pages/accounts/accounts.module';
 import { ApprovePageModule } from './pages/approve/approve.module';
 import { ImportAccountPageModule } from './pages/import-account/import-account.module';
 import { ExportPageModule } from './pages/export/export.module';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
 export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -69,7 +70,8 @@ export class IonicGestureConfig extends HammerGestureConfig {
     { provide: HAMMER_GESTURE_CONFIG, useClass: IonicGestureConfig },
     InAppBrowser,
     KeychainTouchId,
-    Clipboard
+    Clipboard,
+    BarcodeScanner
   ],
   bootstrap: [AppComponent]
 })

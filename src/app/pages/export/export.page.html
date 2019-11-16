@@ -29,19 +29,19 @@
     </ion-card-content>
   </ion-card>
 
-  <ion-card *ngIf="seedPhrase">
+  <ion-card *ngIf="hdKey">
     <ion-card-header>
       <ion-card-title>Your seed phrase</ion-card-title>
-      <ion-card-subtitle><h4>{{getSeedVersionName(seedPhrase.seedVersion)}}</h4></ion-card-subtitle>
-      <ion-card-subtitle>Derivation Path: {{seedPhrase.basePath}}i</ion-card-subtitle>
+      <ion-card-subtitle><h4>{{getSeedTypeName(hdKey.seedType)}}</h4></ion-card-subtitle>
+      <ion-card-subtitle>Derivation Path: {{hdKey.basePath}}i</ion-card-subtitle>
     </ion-card-header>
     <img *ngIf="seedPhraseQr" [src]="seedPhraseQr" />
     <ion-card-content>
       <ion-item lines="none">
-        <ion-label text-wrap>{{seedPhrase.mnemonic}}</ion-label>
+        <ion-label text-wrap>{{hdKey.mnemonic}}</ion-label>
       </ion-item>
       <ion-row justify-content-center>
-        <ion-chip (click)="copy(seedPhrase.mnemonic)">
+        <ion-chip (click)="copy(hdKey.mnemonic)">
           <ion-icon name="copy" color="dark"></ion-icon>
           <ion-label>Copy to clipboard</ion-label>
         </ion-chip>

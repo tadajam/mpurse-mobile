@@ -16,7 +16,7 @@ export class Keyring {
     this.bitcore = new BitcoreUtil();
 
     this.hdkey = {
-      seedVersion: '',
+      seedType: '',
       basePath: '',
       mnemonic: '',
       numberOfAccounts: 0
@@ -32,7 +32,7 @@ export class Keyring {
     this.accounts = [];
     const hdPrivateKey = this.bitcore.getHDPrivateKey(
       this.hdkey.mnemonic,
-      this.hdkey.seedVersion
+      this.hdkey.seedType
     );
     for (let i = 0; i < this.hdkey.numberOfAccounts; i++) {
       this.setAccount(
@@ -86,7 +86,7 @@ export class Keyring {
   addAccount(): MpurseAccount {
     const hdPrivateKey = this.bitcore.getHDPrivateKey(
       this.hdkey.mnemonic,
-      this.hdkey.seedVersion
+      this.hdkey.seedType
     );
     const privatekey = this.bitcore.getPrivateKey(
       hdPrivateKey,
@@ -130,8 +130,8 @@ export class Keyring {
     );
   }
 
-  generateRandomMnemonic(seedVersion: string, seedLanguage: string): string {
-    return this.bitcore.generateRandomMnemonic(seedVersion, seedLanguage);
+  generateRandomMnemonic(seedType: string, seedLanguage: string): string {
+    return this.bitcore.generateRandomMnemonic(seedType, seedLanguage);
   }
 
   decodeBase58(address: string): Uint8Array {

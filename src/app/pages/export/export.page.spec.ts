@@ -9,6 +9,7 @@ import { AngularDelegate, ModalController } from '@ionic/angular';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { RouterTestingModule } from '@angular/router/testing';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
 describe('ExportPage', () => {
   let component: ExportPage;
@@ -29,7 +30,8 @@ describe('ExportPage', () => {
         ModalController,
         AngularDelegate,
         Clipboard,
-        TranslateStore
+        TranslateStore,
+        BarcodeScanner
       ]
     }).compileComponents();
   }));

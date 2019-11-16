@@ -10,6 +10,7 @@ import { ModalController, AngularDelegate } from '@ionic/angular';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
 describe('StartPage', () => {
   let component: StartPage;
@@ -31,7 +32,8 @@ describe('StartPage', () => {
         ModalController,
         AngularDelegate,
         TranslateStore,
-        Clipboard
+        Clipboard,
+        BarcodeScanner
       ]
     }).compileComponents();
   }));

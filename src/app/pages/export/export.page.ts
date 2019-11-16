@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { KeyringService } from 'src/app/services/keyring.service';
 import { CommonService } from 'src/app/services/common.service';
@@ -9,12 +9,12 @@ import { Hdkey } from 'src/app/interfaces/hdkey';
   templateUrl: './export.page.html',
   styleUrls: ['./export.page.scss']
 })
-export class ExportPage implements OnInit {
+export class ExportPage {
   @Input() address: string;
   privatekey: string;
   privatekeyQr: string;
 
-  seedPhrase: Hdkey;
+  hdKey: Hdkey;
   seedPhraseQr: string;
 
   constructor(
@@ -23,16 +23,16 @@ export class ExportPage implements OnInit {
     private commonService: CommonService
   ) {}
 
-  ngOnInit(): void {
+  ionViewDidEnter(): void {
     if (this.address) {
       this.privatekey = this.keyringService.getPrivatekey(this.address);
-      this.keyringService
-        .getPrivatekeyQr(this.address)
+      this.commonService
+        .createQrcode(this.privatekey)
         .subscribe({ next: qr => (this.privatekeyQr = qr) });
     } else {
-      this.seedPhrase = this.keyringService.getHdkey();
-      this.keyringService
-        .getSeedPhraseQr()
+      this.hdKey = this.keyringService.getHdkey();
+      this.commonService
+        .createQrcode(this.hdKey.mnemonic)
         .subscribe({ next: qr => (this.seedPhraseQr = qr) });
     }
   }
@@ -41,8 +41,8 @@ export class ExportPage implements OnInit {
     this.modalController.dismiss();
   }
 
-  getSeedVersionName(seedVersion: string): string {
-    return this.keyringService.getSeedVersionName(seedVersion);
+  getSeedTypeName(seedType: string): string {
+    return this.keyringService.getSeedTypeName(seedType);
   }
 
   copy(targetStr: string): void {

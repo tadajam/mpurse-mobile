@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { Keyring } from '../classes/keyring';
 import { PreferenceService } from './preference.service';
-import { SeedVersion } from '../enum/seed-version.enum';
+import { SeedType } from '../enum/seed-type.enum';
 import { SeedLanguage } from '../enum/seed-language.enum';
 import * as jazzicon from 'jazzicon';
 import { Observable, from, of, Observer } from 'rxjs';
@@ -15,8 +15,6 @@ import { Hdkey } from '../interfaces/hdkey';
 import { KeyringKey } from '../enum/keyring-key.enum';
 import { MpurseAccount } from '../interfaces/mpurse-account';
 import { Identity } from '../interfaces/identity';
-import { MpchainService } from './mpchain.service';
-import QRCode from 'qrcode';
 
 interface Vault {
   version: number;
@@ -35,11 +33,32 @@ export class KeyringService {
   constructor(
     private storage: Storage,
     private keychainTouchId: KeychainTouchId,
-    private preferenceService: PreferenceService,
-    private mpchainService: MpchainService
+    private preferenceService: PreferenceService
   ) {
     this.keychainTouchId.setLocale(this.preferenceService.getLanguage());
     this.keyring = new Keyring();
+  }
+
+  setPassword(pw: string): Observable<void> {
+    return this.existsVault().pipe(
+      map(exists => {
+        this.password = pw;
+        if (exists) {
+          this.saveVault();
+        }
+      })
+    );
+  }
+
+  savePasswordWithTouchId(pw: string): Observable<void> {
+    return from(this.keychainTouchId.isAvailable()).pipe(
+      flatMap(() => this.keychainTouchId.save(KeyringKey.MpurseUser, pw)),
+      flatMap(() => this.setPassword(pw))
+    );
+  }
+
+  isAvailableKeychainTouchId(): Observable<any> {
+    return from(this.keychainTouchId.isAvailable());
   }
 
   private saveVault(): void {
@@ -103,17 +122,36 @@ export class KeyringService {
     this.preferenceService.syncAccount(this.keyring.getAccounts());
   }
 
+  generateRandomMnemonic(seedType: SeedType, seedLanguage: string): string {
+    return this.keyring.generateRandomMnemonic(seedType, seedLanguage);
+  }
+
   createDefaultKeyring(): void {
     this.password = '';
     const mnemonic = this.keyring.generateRandomMnemonic(
-      SeedVersion.Bip39,
+      SeedType.Bip39,
       SeedLanguage.ENGLISH
     );
 
     const hdkey: Hdkey = {
       mnemonic: mnemonic,
-      seedVersion: SeedVersion.Bip39,
+      seedType: SeedType.Bip39,
       basePath: "m/44'/22'/0'/0/",
+      numberOfAccounts: 1
+    };
+
+    this.createKeyring({ hdkey: hdkey, privatekeys: [] });
+  }
+
+  createCustomKeyring(
+    seedType: SeedType,
+    mnemonic: string,
+    basePah: string
+  ): void {
+    const hdkey: Hdkey = {
+      mnemonic: mnemonic,
+      seedType: seedType,
+      basePath: basePah,
       numberOfAccounts: 1
     };
 
@@ -179,10 +217,6 @@ export class KeyringService {
     );
   }
 
-  // getAccounts(): MpurseAccount[] {
-  //   return this.keyring.getAccounts();
-  // }
-
   addAccount(): string {
     const account = this.keyring.addAccount();
 
@@ -219,30 +253,22 @@ export class KeyringService {
     });
   }
 
-  getPrivatekey(address: string): string {
-    return this.keyring.getPrivatekey(address);
+  removeAccount(address: string): void {
+    this.keyring.removeAccount(address);
+    this.saveVault();
+    this.preferenceService.removeIdentity(address);
   }
 
-  getPrivatekeyQr(address: string): Observable<string> {
-    return from(
-      QRCode.toDataURL(this.getPrivatekey(address), {
-        errorCorrectionLevel: 'H'
-      })
-    ) as Observable<string>;
+  getPrivatekey(address: string): string {
+    return this.keyring.getPrivatekey(address);
   }
 
   getHdkey(): Hdkey {
     return this.keyring.getHdkey();
   }
 
-  getSeedPhraseQr(): Observable<string> {
-    return from(QRCode.toDataURL(this.getHdkey().mnemonic)) as Observable<
-      string
-    >;
-  }
-
-  getSeedVersionName(seedVersion: string): string {
-    switch (seedVersion) {
+  getSeedTypeName(seedType: string): string {
+    switch (seedType) {
       case 'Electrum1':
         return 'Electrum Seed Version 1';
       case 'Electrum2':
@@ -253,8 +279,6 @@ export class KeyringService {
         return 'Undefined';
     }
   }
-
-  // removeAccount() {}
 
   signMessage(message: string): string {
     return this.keyring.signMessage(

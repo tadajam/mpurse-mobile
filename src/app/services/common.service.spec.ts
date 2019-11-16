@@ -1,15 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 
 import { CommonService } from './common.service';
-import { ModalController, AngularDelegate } from '@ionic/angular';
-import { TranslateModule } from '@ngx-translate/core';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
 describe('CommonService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      imports: [TranslateModule.forChild()],
-      providers: [ModalController, AngularDelegate, Clipboard]
+      imports: [],
+      providers: [Clipboard, BarcodeScanner]
     })
   );
 

@@ -1,5 +1,5 @@
 export interface Hdkey {
-  seedVersion: string;
+  seedType: string;
   basePath: string;
   mnemonic: string;
   numberOfAccounts: number;
