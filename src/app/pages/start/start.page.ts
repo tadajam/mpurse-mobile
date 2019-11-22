@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { CommonService } from 'src/app/services/common.service';
 import { Observable } from 'rxjs';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-start',
@@ -16,7 +17,8 @@ export class StartPage {
   constructor(
     private router: Router,
     private keyringService: KeyringService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private navController: NavController
   ) {}
 
   existsVault(): Observable<void> {
@@ -34,7 +36,7 @@ export class StartPage {
     this.existsVault()
       .pipe(map(() => this.keyringService.createDefaultKeyring()))
       .subscribe({
-        next: () => this.router.navigateByUrl('/'),
+        next: () => this.navController.navigateRoot('/'),
         error: error => this.commonService.presentErrorToast(error.toString())
       });
   }

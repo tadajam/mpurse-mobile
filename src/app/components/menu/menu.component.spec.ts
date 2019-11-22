@@ -5,6 +5,10 @@ import { MenuComponent } from './menu.component';
 import { ModalController, AngularDelegate } from '@ionic/angular';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { RouterTestingModule } from '@angular/router/testing';
+import { IonicStorageModule } from '@ionic/storage';
+import { KeychainTouchId } from '@ionic-native/keychain-touch-id/ngx';
+import { TranslateModule, TranslateStore } from '@ngx-translate/core';
 
 describe('MenuComponent', () => {
   let component: MenuComponent;
@@ -14,7 +18,19 @@ describe('MenuComponent', () => {
     TestBed.configureTestingModule({
       declarations: [MenuComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [ModalController, AngularDelegate, Clipboard, BarcodeScanner]
+      imports: [
+        RouterTestingModule,
+        TranslateModule.forChild(),
+        IonicStorageModule.forRoot()
+      ],
+      providers: [
+        ModalController,
+        AngularDelegate,
+        Clipboard,
+        BarcodeScanner,
+        KeychainTouchId,
+        TranslateStore
+      ]
     }).compileComponents();
   }));
 

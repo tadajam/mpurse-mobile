@@ -1,5 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
-import { IonInfiniteScroll, ModalController } from '@ionic/angular';
+import {
+  IonInfiniteScroll,
+  ModalController,
+  NavController
+} from '@ionic/angular';
 import { from, Subscription, Observable, of } from 'rxjs';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { MpchainAddressInfo } from 'src/app/interfaces/mpchain-address-info';
@@ -10,6 +14,7 @@ import { FormControl, Validators } from '@angular/forms';
 import { MpchainService } from 'src/app/services/mpchain.service';
 import { AccountsPage } from '../accounts/accounts.page';
 import { CommonService } from 'src/app/services/common.service';
+import { Decimal } from 'decimal.js';
 
 @Component({
   selector: 'app-wallet',
@@ -19,6 +24,8 @@ import { CommonService } from 'src/app/services/common.service';
 export class WalletPage {
   @ViewChild('infinite', { static: false }) infiniteScroll: IonInfiniteScroll;
   loading = false;
+  shouldBackup = false;
+
   address = '';
   accountName = '';
   isEditable = false;
@@ -37,7 +44,8 @@ export class WalletPage {
     private preferenceService: PreferenceService,
     private mpchainService: MpchainService,
     private commonService: CommonService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private navController: NavController
   ) {}
 
   ionViewDidEnter(): void {
@@ -46,6 +54,7 @@ export class WalletPage {
     this.updateAddress(this.preferenceService.getSelectedAddress()).subscribe({
       next: () => {
         this.loading = false;
+        this.checkBackup();
       },
       error: error => this.commonService.presentErrorToast(error.toString())
     });
@@ -59,6 +68,7 @@ export class WalletPage {
         .subscribe({
           next: () => {
             this.loading = false;
+            this.checkBackup();
           },
           error: error => this.commonService.presentErrorToast(error.toString())
         })
@@ -80,6 +90,10 @@ export class WalletPage {
   updateBalance(): Observable<void> {
     return this.mpchainService.getAddressInfo(this.address).pipe(
       map((info: MpchainAddressInfo) => {
+        if (new Decimal(info.mona_balance).toNumber() > 0) {
+          this.shouldBackup = true;
+        }
+
         this.addressInfo = info;
         this.monaBalance = {
           asset: 'MONA',
@@ -102,6 +116,9 @@ export class WalletPage {
         this.mpchainService.getBalances(this.address, 1, this.limit)
       ),
       map((balances: MpchainBalance) => {
+        if (balances.total > 0) {
+          this.shouldBackup = true;
+        }
         this.page = 1;
         this.total = balances.total;
         this.assetBalances = balances.data;
@@ -110,12 +127,20 @@ export class WalletPage {
     );
   }
 
+  checkBackup(): void {
+    if (!this.preferenceService.getFinishedBackup() && this.shouldBackup) {
+      this.preferenceService.deferBackup();
+      this.navController.navigateRoot('/password');
+    }
+  }
+
   refresh(event: any): void {
     this.loading = true;
     this.updateBalance().subscribe({
       next: () => {
         event.target.complete();
         this.loading = false;
+        this.checkBackup();
       }
     });
   }

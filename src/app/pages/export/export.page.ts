@@ -3,6 +3,7 @@ import { ModalController } from '@ionic/angular';
 import { KeyringService } from 'src/app/services/keyring.service';
 import { CommonService } from 'src/app/services/common.service';
 import { Hdkey } from 'src/app/interfaces/hdkey';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-export',
@@ -14,6 +15,15 @@ export class ExportPage {
   privatekey: string;
   privatekeyQr: string;
 
+  hide = true;
+  shouldInput = false;
+
+  passwordControl = new FormControl('123456789', [Validators.required]);
+
+  passwordForm = new FormGroup({
+    password: this.passwordControl
+  });
+
   hdKey: Hdkey;
   seedPhraseQr: string;
 
@@ -24,6 +34,26 @@ export class ExportPage {
   ) {}
 
   ionViewDidEnter(): void {
+    this.keyringService.isEncrypted().subscribe({
+      next: isEncrypted => {
+        if (isEncrypted) {
+          this.shouldInput = false;
+          this.keyringService.verifyPasswordWithTouchId().subscribe({
+            next: () => this.showSecret(),
+            error: error => {
+              this.shouldInput = true;
+              this.commonService.presentErrorToast(error.toString());
+            }
+          });
+        } else {
+          this.showSecret();
+        }
+      }
+    });
+  }
+
+  showSecret(): void {
+    this.shouldInput = false;
     if (this.address) {
       this.privatekey = this.keyringService.getPrivatekey(this.address);
       this.commonService
@@ -35,6 +65,13 @@ export class ExportPage {
         .createQrcode(this.hdKey.mnemonic)
         .subscribe({ next: qr => (this.seedPhraseQr = qr) });
     }
+  }
+
+  verifyPassword(): void {
+    this.keyringService.verifyPassword(this.passwordControl.value).subscribe({
+      next: () => this.showSecret(),
+      error: error => this.commonService.presentErrorToast(error.toString())
+    });
   }
 
   closeModal(): void {

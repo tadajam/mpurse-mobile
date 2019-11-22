@@ -10,6 +10,7 @@ import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { ReactiveFormsModule } from '@angular/forms';
 
 describe('ExportPage', () => {
   let component: ExportPage;
@@ -20,6 +21,7 @@ describe('ExportPage', () => {
       declarations: [ExportPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
+        ReactiveFormsModule,
         RouterTestingModule,
         TranslateModule.forChild(),
         IonicStorageModule.forRoot()

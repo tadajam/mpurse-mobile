@@ -9,12 +9,14 @@ export class Keyring {
 
   private hdkey: Hdkey;
   private privatekeys: string[];
-
   private accounts: MpurseAccount[];
 
   constructor() {
     this.bitcore = new BitcoreUtil();
+    this.initKeyring();
+  }
 
+  initKeyring(): void {
     this.hdkey = {
       seedType: '',
       basePath: '',

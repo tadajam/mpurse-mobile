@@ -39,10 +39,10 @@ export class KeyringService {
     this.keyring = new Keyring();
   }
 
-  setPassword(pw: string): Observable<void> {
+  setPassword(inputPassword: string): Observable<void> {
     return this.existsVault().pipe(
       map(exists => {
-        this.password = pw;
+        this.password = inputPassword;
         if (exists) {
           this.saveVault();
         }
@@ -50,10 +50,35 @@ export class KeyringService {
     );
   }
 
-  savePasswordWithTouchId(pw: string): Observable<void> {
+  savePasswordWithTouchId(inputPassword: string): Observable<void> {
     return from(this.keychainTouchId.isAvailable()).pipe(
-      flatMap(() => this.keychainTouchId.save(KeyringKey.MpurseUser, pw)),
-      flatMap(() => this.setPassword(pw))
+      flatMap(() =>
+        this.keychainTouchId.save(KeyringKey.MpurseUser, inputPassword)
+      ),
+      flatMap(() => this.setPassword(inputPassword))
+    );
+  }
+
+  verifyPassword(inputPassword: string): Observable<void> {
+    return this.getValidVault().pipe(
+      map(vault => {
+        if (vault.checksum !== Encryptor.createCheckSum(inputPassword)) {
+          throw new Error('Passwords do not match');
+        }
+      })
+    );
+  }
+
+  verifyPasswordWithTouchId(): Observable<void> {
+    return from(this.keychainTouchId.isAvailable()).pipe(
+      flatMap(() => this.keychainTouchId.has(KeyringKey.MpurseUser)),
+      flatMap(() => {
+        return this.keychainTouchId.verify(
+          KeyringKey.MpurseUser,
+          'Show Secret'
+        );
+      }),
+      flatMap(result => this.verifyPassword(result))
     );
   }
 
@@ -84,6 +109,14 @@ export class KeyringService {
     );
   }
 
+  isEncrypted(): Observable<boolean> {
+    return this.getValidVault().pipe(
+      map(vault => {
+        return vault.checksum !== Encryptor.createCheckSum('');
+      })
+    );
+  }
+
   existsVault(): Observable<boolean> {
     return this.existsKeyring().pipe(
       flatMap(exists => {
@@ -104,7 +137,7 @@ export class KeyringService {
       flatMap(() => this.keychainTouchId.delete('mpurse-user')),
       map(() => {
         this.password = '';
-        this.keyring = new Keyring();
+        this.keyring.initKeyring();
       })
     );
   }
@@ -167,38 +200,44 @@ export class KeyringService {
           );
           this.createKeyring(vaultData);
         } else {
-          throw new Error('Invalid password');
+          throw new Error('Passwords do not match');
         }
       })
     );
   }
 
-  // unlock() {}
+  unlock(inputPassword: string): Observable<void> {
+    return this.getValidVault().pipe(
+      map(vault => {
+        if (vault.checksum === Encryptor.createCheckSum(inputPassword)) {
+          this.password = inputPassword;
+        } else {
+          throw new Error('Passwords do not match');
+        }
+      })
+    );
+  }
+
+  lock(): void {
+    this.password = '';
+    this.keyring.initKeyring();
+  }
 
   unlockWithTouchId(): Observable<void> {
     return from(this.keychainTouchId.isAvailable()).pipe(
       flatMap(() => this.keychainTouchId.has(KeyringKey.MpurseUser)),
-      catchError(() => of(false)),
-      flatMap(exists => {
-        if (exists) {
-          return this.keychainTouchId.verify(
-            KeyringKey.MpurseUser,
-            'Unlock Mpurse'
-          );
-        } else {
-          return of(false);
-        }
+      flatMap(() => {
+        return this.keychainTouchId.verify(
+          KeyringKey.MpurseUser,
+          'Login Mpurse'
+        );
       }),
-      catchError(() => of(false)),
-      map((result: string | boolean) => {
-        if (typeof result !== 'boolean') {
-          this.password = result;
-        }
+      flatMap(result => {
+        this.password = result;
+        return this.createExistingKeyring();
       })
     );
   }
-
-  // lock() {}
 
   isUnlocked(): Observable<boolean> {
     return this.existsKeyring().pipe(

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { from, Observable, Subject } from 'rxjs';
-import { map, flatMap } from 'rxjs/operators';
+import { map, flatMap, tap } from 'rxjs/operators';
 import { PreferenceKey } from '../enum/preference-key.enum';
 import { Identity } from '../interfaces/identity';
 import { MpurseAccount } from '../interfaces/mpurse-account';
@@ -38,12 +38,9 @@ export class PreferenceService {
         this.setLanguage(lang);
       });
 
-    from(this.storage.get(PreferenceKey.FinishedBackup))
-      .pipe(map(finishedBackup => finishedBackup === 'true'))
-      .subscribe({
-        next: (finishedBackup: boolean) =>
-          (this.finishedBackup = finishedBackup)
-      });
+    from(this.storage.get(PreferenceKey.FinishedBackup)).subscribe({
+      next: (finishedBackup: boolean) => (this.finishedBackup = finishedBackup)
+    });
 
     from(this.storage.get(PreferenceKey.SelectedAddress))
       .pipe(map((address: string) => (address ? address : '')))
@@ -57,11 +54,9 @@ export class PreferenceService {
         next: (identities: Identity[]) => (this.identities = identities)
       });
 
-    from(this.storage.get(PreferenceKey.UseBiometrics))
-      .pipe(map(useBiometrics => useBiometrics === 'true'))
-      .subscribe({
-        next: useBiometrics => (this.useBiometrics = useBiometrics)
-      });
+    from(this.storage.get(PreferenceKey.UseBiometrics)).subscribe({
+      next: useBiometrics => (this.useBiometrics = useBiometrics)
+    });
   }
 
   syncAccount(accounts: MpurseAccount[]): void {
@@ -98,10 +93,17 @@ export class PreferenceService {
   }
 
   // finishedBackup
-
   finishBackup(): void {
     this.finishedBackup = true;
     this.storage.set(PreferenceKey.FinishedBackup, this.finishedBackup);
+  }
+
+  deferBackup(): void {
+    this.finishedBackup = true;
+  }
+
+  getFinishedBackup(): boolean {
+    return this.finishedBackup;
   }
 
   // selectedAddress

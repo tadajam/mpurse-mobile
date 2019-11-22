@@ -5,7 +5,13 @@
 </ion-header>
 
 <ion-content>
-  <form [formGroup]="seedForm" (ngSubmit)="test()">
+  <ion-item *ngIf="custom || existsVault" lines="none">
+    <ion-text color="danger">
+      <strong>Write your seed phrase down and keep it safe.</strong>
+    </ion-text>
+  </ion-item>
+  
+  <form [formGroup]="seedForm" (ngSubmit)="finishBackup()">
     <ion-item>
       <ion-label position="floating">Seed Type</ion-label>
       <ion-select formControlName="seedType" (ionChange)="changeType()" interface="action-sheet" ngDefaultControl>
@@ -17,7 +23,7 @@
       </ion-select>
     </ion-item>
 
-    <ion-item *ngIf="(!existsVault) && seedTypeControl.value === 'Bip39'">
+    <ion-item *ngIf="custom && seedTypeControl.value === 'Bip39'">
       <ion-label position="floating">Seed Language</ion-label>
       <ion-select formControlName="seedLanguage" (ionChange)="changeLang()" interface="action-sheet" ngDefaultControl>
         <ion-select-option *ngFor="let l of languages" [value]="l">
@@ -31,7 +37,7 @@
       <ion-textarea formControlName="seedPhrase" [readonly]="!import" autoGrow="true">
       </ion-textarea>
       <ion-button *ngIf="!existsVault && custom" (click)="generateRandomMnemonic()" slot="end" fill="clear" class="margin-auto">
-        <ion-icon name="refresh" color="primary" class="input-icon"></ion-icon>
+        <ion-icon name="refresh" color="primary" class="inner-icon"></ion-icon>
       </ion-button>
     </ion-item>
 
@@ -43,7 +49,7 @@
         [color]="isBasePathReadonly ? 'medium' : 'dark'">
       </ion-input>
       <ion-button *ngIf="!existsVault && isBasePathReadonly" (click)="requestChagne()" slot="end" fill="clear" class="margin-auto">
-        <ion-icon name="create" color="primary" class="input-icon"></ion-icon>
+        <ion-icon name="create" color="primary" class="inner-icon"></ion-icon>
       </ion-button>
     </ion-item>
 
@@ -52,8 +58,6 @@
       <ion-checkbox slot="end" formControlName="isSaved"></ion-checkbox>
     </ion-item>
   </form>
-
-
 </ion-content>
 
 <ion-footer>

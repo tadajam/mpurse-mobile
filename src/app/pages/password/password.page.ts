@@ -75,7 +75,7 @@ export class PasswordPage {
     this.location.back();
   }
 
-  createPassword(): void {
+  encrypt(): void {
     if (this.useBiometricsControl.value) {
       this.keyringService
         .savePasswordWithTouchId(this.passwordControl.value)
@@ -94,13 +94,16 @@ export class PasswordPage {
             )
         });
     } else {
-      this.keyringService.setPassword(this.passwordControl.value);
-      this.preferenceService.setUseBiometrics(false);
-      this.router.navigateByUrl(
-        this.router.createUrlTree(['/seed-phrase'], {
-          queryParams: { custom: this.custom, import: this.import }
-        })
-      );
+      this.keyringService.setPassword(this.passwordControl.value).subscribe({
+        next: () => {
+          this.preferenceService.setUseBiometrics(false);
+          this.router.navigateByUrl(
+            this.router.createUrlTree(['/seed-phrase'], {
+              queryParams: { custom: this.custom, import: this.import }
+            })
+          );
+        }
+      });
     }
   }
 }

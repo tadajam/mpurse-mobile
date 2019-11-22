@@ -5,12 +5,16 @@
     [swipeGesture]="isSwipeEnabled"
     (ionDidClose)="isSwipeEnabled = true"
     (ionDidOpen)="isSwipeEnabled = false"
-    contentId="content"
-  >
+    contentId="content">
 
     <ion-header>
       <ion-toolbar>
         <ion-title>Mpurse</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="logout()" fill="clear">
+            <ion-icon name="log-out" size="large"></ion-icon>
+          </ion-button>
+        </ion-buttons>
       </ion-toolbar>
     </ion-header>
 

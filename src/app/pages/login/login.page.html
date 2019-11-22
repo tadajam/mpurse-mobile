@@ -5,5 +5,23 @@
 </ion-header>
 
 <ion-content>
-  Login
+  <form *ngIf="shouldInput" [formGroup]="passwordForm" (ngSubmit)="login()">
+    <ion-item>
+      <ion-label position="floating">Password</ion-label>
+      <ion-input formControlName="password" [type]="hide ? 'password' : 'text'"></ion-input>
+      <ion-button (click)="hide = !hide" slot="end" fill="clear" class="margin-auto">
+        <ion-icon [name]="hide ? 'eye-off' : 'eye'" color="primary" class="inner-icon"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </form>
 </ion-content>
+
+<ion-footer>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button (click)="login()" [disabled]="!passwordForm.valid" expand="block" color="primary">LOGIN</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer>

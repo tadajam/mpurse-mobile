@@ -1,8 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { MenuController, ModalController } from '@ionic/angular';
-import { CommonService } from 'src/app/services/common.service';
 import { from } from 'rxjs';
 import { AccountsPage } from 'src/app/pages/accounts/accounts.page';
+import { KeyringService } from 'src/app/services/keyring.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-menu',
@@ -17,9 +18,10 @@ export class MenuComponent {
   isSwipeEnabled = true;
 
   constructor(
+    private router: Router,
     private menuController: MenuController,
-    private commonService: CommonService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private keyringService: KeyringService
   ) {}
 
   menuClose(): void {
@@ -37,5 +39,11 @@ export class MenuComponent {
     from(this.modalController.create({ component: AccountsPage })).subscribe({
       next: modal => modal.present()
     });
+  }
+
+  logout(): void {
+    this.menuClose();
+    this.keyringService.lock();
+    this.router.navigateByUrl('/');
   }
 }
