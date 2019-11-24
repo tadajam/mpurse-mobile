@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
-import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { flatMap, map } from 'rxjs/operators';
 import { KeyringService } from 'src/app/services/keyring.service';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { CommonService } from 'src/app/services/common.service';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-password',
@@ -36,21 +36,28 @@ export class PasswordPage {
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private location: Location,
     private keyringService: KeyringService,
     private preferenceService: PreferenceService,
-    private commonService: CommonService
+    private commonService: CommonService,
+    private navController: NavController
   ) {}
 
   ionViewDidEnter(): void {
     this.activatedRoute.queryParams
-      .pipe(filter(params => params.custom || params.import))
-      .subscribe({
-        next: params => {
+      .pipe(
+        map(params => {
           if (params.custom) {
             this.custom = params.custom;
           } else if (params.import) {
             this.import = params.import;
+          }
+        }),
+        flatMap(() => this.keyringService.isEncrypted())
+      )
+      .subscribe({
+        next: isEncrypted => {
+          if (isEncrypted) {
+            this.openSeedPhrasePage();
           }
         }
       });
@@ -72,7 +79,7 @@ export class PasswordPage {
   }
 
   cancel(): void {
-    this.location.back();
+    this.navController.navigateRoot('/home/wallet');
   }
 
   encrypt(): void {
@@ -82,11 +89,7 @@ export class PasswordPage {
         .subscribe({
           next: () => {
             this.preferenceService.setUseBiometrics(true);
-            this.router.navigateByUrl(
-              this.router.createUrlTree(['/seed-phrase'], {
-                queryParams: { custom: this.custom, import: this.import }
-              })
-            );
+            this.openSeedPhrasePage();
           },
           error: () =>
             this.commonService.presentErrorToast(
@@ -97,13 +100,21 @@ export class PasswordPage {
       this.keyringService.setPassword(this.passwordControl.value).subscribe({
         next: () => {
           this.preferenceService.setUseBiometrics(false);
-          this.router.navigateByUrl(
-            this.router.createUrlTree(['/seed-phrase'], {
-              queryParams: { custom: this.custom, import: this.import }
-            })
-          );
+          this.openSeedPhrasePage();
         }
       });
+    }
+  }
+
+  openSeedPhrasePage(): void {
+    if (!this.custom && !this.import) {
+      this.navController.navigateRoot('/seed-phrase');
+    } else {
+      this.router.navigateByUrl(
+        this.router.createUrlTree(['/seed-phrase'], {
+          queryParams: { custom: this.custom, import: this.import }
+        })
+      );
     }
   }
 }

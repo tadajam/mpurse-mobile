@@ -43,6 +43,7 @@
         formControlName="unsignedTx"
         [readonly]="request"
         autoGrow="true"
+        autofocus="true"
         (paste)="signedTxControl.setValue('')"
         (cut)="signedTxControl.setValue('')"
         (keyup)="signedTxControl.setValue('')"

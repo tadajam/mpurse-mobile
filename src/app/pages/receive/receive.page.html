@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()">
+        <ion-icon name="arrow-back" size="large"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Receive</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card *ngIf="address">
+    <ion-card-header>
+      <ion-card-title>Your Address</ion-card-title>
+    </ion-card-header>
+    <img *ngIf="addressQr" [src]="addressQr" />
+    <ion-card-content>
+      <ion-item lines="none">
+        <ion-label text-wrap>{{address}}</ion-label>
+      </ion-item>
+      <ion-row justify-content-center>
+        <ion-chip (click)="copy()">
+          <ion-icon name="copy" color="dark"></ion-icon>
+          <ion-label>Copy to clipboard</ion-label>
+        </ion-chip>
+      </ion-row>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

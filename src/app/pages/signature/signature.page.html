@@ -42,6 +42,7 @@
         formControlName="message"
         [readonly]="request"
         autoGrow="true"
+        autofocus="true"
         (paste)="signatureControl.setValue('')"
         (cut)="signatureControl.setValue('')"
         (keyup)="signatureControl.setValue('')">

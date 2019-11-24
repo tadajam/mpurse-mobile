@@ -135,6 +135,7 @@ export class KeyringService {
     return from(this.storage.remove(KeyringKey.Vault)).pipe(
       flatMap(() => this.keychainTouchId.isAvailable()),
       flatMap(() => this.keychainTouchId.delete('mpurse-user')),
+      catchError(() => of(void 0)),
       map(() => {
         this.password = '';
         this.keyring.initKeyring();

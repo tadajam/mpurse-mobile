@@ -8,7 +8,7 @@
   <form *ngIf="shouldInput" [formGroup]="passwordForm" (ngSubmit)="login()">
     <ion-item>
       <ion-label position="floating">Password</ion-label>
-      <ion-input formControlName="password" [type]="hide ? 'password' : 'text'"></ion-input>
+      <ion-input formControlName="password" [type]="hide ? 'password' : 'text'" autofocus="true"></ion-input>
       <ion-button (click)="hide = !hide" slot="end" fill="clear" class="margin-auto">
         <ion-icon [name]="hide ? 'eye-off' : 'eye'" color="primary" class="inner-icon"></ion-icon>
       </ion-button>

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { from, Observable, Subject } from 'rxjs';
-import { map, flatMap, tap } from 'rxjs/operators';
+import { map, flatMap } from 'rxjs/operators';
 import { PreferenceKey } from '../enum/preference-key.enum';
 import { Identity } from '../interfaces/identity';
 import { MpurseAccount } from '../interfaces/mpurse-account';

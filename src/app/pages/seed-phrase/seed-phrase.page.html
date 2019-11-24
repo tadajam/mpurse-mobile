@@ -39,6 +39,9 @@
       <ion-button *ngIf="!existsVault && custom" (click)="generateRandomMnemonic()" slot="end" fill="clear" class="margin-auto">
         <ion-icon name="refresh" color="primary" class="inner-icon"></ion-icon>
       </ion-button>
+      <ion-button *ngIf="!existsVault && import" (click)="scanQrcode()" slot="end" fill="clear" class="margin-auto">
+        <ion-icon name="qr-scanner" color="primary" class="inner-icon"></ion-icon>
+      </ion-button>
     </ion-item>
 
     <ion-item>

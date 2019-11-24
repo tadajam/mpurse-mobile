@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
 import { KeyringService } from 'src/app/services/keyring.service';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { filter } from 'rxjs/operators';
@@ -13,8 +12,9 @@ import {
 } from '@angular/forms';
 import { SeedType } from '../../enum/seed-type.enum';
 import { SeedLanguage } from '../../enum/seed-language.enum';
-import { AlertController } from '@ionic/angular';
+import { AlertController, NavController } from '@ionic/angular';
 import { from } from 'rxjs';
+import { CommonService } from 'src/app/services/common.service';
 
 @Component({
   selector: 'app-seed-phrase',
@@ -80,10 +80,11 @@ export class SeedPhrasePage {
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private location: Location,
     private keyringService: KeyringService,
     private preferenceService: PreferenceService,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private commonService: CommonService,
+    private navController: NavController
   ) {}
 
   ionViewDidEnter(): void {
@@ -111,6 +112,12 @@ export class SeedPhrasePage {
           this.seedTypeControl.disable();
         }
       }
+    });
+  }
+
+  scanQrcode(): void {
+    this.commonService.scanQrcode().subscribe({
+      next: text => this.seedPhraseControl.setValue(text)
     });
   }
 
@@ -173,10 +180,10 @@ export class SeedPhrasePage {
       );
     }
     this.preferenceService.finishBackup();
-    this.router.navigateByUrl('/');
+    this.navController.navigateRoot('/home/wallet');
   }
 
   cancel(): void {
-    this.location.back();
+    this.navController.navigateRoot('/home/wallet');
   }
 }

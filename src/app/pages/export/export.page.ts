@@ -4,6 +4,8 @@ import { KeyringService } from 'src/app/services/keyring.service';
 import { CommonService } from 'src/app/services/common.service';
 import { Hdkey } from 'src/app/interfaces/hdkey';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { flatMap } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-export',
@@ -34,22 +36,24 @@ export class ExportPage {
   ) {}
 
   ionViewDidEnter(): void {
-    this.keyringService.isEncrypted().subscribe({
-      next: isEncrypted => {
-        if (isEncrypted) {
-          this.shouldInput = false;
-          this.keyringService.verifyPasswordWithTouchId().subscribe({
-            next: () => this.showSecret(),
-            error: error => {
-              this.shouldInput = true;
-              this.commonService.presentErrorToast(error.toString());
-            }
-          });
-        } else {
-          this.showSecret();
+    this.keyringService
+      .isEncrypted()
+      .pipe(
+        flatMap(isEncrypted => {
+          if (isEncrypted) {
+            this.shouldInput = false;
+            return this.keyringService.verifyPasswordWithTouchId();
+          } else {
+            return of(void 0);
+          }
+        })
+      )
+      .subscribe({
+        next: () => this.showSecret(),
+        error: () => {
+          this.shouldInput = true;
         }
-      }
-    });
+      });
   }
 
   showSecret(): void {

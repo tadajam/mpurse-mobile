@@ -4,6 +4,7 @@ import { from } from 'rxjs';
 import { AccountsPage } from 'src/app/pages/accounts/accounts.page';
 import { KeyringService } from 'src/app/services/keyring.service';
 import { Router } from '@angular/router';
+import { ReceivePage } from 'src/app/pages/receive/receive.page';
 
 @Component({
   selector: 'app-menu',
@@ -37,6 +38,13 @@ export class MenuComponent {
   openAccountsPage(): void {
     this.menuClose();
     from(this.modalController.create({ component: AccountsPage })).subscribe({
+      next: modal => modal.present()
+    });
+  }
+
+  openReceivePage(): void {
+    this.menuClose();
+    from(this.modalController.create({ component: ReceivePage })).subscribe({
       next: modal => modal.present()
     });
   }

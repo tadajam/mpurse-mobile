@@ -310,6 +310,12 @@ export class SendAssetPage {
     });
   }
 
+  scanQrcode(): void {
+    this.commonService.scanQrcode().subscribe({
+      next: text => this.toAddressControl.setValue(text)
+    });
+  }
+
   changeFeeRange(event: any): void {
     this.feeControl.setValue(event.target.value);
   }

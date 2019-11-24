@@ -36,11 +36,14 @@
   </ng-container>
 
   <form [formGroup]="sendAssetForm" (ngSubmit)="sendAsset()">
-    <ion-item>
+    <ion-item style="margin: 0; padding: 0">
       <ion-label position="floating">Destination Address</ion-label>
-      <ion-input formControlName="to" placeholder="Address or Asset Name"></ion-input>
+      <ion-textarea formControlName="to" placeholder="Address or Asset Name" rows="1" autoGrow="true"></ion-textarea>
       <ion-button (click)="getIssuer()" slot="end" fill="clear" class="margin-auto">
         <ion-icon name="happy" color="primary" class="inner-icon"></ion-icon>
+      </ion-button>
+      <ion-button (click)="scanQrcode()" slot="end" fill="clear" class="margin-auto">
+        <ion-icon name="qr-scanner" color="primary" class="inner-icon"></ion-icon>
       </ion-button>
     </ion-item>
 
@@ -48,7 +51,7 @@
       <ion-label position="floating">Asset</ion-label>
       <ng-container *ngIf="assetHasAssigned; then fixAsset; else selectAsset"></ng-container>
       <ng-template #fixAsset>
-        <ion-input [value]="getAssetName(assetControl.value)" readonly="true"></ion-input>
+        <ion-textarea [value]="getAssetName(assetControl.value)" readonly="true" rows="1" autoGrow="true"></ion-textarea>
       </ng-template>
       <ng-template #selectAsset>
         <ion-select formControlName="asset" interface="action-sheet" ngDefaultControl>

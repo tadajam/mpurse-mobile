@@ -20,7 +20,7 @@ export class AccountsPage {
     private keyringService: KeyringService,
     private preferenceService: PreferenceService,
     private modalController: ModalController,
-    public alertController: AlertController
+    private alertController: AlertController
   ) {}
 
   ionViewDidEnter(): void {

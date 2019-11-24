@@ -2,7 +2,8 @@ import { Component, ViewChild } from '@angular/core';
 import {
   IonInfiniteScroll,
   ModalController,
-  NavController
+  NavController,
+  AlertController
 } from '@ionic/angular';
 import { from, Subscription, Observable, of } from 'rxjs';
 import { PreferenceService } from 'src/app/services/preference.service';
@@ -45,7 +46,8 @@ export class WalletPage {
     private mpchainService: MpchainService,
     private commonService: CommonService,
     private modalController: ModalController,
-    private navController: NavController
+    private navController: NavController,
+    private alertController: AlertController
   ) {}
 
   ionViewDidEnter(): void {
@@ -88,6 +90,7 @@ export class WalletPage {
   }
 
   updateBalance(): Observable<void> {
+    this.shouldBackup = false;
     return this.mpchainService.getAddressInfo(this.address).pipe(
       map((info: MpchainAddressInfo) => {
         if (new Decimal(info.mona_balance).toNumber() > 0) {
@@ -129,8 +132,24 @@ export class WalletPage {
 
   checkBackup(): void {
     if (!this.preferenceService.getFinishedBackup() && this.shouldBackup) {
-      this.preferenceService.deferBackup();
-      this.navController.navigateRoot('/password');
+      const buttons: any[] = [
+        { text: 'LATER', role: 'cancel' },
+        {
+          text: 'ENCRYPT',
+          handler: (): void => {
+            this.preferenceService.deferBackup();
+            this.navController.navigateRoot('/password');
+          }
+        }
+      ];
+      from(
+        this.alertController.create({
+          header: 'BACKUP',
+          message:
+            'There was the first payment. Encrypt the seed phrase and private key and complete the backup.',
+          buttons: buttons
+        })
+      ).subscribe({ next: alert => alert.present() });
     }
   }
 

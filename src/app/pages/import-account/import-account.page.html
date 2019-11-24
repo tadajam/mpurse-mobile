@@ -18,7 +18,7 @@
 
     <ion-item>
       <ion-label position="floating">Private Key(WIF)</ion-label>
-      <ion-input type="password" placeholder="Your private key" formControlName="privatekey"></ion-input>
+      <ion-input type="password" placeholder="Your private key" formControlName="privatekey" autofocus="true"></ion-input>
       <ion-button (click)="scanQrcode()" slot="end" fill="clear" class="margin-auto">
         <ion-icon name="qr-scanner" color="primary" class="inner-icon"></ion-icon>
       </ion-button>
