@@ -103,7 +103,7 @@ export class SendAssetPage {
   unsignedTx = '';
   calculatedFee = 0;
 
-  private subscriptions = new Subscription();
+  subscriptions: Subscription;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -178,6 +178,7 @@ export class SendAssetPage {
         error: error => this.commonService.presentErrorToast(error.toString())
       });
 
+    this.subscriptions = new Subscription();
     this.subscriptions.add(
       this.preferenceService.selectedAddressState
         .pipe(

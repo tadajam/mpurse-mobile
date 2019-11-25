@@ -2,11 +2,14 @@ import { TestBed } from '@angular/core/testing';
 
 import { InAppBrowserService } from './in-app-browser.service';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { IonicStorageModule } from '@ionic/storage';
+import { TranslateModule, TranslateStore } from '@ngx-translate/core';
 
 describe('InAppBrowserService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      providers: [InAppBrowser]
+      imports: [TranslateModule.forChild(), IonicStorageModule.forRoot()],
+      providers: [InAppBrowser, TranslateStore]
     })
   );
 

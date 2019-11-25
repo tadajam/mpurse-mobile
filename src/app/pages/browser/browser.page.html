@@ -20,34 +20,123 @@
 
   <ion-list>
     <ion-list-header>
-      Popular Apps
+      <ion-label>Popular Apps</ion-label>
     </ion-list-header>
-    <ion-item *ngFor="let app of appList" (click)="open(app.href)">
+    <ion-item *ngFor="let app of appList" (click)="open(app.href)" lines="none">
       <ion-avatar slot="start">
-        <ion-img [src]="app.icon"></ion-img>
+        <ion-img *ngIf="app.icon" [src]="app.icon"></ion-img>
+        <ion-icon *ngIf="!app.icon" name="cube" size="large" color="primary"></ion-icon>
       </ion-avatar>
-      <ion-label>
+      <ion-label text-wrap>
         <h2>{{app.title}}</h2>
         <p>{{app.href}}</p>
+        <p>{{app.description}}</p>
       </ion-label>
     </ion-item>
   </ion-list>
 
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Favorite</ion-label>
+    </ion-list-header>
+    
+    <ion-item *ngIf="getFavorites().length === 0" lines="none">
+      <ion-avatar slot="start">
+        <ion-icon name="cube" size="large" color="primary"></ion-icon>
+      </ion-avatar>
+      <ion-label><p>No data</p></ion-label>
+    </ion-item>
+
+    <ion-reorder-group [disabled]="!isReorderMode" (ionItemReorder)="reorderFavorites($event)">
+      <ion-item (click)="open(app.href)" *ngFor="let app of getHeadFavorites()" (press)="isReorderMode = !isReorderMode" lines="none">
+        <ion-avatar slot="start">
+          <ion-img *ngIf="app.icon" [src]="app.icon"></ion-img>
+          <ion-icon *ngIf="!app.icon" name="cube" size="large" color="primary"></ion-icon>
+        </ion-avatar>
+        <ion-label text-wrap>
+          <h2>{{app.title}}</h2>
+          <p>{{app.href}}</p>
+          <p>{{app.description}}</p>
+        </ion-label>
+        <ion-button *ngIf="!isReorderMode" (click)="toggleFavorite(app);$event.stopPropagation();" fill="clear"  slot="end">
+          <ion-icon
+            [name]="isFavorite(app.href) ? 'star' : 'star-outline'"
+            color="primary"
+            size="large">
+          </ion-icon>
+        </ion-button>
+        <ion-reorder *ngIf="isReorderMode" slot="end"></ion-reorder>
+      </ion-item>
+    </ion-reorder-group>
+
+    <ion-row justify-content-center>
+      <ion-item *ngIf="getFavorites().length > 5" lines="none">
+        <ion-chip (click)="openAppInfoPage('Favorite')" color="primary" outline="true">
+          <ion-icon name="open"></ion-icon>
+          <ion-label>Show More Favorite</ion-label>
+        </ion-chip>
+      </ion-item>
+    </ion-row>
+  </ion-list>
+
+  <ion-list>
+    <ion-list-header>
+      <ion-label>History</ion-label>
+    </ion-list-header>
+
+    <ion-item *ngIf="getHistories().length === 0" lines="none">
+      <ion-avatar slot="start">
+        <ion-icon name="cube" size="large" color="primary"></ion-icon>
+      </ion-avatar>
+      <ion-label><p>No data</p></ion-label>
+    </ion-item>
+
+    <ion-item-sliding *ngFor="let app of getHeadHistories(); index as i">
+      <ion-item (click)="open(app.href)" lines="none">
+        <ion-avatar slot="start">
+          <ion-img *ngIf="app.icon" [src]="app.icon"></ion-img>
+          <ion-icon *ngIf="!app.icon" name="cube" size="large" color="primary"></ion-icon>
+        </ion-avatar>
+        <ion-label text-wrap>
+          <h2>{{app.title}}</h2>
+          <p>{{app.href}}</p>
+          <p>{{app.description}}</p>
+        </ion-label>
+        <ion-button (click)="toggleFavorite(app);$event.stopPropagation();" fill="clear"  slot="end">
+          <ion-icon
+            [name]="isFavorite(app.href) ? 'star' : 'star-outline'"
+            color="primary"
+            size="large">
+          </ion-icon>
+        </ion-button>
+      </ion-item>
+      <ion-item-options side="end">
+        <ion-item-option (click)="deleteHistory(i)">DELETE</ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+
+    <ion-row justify-content-center>
+      <ion-item *ngIf="getHistories().length > 5" lines="none">
+        <ion-chip (click)="openAppInfoPage('History')" color="primary" outline="true">
+          <ion-icon name="open"></ion-icon>
+          <ion-label>Show More History</ion-label>
+        </ion-chip>
+      </ion-item>
+    </ion-row>
+  </ion-list>
 </ion-content>
 
 <ion-footer>
   <ion-toolbar>
     <ion-buttons slot="end">
-      <ion-button>
+      <ion-button (click)="openAppInfoPage('Favorite')">
+        <ion-icon name="star" size="large"></ion-icon>
+        <ion-badge color="primary">{{getFavoritesLength()}}</ion-badge>
+      </ion-button>
+
+      <ion-button (click)="openAppInfoPage('History')">
         <ion-icon name="time" size="large"></ion-icon>
-        <ion-badge color="primary">5</ion-badge>
-      </ion-button>
-      <ion-button>
-        <ion-icon name="apps" size="large"></ion-icon>
-        <ion-badge color="primary">0</ion-badge>
-      </ion-button>
-      <ion-button>
-        <ion-icon name="more" size="large"></ion-icon>
+        <ion-badge color="primary">{{getHistoriesLength()}}</ion-badge>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>

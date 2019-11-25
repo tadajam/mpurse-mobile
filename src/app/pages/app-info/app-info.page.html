@@ -1,0 +1,66 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title *ngIf="appGroup === 'Favorite'">Favorite</ion-title>
+    <ion-title *ngIf="appGroup === 'History'">History</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ng-container *ngIf="appGroup === 'Favorite'">
+      <ion-reorder-group [disabled]="!isReorderMode" (ionItemReorder)="reorderFavorites($event)">
+        <ion-item (click)="open(app.href)" *ngFor="let app of appInfo" (press)="isReorderMode = !isReorderMode" lines="none">
+          <ion-avatar slot="start">
+            <ion-img *ngIf="app.icon" [src]="app.icon"></ion-img>
+            <ion-icon *ngIf="!app.icon" name="cube" size="large" color="primary"></ion-icon>
+          </ion-avatar>
+          <ion-label text-wrap>
+            <h2>{{app.title}}</h2>
+            <p>{{app.href}}</p>
+            <p>{{app.description}}</p>
+          </ion-label>
+          <ion-button *ngIf="!isReorderMode" (click)="toggleFavorite(app);$event.stopPropagation();" fill="clear"  slot="end">
+            <ion-icon
+              [name]="isFavorite(app.href) ? 'star' : 'star-outline'"
+              color="primary"
+              size="large">
+            </ion-icon>
+          </ion-button>
+          <ion-reorder *ngIf="isReorderMode" slot="end"></ion-reorder>
+        </ion-item>
+      </ion-reorder-group>
+    </ng-container>
+    
+    <ng-container *ngIf="appGroup === 'History'">
+      <ion-item-sliding *ngFor="let app of appInfo; index as i">
+        <ion-item (click)="open(app.href)" lines="none">
+          <ion-avatar slot="start">
+            <ion-img *ngIf="app.icon" [src]="app.icon"></ion-img>
+            <ion-icon *ngIf="!app.icon" name="cube" size="large" color="primary"></ion-icon>
+          </ion-avatar>
+          <ion-label text-wrap>
+            <h2>{{app.title}}</h2>
+            <p>{{app.href}}</p>
+            <p>{{app.description}}</p>
+          </ion-label>
+          <ion-button (click)="toggleFavorite(app);$event.stopPropagation();" fill="clear"  slot="end">
+            <ion-icon
+              [name]="isFavorite(app.href) ? 'star' : 'star-outline'"
+              color="primary"
+              size="large">
+            </ion-icon>
+          </ion-button>
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option (click)="deleteHistory(i)">DELETE</ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ng-container>
+
+    <ion-infinite-scroll #infinite threshold="1%" (ionInfinite)="loadNext()">
+      <ion-infinite-scroll-content
+        loadingSpinner="circles">
+      </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+  </ion-list>
+</ion-content>

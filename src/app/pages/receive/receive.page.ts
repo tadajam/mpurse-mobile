@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { Identity } from 'src/app/interfaces/identity';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { CommonService } from 'src/app/services/common.service';
 

@@ -5,6 +5,7 @@ import { AccountsPage } from 'src/app/pages/accounts/accounts.page';
 import { KeyringService } from 'src/app/services/keyring.service';
 import { Router } from '@angular/router';
 import { ReceivePage } from 'src/app/pages/receive/receive.page';
+import { InAppBrowserService } from 'src/app/services/in-app-browser.service';
 
 @Component({
   selector: 'app-menu',
@@ -22,7 +23,8 @@ export class MenuComponent {
     private router: Router,
     private menuController: MenuController,
     private modalController: ModalController,
-    private keyringService: KeyringService
+    private keyringService: KeyringService,
+    private inAppBrowserService: InAppBrowserService
   ) {}
 
   menuClose(): void {
@@ -53,5 +55,10 @@ export class MenuComponent {
     this.menuClose();
     this.keyringService.lock();
     this.router.navigateByUrl('/');
+  }
+
+  openInAppBrowser(query: string): void {
+    this.inAppBrowserService.open(query);
+    this.menuClose();
   }
 }

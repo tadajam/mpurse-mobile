@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { AlertController, ModalController } from '@ionic/angular';
 import { from, Subscription } from 'rxjs';
 import { ExportPage } from '../export/export.page';
+import { CommonService } from 'src/app/services/common.service';
 
 @Component({
   selector: 'app-settings',
@@ -13,7 +14,7 @@ import { ExportPage } from '../export/export.page';
   styleUrls: ['./settings.page.scss']
 })
 export class SettingsPage {
-  private subscriptions = new Subscription();
+  subscriptions: Subscription;
   lang = 'en';
   searchEngine = 'google';
   address = '';
@@ -24,13 +25,16 @@ export class SettingsPage {
     private keyringService: KeyringService,
     private preferenceService: PreferenceService,
     private alertController: AlertController,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private commonService: CommonService
   ) {}
 
   ionViewDidEnter(): void {
     this.lang = this.preferenceService.getLanguage();
-    this.updateAddress(this.preferenceService.getSelectedAddress());
+    this.searchEngine = this.preferenceService.getSearchEngine();
 
+    this.updateAddress(this.preferenceService.getSelectedAddress());
+    this.subscriptions = new Subscription();
     this.subscriptions.add(
       this.preferenceService.selectedAddressState.subscribe({
         next: (address: string) => {
@@ -52,6 +56,29 @@ export class SettingsPage {
 
   changeLang(): void {
     this.preferenceService.setLanguage(this.lang);
+  }
+
+  changeSearchEngine(): void {
+    this.preferenceService.setSearchEngine(this.searchEngine);
+  }
+
+  deleteHistories(): void {
+    const buttons: any[] = [
+      { text: 'CANCEL', role: 'cancel' },
+      {
+        text: 'REMOVE',
+        handler: (): void => {
+          this.preferenceService.deleteHistories();
+        }
+      }
+    ];
+    from(
+      this.alertController.create({
+        header: 'BROWSER HISTORY',
+        message: 'Are you sure you want to remove browser history?',
+        buttons: buttons
+      })
+    ).subscribe({ next: alert => alert.present() });
   }
 
   initMpurse(): void {

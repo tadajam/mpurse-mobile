@@ -29,7 +29,7 @@ export class SignaturePage {
     message: this.messageControl,
     signature: this.signatureControl
   });
-  subscriptions = new Subscription();
+  subscriptions: Subscription;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -59,6 +59,7 @@ export class SignaturePage {
     this.address = this.preferenceService.getSelectedAddress();
     this.identity = this.preferenceService.getIdentity(this.address);
 
+    this.subscriptions = new Subscription();
     this.subscriptions.add(
       this.preferenceService.selectedAddressState.subscribe({
         next: (address: string) => {

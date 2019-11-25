@@ -6,26 +6,36 @@ import { PreferenceKey } from '../enum/preference-key.enum';
 import { Identity } from '../interfaces/identity';
 import { MpurseAccount } from '../interfaces/mpurse-account';
 import { TranslateService } from '@ngx-translate/core';
+import { AppInfo } from '../interfaces/app-info';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PreferenceService {
-  private language = 'en';
+  private MAX_FAVORITES = 50;
+  private MAX_HISTORIES = 100;
   private finishedBackup = false;
+
+  private language = 'en';
+  private searchEngine = 'google';
+  private useBiometrics = false;
 
   private selectedAddress = '';
   private selectedAddressSubject = new Subject<string>();
   selectedAddressState = this.selectedAddressSubject.asObservable();
 
   private identities: Identity[] = [];
-
-  private useBiometrics = false;
+  private favorites: AppInfo[] = [];
+  private histories: AppInfo[] = [];
 
   constructor(
     private storage: Storage,
     private translateService: TranslateService
   ) {
+    from(this.storage.get(PreferenceKey.FinishedBackup)).subscribe({
+      next: (finishedBackup: boolean) => (this.finishedBackup = finishedBackup)
+    });
+
     from(this.storage.get(PreferenceKey.Language))
       .pipe(
         map(lang => {
@@ -34,12 +44,19 @@ export class PreferenceService {
           return l;
         })
       )
-      .subscribe(lang => {
-        this.setLanguage(lang);
+      .subscribe({
+        next: lang => {
+          this.translateService.use(lang);
+          this.language = lang;
+        }
       });
 
-    from(this.storage.get(PreferenceKey.FinishedBackup)).subscribe({
-      next: (finishedBackup: boolean) => (this.finishedBackup = finishedBackup)
+    from(this.storage.get(PreferenceKey.SearchEngine))
+      .pipe(map(searchEngine => searchEngine || 'google'))
+      .subscribe({ next: searchEngine => (this.searchEngine = searchEngine) });
+
+    from(this.storage.get(PreferenceKey.UseBiometrics)).subscribe({
+      next: useBiometrics => (this.useBiometrics = useBiometrics)
     });
 
     from(this.storage.get(PreferenceKey.SelectedAddress))
@@ -54,9 +71,17 @@ export class PreferenceService {
         next: (identities: Identity[]) => (this.identities = identities)
       });
 
-    from(this.storage.get(PreferenceKey.UseBiometrics)).subscribe({
-      next: useBiometrics => (this.useBiometrics = useBiometrics)
-    });
+    from(this.storage.get(PreferenceKey.Favorites))
+      .pipe(map((favorites: AppInfo[]) => (favorites ? favorites : [])))
+      .subscribe({
+        next: (favorites: AppInfo[]) => (this.favorites = favorites)
+      });
+
+    from(this.storage.get(PreferenceKey.Histories))
+      .pipe(map((histories: AppInfo[]) => (histories ? histories : [])))
+      .subscribe({
+        next: (histories: AppInfo[]) => (this.histories = histories)
+      });
   }
 
   syncAccount(accounts: MpurseAccount[]): void {
@@ -83,11 +108,16 @@ export class PreferenceService {
     return from(this.storage.remove(PreferenceKey.FinishedBackup)).pipe(
       flatMap(() => this.storage.remove(PreferenceKey.SelectedAddress)),
       flatMap(() => this.storage.remove(PreferenceKey.Identities)),
+      flatMap(() => this.storage.remove(PreferenceKey.Favorites)),
+      flatMap(() => this.storage.remove(PreferenceKey.Histories)),
       map(() => {
         this.language = 'en';
+        this.searchEngine = 'google';
         this.finishedBackup = false;
         this.selectedAddress = '';
         this.identities = [];
+        this.favorites = [];
+        this.histories = [];
       })
     );
   }
@@ -164,6 +194,7 @@ export class PreferenceService {
   setAccountName(name: string): void {
     const identity = this.getIdentity(this.selectedAddress);
     identity.name = name;
+    this.selectedAddressSubject.next(this.selectedAddress);
     this.saveIdentityes();
   }
 
@@ -200,6 +231,16 @@ export class PreferenceService {
     this.storage.set(PreferenceKey.Language, lang);
   }
 
+  //searchEngine
+  getSearchEngine(): string {
+    return this.searchEngine;
+  }
+
+  setSearchEngine(searchEngine: string): void {
+    this.searchEngine = searchEngine;
+    this.storage.set(PreferenceKey.SearchEngine, searchEngine);
+  }
+
   // useBiometrics
   private saveUseBiometrics(): void {
     this.storage.set(PreferenceKey.UseBiometrics, this.useBiometrics);
@@ -214,5 +255,59 @@ export class PreferenceService {
       this.useBiometrics = useBiometrics;
       this.saveUseBiometrics();
     }
+  }
+
+  // favorites
+  saveFavorites(): void {
+    this.storage.set(PreferenceKey.Favorites, this.favorites);
+  }
+
+  getFavorites(): AppInfo[] {
+    return this.favorites;
+  }
+
+  setFavorites(favorites: AppInfo[]): void {
+    this.favorites = favorites;
+    this.saveFavorites();
+  }
+
+  addFavorite(favorite: AppInfo): void {
+    if (favorite && this.favorites.length <= this.MAX_FAVORITES) {
+      this.favorites.push(favorite);
+      this.saveFavorites();
+    }
+  }
+
+  deleteFavorite(favorite: string): void {
+    this.setFavorites(this.favorites.filter(v => v.href !== favorite));
+  }
+
+  // histories
+  saveHistories(): void {
+    this.storage.set(PreferenceKey.Histories, this.histories);
+  }
+
+  getHistories(): AppInfo[] {
+    return this.histories;
+  }
+
+  addHistory(history: AppInfo): void {
+    if (history) {
+      if (this.histories.length >= this.MAX_HISTORIES) {
+        this.histories.pop();
+      }
+      this.histories.unshift(history);
+      this.saveHistories();
+    }
+  }
+
+  deleteHistory(index: number): void {
+    this.histories = this.histories.filter((v, i) => i !== index);
+    this.saveHistories();
+  }
+
+  deleteHistories(): void {
+    this.histories = [];
+    this.saveHistories();
   }
 }

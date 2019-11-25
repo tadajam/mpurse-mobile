@@ -39,7 +39,7 @@ export class WalletPage {
   assetBalances: MpchainAssetBalance[] = [];
   searchAssetStrControl = new FormControl('', Validators.required);
   searchedAsset: MpchainAssetBalance;
-  private subscriptions = new Subscription();
+  subscriptions: Subscription;
 
   constructor(
     private preferenceService: PreferenceService,
@@ -61,6 +61,7 @@ export class WalletPage {
       error: error => this.commonService.presentErrorToast(error.toString())
     });
 
+    this.subscriptions = new Subscription();
     this.subscriptions.add(
       this.preferenceService.selectedAddressState
         .pipe(

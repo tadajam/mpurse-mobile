@@ -29,10 +29,20 @@
     <ion-text>
       <p>Change the default search engine.</p>
     </ion-text>
-    <ion-select [(ngModel)]="searchEngine" interface="action-sheet" ngDefaultControl>
+    <ion-select [(ngModel)]="searchEngine" (ionChange)="changeSearchEngine()" interface="action-sheet" ngDefaultControl>
       <ion-select-option value="google">Google</ion-select-option>
       <ion-select-option value="duckduckgo">DuckDuckGo</ion-select-option>
     </ion-select>
+  </div>
+
+  <div padding>
+    <ion-label>
+      <h1>Browser History</h1>
+    </ion-label>
+    <ion-text>
+      <p>Remove all browser history.</p>
+    </ion-text>
+    <ion-button (click)="deleteHistories()" expand="block" fill="outline">Remove</ion-button>
   </div>
 
   <div padding>

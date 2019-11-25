@@ -9,6 +9,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { IonicStorageModule } from '@ionic/storage';
 import { KeychainTouchId } from '@ionic-native/keychain-touch-id/ngx';
 import { TranslateModule, TranslateStore } from '@ngx-translate/core';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 describe('MenuComponent', () => {
   let component: MenuComponent;
@@ -24,6 +25,7 @@ describe('MenuComponent', () => {
         IonicStorageModule.forRoot()
       ],
       providers: [
+        InAppBrowser,
         ModalController,
         AngularDelegate,
         Clipboard,

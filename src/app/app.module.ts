@@ -25,6 +25,7 @@ import { ImportAccountPageModule } from './pages/import-account/import-account.m
 import { ExportPageModule } from './pages/export/export.module';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { ReceivePageModule } from './pages/receive/receive.module';
+import { AppInfoPageModule } from './pages/app-info/app-info.module';
 
 export function createTranslateLoader(http: HttpClient): TranslateHttpLoader {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -63,7 +64,8 @@ export class IonicGestureConfig extends HammerGestureConfig {
     ApprovePageModule,
     ImportAccountPageModule,
     ExportPageModule,
-    ReceivePageModule
+    ReceivePageModule,
+    AppInfoPageModule
   ],
   providers: [
     StatusBar,

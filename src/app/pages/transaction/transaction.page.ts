@@ -30,7 +30,7 @@ export class TransactionPage {
     unsignedTx: this.unsignedTxControl,
     signedTx: this.signedTxControl
   });
-  private subscriptions = new Subscription();
+  subscriptions: Subscription;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -61,6 +61,7 @@ export class TransactionPage {
     this.address = this.preferenceService.getSelectedAddress();
     this.identity = this.preferenceService.getIdentity(this.address);
 
+    this.subscriptions = new Subscription();
     this.subscriptions.add(
       this.preferenceService.selectedAddressState.subscribe({
         next: (address: string) => {

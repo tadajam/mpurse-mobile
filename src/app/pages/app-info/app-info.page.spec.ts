@@ -1,29 +1,27 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SettingsPage } from './settings.page';
-import { FormsModule } from '@angular/forms';
-import { IonicStorageModule } from '@ionic/storage';
-import { KeychainTouchId } from '@ionic-native/keychain-touch-id/ngx';
-import { TranslateModule, TranslateStore } from '@ngx-translate/core';
+import { AppInfoPage } from './app-info.page';
 import { HttpClientModule } from '@angular/common/http';
-import { ModalController, AngularDelegate } from '@ionic/angular';
 import { RouterTestingModule } from '@angular/router/testing';
+import { TranslateModule, TranslateStore } from '@ngx-translate/core';
+import { IonicStorageModule } from '@ionic/storage';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
+import { KeychainTouchId } from '@ionic-native/keychain-touch-id/ngx';
+import { ModalController, AngularDelegate } from '@ionic/angular';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 
-describe('SettingsPage', () => {
-  let component: SettingsPage;
-  let fixture: ComponentFixture<SettingsPage>;
+describe('AppInfoPage', () => {
+  let component: AppInfoPage;
+  let fixture: ComponentFixture<AppInfoPage>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [SettingsPage],
+      declarations: [AppInfoPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [
         HttpClientModule,
-        FormsModule,
         RouterTestingModule,
         TranslateModule.forChild(),
         IonicStorageModule.forRoot()
@@ -33,15 +31,15 @@ describe('SettingsPage', () => {
         KeychainTouchId,
         ModalController,
         AngularDelegate,
+        TranslateStore,
         Clipboard,
-        BarcodeScanner,
-        TranslateStore
+        BarcodeScanner
       ]
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SettingsPage);
+    fixture = TestBed.createComponent(AppInfoPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

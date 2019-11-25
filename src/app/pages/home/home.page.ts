@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { filter, flatMap } from 'rxjs/operators';
 import { ModalController } from '@ionic/angular';
 import { ApprovePage } from '../approve/approve.page';
+import { BackgroundService } from 'src/app/services/background.service';
 
 @Component({
   selector: 'app-home',
@@ -14,12 +15,13 @@ import { ApprovePage } from '../approve/approve.page';
 export class HomePage {
   address = '';
   accountName = '';
-  private subscriptions = new Subscription();
+  subscriptions: Subscription;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private preferenceService: PreferenceService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private backgroundervice: BackgroundService
   ) {}
 
   ionViewDidEnter(): void {
@@ -36,6 +38,7 @@ export class HomePage {
 
     this.updateAddress(this.preferenceService.getSelectedAddress());
 
+    this.subscriptions = new Subscription();
     this.subscriptions.add(
       this.preferenceService.selectedAddressState.subscribe({
         next: (address: string) => this.updateAddress(address)

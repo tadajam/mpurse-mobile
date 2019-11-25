@@ -17,6 +17,7 @@ export class BackgroundService {
   private origin: string;
   private title: string;
   private icon: string;
+  private description: string;
   private pendingRequests: any[] = [];
 
   constructor(
@@ -49,6 +50,7 @@ export class BackgroundService {
         this.origin = event['data'].message.origin;
         this.title = event['data'].message.title;
         this.icon = event['data'].message.icon;
+        this.description = event['data'].message.description;
         this.sendResponse(event['data'].action, event['data'].id, {
           isUnlocked: true
         });
@@ -71,7 +73,7 @@ export class BackgroundService {
               event['data'].target = '';
               break;
             case InPageMessage.SendAssetRequest:
-              event['data'].target = 'send';
+              event['data'].target = 'send-asset';
               break;
             case InPageMessage.SignRawTransactionRequest:
               event['data'].target = 'transaction';
@@ -87,6 +89,7 @@ export class BackgroundService {
           event['data'].origin = this.origin;
           event['data'].title = this.title;
           event['data'].icon = this.icon;
+          event['data'].description = this.description;
           this.pendingRequests.push(event['data']);
         }),
         filter(() => this.pendingRequests.length === 1)
