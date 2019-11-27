@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { BrowserPage } from './browser.page';
 import { ComponentModule } from 'src/app/components/component.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { BrowserPopoverComponent } from 'src/app/components/browser-popover/browser-popover.component';
 
 const routes: Routes = [
   {
@@ -17,6 +18,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
+  entryComponents: [BrowserPopoverComponent],
   imports: [
     CommonModule,
     FormsModule,
@@ -26,6 +28,6 @@ const routes: Routes = [
     ReactiveFormsModule,
     TranslateModule.forChild()
   ],
-  declarations: [BrowserPage]
+  declarations: [BrowserPage, BrowserPopoverComponent]
 })
 export class BrowserPageModule {}

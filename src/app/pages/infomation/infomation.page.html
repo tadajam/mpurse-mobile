@@ -8,5 +8,44 @@
 </ion-header>
 
 <ion-content>
-  Infomation
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>About Mpurse</ion-card-title>
+    </ion-card-header>
+      
+    <ion-card-content>
+      <p>
+        Mpurse is a Monacoin and Monaparty wallet with browser function.
+        This can inject an instance of mpurse into every website's javascript context.
+      </p>
+    </ion-card-content>
+  </ion-card>
+  
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>About Mpchain</ion-card-title>
+    </ion-card-header>
+      
+    <ion-card-content>
+      <p>
+        Mpchain is a free Monaparty blockchain explorer.
+      </p>
+      <ion-text color="primary" (click)="openInAppBrowser('https://mpchain.info')">https://mpchain.info</ion-text>
+    </ion-card-content>
+  </ion-card>
+  
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Donate</ion-card-title>
+    </ion-card-header>
+      
+    <ion-card-content>
+      <p>
+        MONA or whatever tokens are welcome.
+      </p>
+      <ion-text color="primary" routerLink="/home/send-asset" [queryParams]="{ to: 'MLinW5mA2Rnu7EjDQpnsrh6Z8APMBH6rAt' }">
+        MLinW5mA2Rnu7EjDQpnsrh6Z8APMBH6rAt
+      </ion-text>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

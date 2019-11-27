@@ -84,4 +84,8 @@ export class AppInfoPage {
     this.preferenceService.deleteHistory(historyIndex);
     this.appInfo = this.getApps(0, this.page * this.limit + this.limit);
   }
+
+  closeModal(): void {
+    this.modalController.dismiss();
+  }
 }

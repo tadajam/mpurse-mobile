@@ -5,10 +5,11 @@ import { InAppBrowserService } from 'src/app/services/in-app-browser.service';
 import { FormControl } from '@angular/forms';
 import { CommonService } from 'src/app/services/common.service';
 import { AccountsPage } from '../accounts/accounts.page';
-import { ModalController } from '@ionic/angular';
+import { ModalController, PopoverController } from '@ionic/angular';
 import { AppInfo } from 'src/app/interfaces/app-info';
 import { AppInfoPage } from '../app-info/app-info.page';
 import { AppGroup } from 'src/app/enum/app-group.enum';
+import { BrowserPopoverComponent } from 'src/app/components/browser-popover/browser-popover.component';
 
 @Component({
   selector: 'app-browser',
@@ -34,7 +35,8 @@ export class BrowserPage {
     private preferenceService: PreferenceService,
     private inAppBrowserService: InAppBrowserService,
     private commonService: CommonService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private popoverController: PopoverController
   ) {}
 
   ionViewDidEnter(): void {
@@ -68,6 +70,17 @@ export class BrowserPage {
       })
     ).subscribe({
       next: modal => modal.present()
+    });
+  }
+
+  openPopover(event: any): void {
+    from(
+      this.popoverController.create({
+        component: BrowserPopoverComponent,
+        event: event
+      })
+    ).subscribe({
+      next: popover => popover.present()
     });
   }
 

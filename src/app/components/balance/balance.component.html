@@ -1,6 +1,6 @@
 <ion-item
   *ngIf="asset"
-  [routerLink]="['/home/send-asset']"
+  routerLink="/home/send-asset"
   [queryParams]="{ asset: asset.asset }"
   [lines]="searched ? 'full' : 'none'">
   <ion-avatar slot="start">

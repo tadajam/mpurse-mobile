@@ -4,7 +4,7 @@ import {
   InAppBrowserObject,
   InAppBrowserEvent
 } from '@ionic-native/in-app-browser/ngx';
-import { flatMap, filter } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { InPageMessage } from '../enum/in-page-message.enum';
 import { Subject } from 'rxjs';
 import { AppInfo } from '../interfaces/app-info';
@@ -63,19 +63,12 @@ export class InAppBrowserService {
         }
       });
 
-    this.inAppBrowserObject
-      .on('loadstop')
-      .pipe(
-        flatMap(() =>
-          this.inAppBrowserObject.executeScript({
-            code: this.getInPageString()
-          })
-        )
-      )
-      .subscribe({
-        next: x => console.log('executeScript response : ' + JSON.stringify(x)),
-        error: error => console.log(error)
-      });
+    this.inAppBrowserObject.on('loadstop').subscribe({
+      next: () =>
+        this.inAppBrowserObject.executeScript({
+          code: this.getInPageString()
+        })
+    });
   }
 
   show(): void {

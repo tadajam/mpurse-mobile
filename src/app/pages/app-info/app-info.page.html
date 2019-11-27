@@ -1,5 +1,10 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="closeModal()">
+        <ion-icon name="arrow-back" size="large"></ion-icon>
+      </ion-button>
+    </ion-buttons>
     <ion-title *ngIf="appGroup === 'Favorite'">Favorite</ion-title>
     <ion-title *ngIf="appGroup === 'History'">History</ion-title>
   </ion-toolbar>
@@ -7,6 +12,13 @@
 
 <ion-content>
   <ion-list>
+    <ion-item *ngIf="appInfo.length === 0" lines="none">
+      <ion-avatar slot="start">
+        <ion-icon name="cube" size="large" color="primary"></ion-icon>
+      </ion-avatar>
+      <ion-label><p>No data</p></ion-label>
+    </ion-item>
+
     <ng-container *ngIf="appGroup === 'Favorite'">
       <ion-reorder-group [disabled]="!isReorderMode" (ionItemReorder)="reorderFavorites($event)">
         <ion-item (click)="open(app.href)" *ngFor="let app of appInfo" (press)="isReorderMode = !isReorderMode" lines="none">
