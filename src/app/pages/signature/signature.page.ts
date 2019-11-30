@@ -103,7 +103,7 @@ export class SignaturePage {
   }
 
   sendToWeb(): void {
-    this.backgroundService.sendResponse(this.request.action, this.request.id, {
+    this.backgroundService.sendResponse(this.request, {
       signature: this.signatureControl.value
     });
     this.location.back();

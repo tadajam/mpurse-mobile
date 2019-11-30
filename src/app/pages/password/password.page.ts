@@ -17,11 +17,11 @@ export class PasswordPage {
   import = false;
   hide = true;
 
-  passwordControl = new FormControl('123456789', [
+  passwordControl = new FormControl('', [
     Validators.required,
     Validators.minLength(8)
   ]);
-  confirmPasswordControl = new FormControl('123456789', []);
+  confirmPasswordControl = new FormControl('', []);
   useBiometricsControl = new FormControl(false, []);
 
   passwordForm = new FormGroup(

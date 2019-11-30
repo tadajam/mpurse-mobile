@@ -20,5 +20,7 @@ export enum InPageMessage {
   CounterBlockRequest = 'mpurse.counterblock.request',
   CounterBlockResponse = 'mpurse.counterblock.response',
   CounterPartyRequest = 'mpurse.counterparty.request',
-  CounterPartyResponse = 'mpurse.counterparty.response'
+  CounterPartyResponse = 'mpurse.counterparty.response',
+
+  Hide = 'mpurse.hide'
 }

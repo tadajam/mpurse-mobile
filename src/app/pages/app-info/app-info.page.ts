@@ -4,6 +4,7 @@ import { ModalController, IonInfiniteScroll } from '@ionic/angular';
 import { InAppBrowserService } from 'src/app/services/in-app-browser.service';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { AppInfo } from 'src/app/interfaces/app-info';
+import { BackgroundService } from 'src/app/services/background.service';
 
 @Component({
   selector: 'app-app-info',
@@ -22,6 +23,7 @@ export class AppInfoPage {
   constructor(
     private preferenceService: PreferenceService,
     private inAppBrowserService: InAppBrowserService,
+    private backgroundService: BackgroundService,
     private modalController: ModalController
   ) {}
 
@@ -40,6 +42,10 @@ export class AppInfoPage {
 
   getApps(page: number, limit: number): AppInfo[] {
     switch (this.appGroup) {
+      case AppGroup.Active:
+        return this.inAppBrowserService
+          .getTabs()
+          .slice(page * limit, page * limit + limit);
       case AppGroup.Favorite:
         return this.preferenceService
           .getFavorites()
@@ -48,7 +54,6 @@ export class AppInfoPage {
         return this.preferenceService
           .getHistories()
           .slice(page * limit, page * limit + limit);
-        break;
     }
   }
 
@@ -83,6 +88,16 @@ export class AppInfoPage {
   deleteHistory(historyIndex: number): void {
     this.preferenceService.deleteHistory(historyIndex);
     this.appInfo = this.getApps(0, this.page * this.limit + this.limit);
+  }
+
+  showTab(tabIndex: number): void {
+    this.inAppBrowserService.showTab(tabIndex);
+    this.closeModal();
+  }
+
+  closeTab(tabIndex: number): void {
+    this.inAppBrowserService.closeTab(tabIndex);
+    this.appInfo.splice(tabIndex, 1);
   }
 
   closeModal(): void {

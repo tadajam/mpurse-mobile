@@ -37,7 +37,7 @@
 
   <ion-list>
     <ion-list-header>
-      <ion-label>Favorite</ion-label>
+      <ion-label>Favorites</ion-label>
     </ion-list-header>
     
     <ion-item *ngIf="getFavorites().length === 0" lines="none">
@@ -83,9 +83,9 @@
 <ion-footer>
   <ion-toolbar>
     <ion-buttons slot="end">
-      <ion-button (click)="openAppInfoPage('Favorite')">
+      <ion-button (click)="openAppInfoPage('Active')">
         <ion-icon name="square-outline" size="large"></ion-icon>
-        <ion-badge color="primary">{{2}}</ion-badge>
+        <ion-badge color="primary">{{getTabLength()}}</ion-badge>
       </ion-button>
 
       <ion-button (click)="openPopover($event)">

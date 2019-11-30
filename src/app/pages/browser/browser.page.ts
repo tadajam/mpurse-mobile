@@ -3,7 +3,6 @@ import { PreferenceService } from 'src/app/services/preference.service';
 import { Subscription, from } from 'rxjs';
 import { InAppBrowserService } from 'src/app/services/in-app-browser.service';
 import { FormControl } from '@angular/forms';
-import { CommonService } from 'src/app/services/common.service';
 import { AccountsPage } from '../accounts/accounts.page';
 import { ModalController, PopoverController } from '@ionic/angular';
 import { AppInfo } from 'src/app/interfaces/app-info';
@@ -34,7 +33,6 @@ export class BrowserPage {
   constructor(
     private preferenceService: PreferenceService,
     private inAppBrowserService: InAppBrowserService,
-    private commonService: CommonService,
     private modalController: ModalController,
     private popoverController: PopoverController
   ) {}
@@ -99,10 +97,6 @@ export class BrowserPage {
     return this.preferenceService.getFavorites();
   }
 
-  getFavoritesLength(): number {
-    return this.preferenceService.getFavorites().length;
-  }
-
   getHeadFavorites(): AppInfo[] {
     return this.preferenceService.getFavorites().slice(0, 5);
   }
@@ -137,7 +131,7 @@ export class BrowserPage {
     this.preferenceService.deleteHistory(historyIndex);
   }
 
-  getHistoriesLength(): number {
-    return this.preferenceService.getHistories().length;
+  getTabLength(): number {
+    return this.inAppBrowserService.getTabsLength();
   }
 }

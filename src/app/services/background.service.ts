@@ -30,19 +30,23 @@ export class BackgroundService {
     this.inAppBrowserService.inAppBrowserObjectState.subscribe(
       (inAppBrowser: InAppBrowserObject) => {
         this.inAppBrowserObject = inAppBrowser;
-        this.onCreateInAppBrowser();
+        this.onCreateInAppBrowser(inAppBrowser);
       }
     );
   }
 
-  onCreateInAppBrowser(): void {
-    this.inAppBrowserObject.on('exit').subscribe(() => {
+  onCreateInAppBrowser(inAppBrowser: InAppBrowserObject): void {
+    inAppBrowser.on('exit').subscribe(() => {
       this.inAppBrowserObject = null;
-      this.origin = null;
+      this.href = '';
+      this.origin = '';
+      this.title = '';
+      this.icon = '';
+      this.description = '';
       this.pendingRequests = [];
     });
 
-    this.inAppBrowserObject
+    inAppBrowser
       .on('message')
       .pipe(filter(event => event['data'].action === InPageMessage.InitRequest))
       .subscribe(event => {
@@ -51,12 +55,13 @@ export class BackgroundService {
         this.title = event['data'].message.title;
         this.icon = event['data'].message.icon;
         this.description = event['data'].message.description;
-        this.sendResponse(event['data'].action, event['data'].id, {
+
+        this.sendResponse(event['data'], {
           isUnlocked: true
         });
       });
 
-    this.inAppBrowserObject
+    inAppBrowser
       .on('message')
       .pipe(
         filter(
@@ -91,14 +96,13 @@ export class BackgroundService {
           event['data'].icon = this.icon;
           event['data'].description = this.description;
           this.pendingRequests.push(event['data']);
-        }),
-        filter(() => this.pendingRequests.length === 1)
+        })
       )
       .subscribe({
         next: () => this.navigateByPendingRequest()
       });
 
-    this.inAppBrowserObject
+    inAppBrowser
       .on('message')
       .pipe(
         filter(
@@ -138,7 +142,7 @@ export class BackgroundService {
       )
       .subscribe({
         next: result => {
-          this.sendResponse(result.action, result.id, result.result);
+          this.sendResponse(result, result.result);
         }
       });
   }
@@ -157,16 +161,6 @@ export class BackgroundService {
     );
   }
 
-  private postMessage(response: {
-    action: InPageMessage;
-    id: number;
-    data: any;
-  }): void {
-    this.inAppBrowserObject.executeScript({
-      code: 'window.postMessage(' + JSON.stringify(response) + ', "*")'
-    });
-  }
-
   getPendingRequests(): any[] {
     return this.pendingRequests;
   }
@@ -178,7 +172,7 @@ export class BackgroundService {
   cancelPendingRequest(id: number): void {
     const request = this.pendingRequests.find(value => value.id === id);
     if (request) {
-      this.sendResponse(request.action, request.id, {
+      this.sendResponse(request, {
         error: 'User Cancelled'
       });
     }
@@ -195,15 +189,20 @@ export class BackgroundService {
     );
   }
 
-  sendResponse(requestAction: InPageMessage, id: number, result: any): void {
-    this.postMessage({
-      action: this.getResponseAction(requestAction),
-      id: id,
-      data: result
+  sendResponse(request: any, result: any): void {
+    this.inAppBrowserObject.executeScript({
+      code:
+        'window.postMessage(' +
+        JSON.stringify({
+          action: this.getResponseAction(request.action),
+          id: request.id,
+          data: result
+        }) +
+        ', "*")'
     });
 
     this.pendingRequests = this.pendingRequests.filter(
-      value => value.id !== id
+      value => value.id !== request.id
     );
 
     if (this.pendingRequests.length === 0) {
@@ -236,27 +235,26 @@ export class BackgroundService {
     }
   }
   navigateByPendingRequest(): void {
-    this.setApprovalRequestId(null);
-    const address = this.preferenceService.getSelectedAddress();
-    const identity = this.preferenceService.getIdentity(address);
-    if (!identity.approvedOrigins.some(value => value === this.origin)) {
-      this.inAppBrowserObject.hide();
-      this.setApprovalRequestId(this.pendingRequests[0].id);
-    } else {
-      if (this.pendingRequests[0].target === '') {
-        this.sendResponse(
-          this.pendingRequests[0].action,
-          this.pendingRequests[0].id,
-          { address: address }
-        );
-      } else {
+    if (this.pendingRequests.length !== 0) {
+      this.setApprovalRequestId(null);
+      const address = this.preferenceService.getSelectedAddress();
+      const identity = this.preferenceService.getIdentity(address);
+
+      if (!identity.approvedOrigins.some(value => value === this.origin)) {
         this.inAppBrowserObject.hide();
-        this.router.navigateByUrl(
-          this.router.createUrlTree(
-            ['/home/' + this.pendingRequests[0].target],
-            { queryParams: { id: this.pendingRequests[0].id } }
-          )
-        );
+        this.setApprovalRequestId(this.pendingRequests[0].id);
+      } else {
+        if (this.pendingRequests[0].target === '') {
+          this.sendResponse(this.pendingRequests[0], { address: address });
+        } else {
+          this.inAppBrowserObject.hide();
+          this.router.navigateByUrl(
+            this.router.createUrlTree(
+              ['/home/' + this.pendingRequests[0].target],
+              { queryParams: { id: this.pendingRequests[0].id } }
+            )
+          );
+        }
       }
     }
   }

@@ -348,13 +348,9 @@ export class SendAssetPage {
       .subscribe({
         next: result => {
           if (this.request) {
-            this.backgroundService.sendResponse(
-              this.request.action,
-              this.request.id,
-              {
-                txHash: result['txHash']
-              }
-            );
+            this.backgroundService.sendResponse(this.request, {
+              txHash: result['txHash']
+            });
             this.location.back();
           } else {
             this.commonService.presentSuccessToast(

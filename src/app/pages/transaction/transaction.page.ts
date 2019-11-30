@@ -110,13 +110,9 @@ export class TransactionPage {
   broadcast(): void {
     this.mpchainService.sendTransaction(this.signedTxControl.value).subscribe({
       next: txHash => {
-        this.backgroundService.sendResponse(
-          this.request.action,
-          this.request.id,
-          {
-            txHash: txHash
-          }
-        );
+        this.backgroundService.sendResponse(this.request, {
+          txHash: txHash
+        });
         this.location.back();
       },
       error: error => this.commonService.presentErrorToast(error.toString())
@@ -124,7 +120,7 @@ export class TransactionPage {
   }
 
   sendToWeb(): void {
-    this.backgroundService.sendResponse(this.request.action, this.request.id, {
+    this.backgroundService.sendResponse(this.request, {
       signedTx: this.signedTxControl.value
     });
     this.location.back();

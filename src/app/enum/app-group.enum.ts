@@ -1,5 +1,6 @@
 export enum AppGroup {
   Popular = 'Popular',
   Favorite = 'Favorite',
-  History = 'History'
+  History = 'History',
+  Active = 'Active'
 }
