@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Injectable, OnDestroy } from '@angular/core';
+import { Observable, of, Subscription } from 'rxjs';
 import { InPageMessage } from '../enum/in-page-message.enum';
 import { InAppBrowserService } from './in-app-browser.service';
 import { InAppBrowserObject } from '@ionic-native/in-app-browser/ngx';
@@ -7,11 +7,12 @@ import { flatMap, map, filter, catchError } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PreferenceService } from './preference.service';
 import { MpchainService } from './mpchain.service';
+import { KeyringService } from './keyring.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class BackgroundService {
+export class BackgroundService implements OnDestroy {
   private inAppBrowserObject: InAppBrowserObject;
   private href: string;
   private origin: string;
@@ -20,19 +21,53 @@ export class BackgroundService {
   private description: string;
   private pendingRequests: any[] = [];
 
+  private subscriptions: Subscription;
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private preferenceService: PreferenceService,
     private inAppBrowserService: InAppBrowserService,
     private router: Router,
-    private mpchainService: MpchainService
+    private mpchainService: MpchainService,
+    private keyringService: KeyringService
   ) {
-    this.inAppBrowserService.inAppBrowserObjectState.subscribe(
-      (inAppBrowser: InAppBrowserObject) => {
-        this.inAppBrowserObject = inAppBrowser;
-        this.onCreateInAppBrowser(inAppBrowser);
-      }
+    this.subscriptions = new Subscription();
+    this.subscriptions.add(
+      this.preferenceService.selectedAddressState.subscribe({
+        next: address => {
+          this.executeScript({
+            action: InPageMessage.AddressState,
+            id: 0,
+            data: { address: address }
+          });
+        }
+      })
     );
+
+    this.subscriptions.add(
+      this.keyringService.loginState.subscribe({
+        next: isUnlocked => {
+          this.executeScript({
+            action: InPageMessage.LoginState,
+            id: 0,
+            data: { isUnlocked: isUnlocked }
+          });
+        }
+      })
+    );
+
+    this.subscriptions.add(
+      this.inAppBrowserService.inAppBrowserObjectState.subscribe(
+        (inAppBrowser: InAppBrowserObject) => {
+          this.inAppBrowserObject = inAppBrowser;
+          this.onCreateInAppBrowser(inAppBrowser);
+        }
+      )
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   onCreateInAppBrowser(inAppBrowser: InAppBrowserObject): void {
@@ -190,15 +225,10 @@ export class BackgroundService {
   }
 
   sendResponse(request: any, result: any): void {
-    this.inAppBrowserObject.executeScript({
-      code:
-        'window.postMessage(' +
-        JSON.stringify({
-          action: this.getResponseAction(request.action),
-          id: request.id,
-          data: result
-        }) +
-        ', "*")'
+    this.executeScript({
+      action: this.getResponseAction(request.action),
+      id: request.id,
+      data: result
     });
 
     this.pendingRequests = this.pendingRequests.filter(
@@ -210,6 +240,12 @@ export class BackgroundService {
     } else {
       this.navigateByPendingRequest();
     }
+  }
+
+  executeScript(postData: any): void {
+    this.inAppBrowserObject.executeScript({
+      code: 'window.postMessage(' + JSON.stringify(postData) + ', "*")'
+    });
   }
 
   getResponseAction(requestAction: InPageMessage): InPageMessage {

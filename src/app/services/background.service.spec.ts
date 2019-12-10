@@ -6,6 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { RouterTestingModule } from '@angular/router/testing';
+import { KeychainTouchId } from '@ionic-native/keychain-touch-id/ngx';
 
 describe('BackgroundService', () => {
   beforeEach(() =>
@@ -16,7 +17,7 @@ describe('BackgroundService', () => {
         TranslateModule.forChild(),
         IonicStorageModule.forRoot()
       ],
-      providers: [InAppBrowser, TranslateStore]
+      providers: [InAppBrowser, TranslateStore, KeychainTouchId]
     })
   );
 

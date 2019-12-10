@@ -5,7 +5,7 @@ import { PreferenceService } from './preference.service';
 import { SeedType } from '../enum/seed-type.enum';
 import { SeedLanguage } from '../enum/seed-language.enum';
 import * as jazzicon from 'jazzicon';
-import { Observable, from, of, Observer } from 'rxjs';
+import { Observable, from, of, Observer, Subject } from 'rxjs';
 import { map, flatMap, catchError } from 'rxjs/operators';
 import { Encryptor } from '../classes/encryptor';
 import { Storage } from '@ionic/storage';
@@ -29,6 +29,9 @@ export class KeyringService {
   private version = 1;
   private keyring: Keyring;
   private password = '';
+
+  private loginStateSubject = new Subject<boolean>();
+  loginState = this.loginStateSubject.asObservable();
 
   constructor(
     private storage: Storage,
@@ -212,6 +215,7 @@ export class KeyringService {
       map(vault => {
         if (vault.checksum === Encryptor.createCheckSum(inputPassword)) {
           this.password = inputPassword;
+          this.loginStateSubject.next(true);
         } else {
           throw new Error('Passwords do not match');
         }
@@ -221,6 +225,7 @@ export class KeyringService {
 
   lock(): void {
     this.password = '';
+    this.loginStateSubject.next(false);
     this.keyring.initKeyring();
   }
 
@@ -233,10 +238,7 @@ export class KeyringService {
           'Login Mpurse'
         );
       }),
-      flatMap(result => {
-        this.password = result;
-        return this.createExistingKeyring();
-      })
+      flatMap(result => this.unlock(result))
     );
   }
 

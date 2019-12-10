@@ -21,7 +21,6 @@ export class CommonService {
     from(
       this.toastController.create({
         message: message,
-        color: 'light',
         cssClass: 'toast ' + css,
         duration: duration,
         position: 'bottom',

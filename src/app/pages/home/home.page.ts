@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { filter, flatMap, tap } from 'rxjs/operators';
+import { filter, flatMap } from 'rxjs/operators';
 import { ModalController } from '@ionic/angular';
 import { ApprovePage } from '../approve/approve.page';
 import { BackgroundService } from 'src/app/services/background.service';

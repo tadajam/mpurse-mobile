@@ -26,15 +26,16 @@
 @import "~@ionic/angular/css/flex-utils.css";
 
 .toast {
-  --border-style: double;
-  --border-width: 0.1rem;
+  --background: #9b9b9b;
+  --button-color: #eeeeee;
   transform: translateY(-5rem);
+  word-break: break-all;
 }
 
 .toast-success {
-  --border-color: #10dc60;
+  --color: #89ffb8;
 }
 
 .toast-error {
-  --border-color: #ffce00;
+  --color: #ffff8d;
 }

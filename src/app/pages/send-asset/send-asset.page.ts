@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { Identity } from 'src/app/interfaces/identity';
 import {
   FormControl,
@@ -26,6 +26,7 @@ import { KeyringService } from 'src/app/services/keyring.service';
 import { CommonService } from 'src/app/services/common.service';
 import { AccountsPage } from '../accounts/accounts.page';
 import { ModalController } from '@ionic/angular';
+import { Decimal } from 'decimal.js';
 
 @Component({
   selector: 'app-send-asset',
@@ -106,6 +107,7 @@ export class SendAssetPage {
   subscriptions: Subscription;
 
   constructor(
+    private zone: NgZone,
     private activatedRoute: ActivatedRoute,
     private preferenceService: PreferenceService,
     private backgroundService: BackgroundService,
@@ -213,8 +215,10 @@ export class SendAssetPage {
       )
       .subscribe({
         next: result => {
-          this.unsignedTx = result['tx_hex'];
-          this.calculatedFee = result['btc_fee'];
+          this.zone.run(() => {
+            this.unsignedTx = result['tx_hex'];
+            this.calculatedFee = result['btc_fee'];
+          });
         }
       });
   }
@@ -281,16 +285,18 @@ export class SendAssetPage {
   }
 
   getAvailable(asset: string): string {
-    const assetInfo = this.assets.filter(value => value.asset === asset);
-    if (assetInfo.length > 0) {
-      return assetInfo[0].quantity;
-    } else {
-      return '0';
-    }
+    return this.getAvailableNumber(asset).toString();
   }
 
   getAvailableNumber(asset: string): number {
-    return Number(this.getAvailable(asset));
+    const assetInfo = this.assets.filter(value => value.asset === asset);
+    if (assetInfo.length > 0) {
+      return new Decimal(assetInfo[0].quantity)
+        .plus(new Decimal(assetInfo[0].unconfirmed_quantity))
+        .toNumber();
+    } else {
+      return 0;
+    }
   }
 
   setAvailableAllFunds(): void {
@@ -318,7 +324,9 @@ export class SendAssetPage {
   }
 
   changeFeeRange(event: any): void {
-    this.feeControl.setValue(event.target.value);
+    this.zone.run(() => {
+      this.feeControl.setValue(event.target.value);
+    });
   }
 
   createSend(disableUtxoLocks: boolean): Observable<any> {
@@ -341,20 +349,20 @@ export class SendAssetPage {
     this.createSend(false)
       .pipe(
         flatMap(result =>
-          this.keyringService.signRawTransaction(result['txHash'])
+          this.keyringService.signRawTransaction(result['tx_hex'])
         ),
         flatMap(signedTx => this.mpchainService.sendTransaction(signedTx))
       )
       .subscribe({
-        next: result => {
+        next: txHash => {
           if (this.request) {
             this.backgroundService.sendResponse(this.request, {
-              txHash: result['txHash']
+              txHash: txHash
             });
             this.location.back();
           } else {
             this.commonService.presentSuccessToast(
-              'Funds sent. tx_hash: ' + result['txHash']
+              'Funds sent. tx_hash: ' + txHash
             );
             this.location.back();
           }

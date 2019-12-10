@@ -20,7 +20,7 @@ export class ExportPage {
   hide = true;
   shouldInput = false;
 
-  passwordControl = new FormControl('123456789', [Validators.required]);
+  passwordControl = new FormControl('', [Validators.required]);
 
   passwordForm = new FormGroup({
     password: this.passwordControl

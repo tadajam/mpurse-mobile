@@ -104,7 +104,7 @@ export class MpchainService {
           amount,
           memoType === 'no' ? '' : memoValue,
           memoType === 'hex',
-          new Decimal(feePerB).times(new Decimal(1000)).toNumber(),
+          new Decimal(feePerB).times(new Decimal(1024)).toNumber(),
           disableUtxoLocks
         );
       }),
@@ -116,6 +116,7 @@ export class MpchainService {
 
   sendTransaction(signedTx: string): Observable<string> {
     return from(MpchainUtil.sendTx(signedTx)).pipe(
+      map(result => result.tx_hash),
       catchError(error => {
         throw new Error(this.interpretError(error));
       })

@@ -59,7 +59,10 @@ export class InAppBrowserService {
             icon: tab.icon,
             description: tab.description
           };
-          this.preferenceService.addHistory(lastBrowse);
+
+          if (lastBrowse.origin && lastBrowse.origin !== 'null') {
+            this.preferenceService.addHistory(lastBrowse);
+          }
           this.inAppBrowserTabs = this.inAppBrowserTabs.filter(
             v => v.inAppBrowserObject !== inAppBrowser
           );
