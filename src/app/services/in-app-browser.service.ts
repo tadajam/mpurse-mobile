@@ -120,6 +120,12 @@ export class InAppBrowserService {
     this.inAppBrowserTabs[tabIndex].inAppBrowserObject.show();
   }
 
+  hideTabs(): void {
+    for (const tab of this.inAppBrowserTabs) {
+      tab.inAppBrowserObject.hide();
+    }
+  }
+
   closeTab(tabIndex: number): void {
     this.inAppBrowserTabs[tabIndex].inAppBrowserObject.close();
   }

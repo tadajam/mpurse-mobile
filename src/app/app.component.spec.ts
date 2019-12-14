@@ -6,6 +6,13 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppComponent } from './app.component';
+import { Clipboard } from '@ionic-native/clipboard/ngx';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { IonicStorageModule } from '@ionic/storage';
+import { TranslateModule, TranslateStore } from '@ngx-translate/core';
+import { RouterTestingModule } from '@angular/router/testing';
+import { KeychainTouchId } from '@ionic-native/keychain-touch-id/ngx';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 describe('AppComponent', () => {
   let statusBarSpy, splashScreenSpy, platformReadySpy, platformSpy;
@@ -22,10 +29,20 @@ describe('AppComponent', () => {
     TestBed.configureTestingModule({
       declarations: [AppComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [
+        RouterTestingModule,
+        TranslateModule.forChild(),
+        IonicStorageModule.forRoot()
+      ],
       providers: [
         { provide: StatusBar, useValue: statusBarSpy },
         { provide: SplashScreen, useValue: splashScreenSpy },
-        { provide: Platform, useValue: platformSpy }
+        { provide: Platform, useValue: platformSpy },
+        InAppBrowser,
+        KeychainTouchId,
+        Clipboard,
+        TranslateStore,
+        BarcodeScanner
       ]
     }).compileComponents();
   }));

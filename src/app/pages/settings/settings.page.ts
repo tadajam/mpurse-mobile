@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 import { AlertController, ModalController } from '@ionic/angular';
 import { from, Subscription } from 'rxjs';
 import { ExportPage } from '../export/export.page';
-import { CommonService } from 'src/app/services/common.service';
 
 @Component({
   selector: 'app-settings',
@@ -17,6 +16,8 @@ export class SettingsPage {
   subscriptions: Subscription;
   lang = 'en';
   searchEngine = 'google';
+  autoLockTime = 15000;
+
   address = '';
   accountName = '';
 
@@ -25,13 +26,13 @@ export class SettingsPage {
     private keyringService: KeyringService,
     private preferenceService: PreferenceService,
     private alertController: AlertController,
-    private modalController: ModalController,
-    private commonService: CommonService
+    private modalController: ModalController
   ) {}
 
   ionViewDidEnter(): void {
     this.lang = this.preferenceService.getLanguage();
     this.searchEngine = this.preferenceService.getSearchEngine();
+    this.autoLockTime = this.preferenceService.getAutoLockTime();
 
     this.updateAddress(this.preferenceService.getSelectedAddress());
     this.subscriptions = new Subscription();
@@ -60,6 +61,10 @@ export class SettingsPage {
 
   changeSearchEngine(): void {
     this.preferenceService.setSearchEngine(this.searchEngine);
+  }
+
+  changeAutoLockTime(): void {
+    this.preferenceService.setAutoLockTime(this.autoLockTime);
   }
 
   deleteHistories(): void {

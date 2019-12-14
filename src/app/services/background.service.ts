@@ -243,9 +243,11 @@ export class BackgroundService implements OnDestroy {
   }
 
   executeScript(postData: any): void {
-    this.inAppBrowserObject.executeScript({
-      code: 'window.postMessage(' + JSON.stringify(postData) + ', "*")'
-    });
+    if (this.inAppBrowserObject) {
+      this.inAppBrowserObject.executeScript({
+        code: 'window.postMessage(' + JSON.stringify(postData) + ', "*")'
+      });
+    }
   }
 
   getResponseAction(requestAction: InPageMessage): InPageMessage {

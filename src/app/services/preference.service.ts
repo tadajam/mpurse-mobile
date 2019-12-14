@@ -28,6 +28,8 @@ export class PreferenceService {
   private favorites: AppInfo[] = [];
   private histories: AppInfo[] = [];
 
+  private autoLockTime = 15000;
+
   constructor(
     private storage: Storage,
     private translateService: TranslateService
@@ -82,6 +84,14 @@ export class PreferenceService {
       .subscribe({
         next: (histories: AppInfo[]) => (this.histories = histories)
       });
+
+    from(this.storage.get(PreferenceKey.AutoLockTime))
+      .pipe(
+        map((autoLockTime: number) => (autoLockTime ? autoLockTime : 15000))
+      )
+      .subscribe({
+        next: (autoLockTime: number) => (this.autoLockTime = autoLockTime)
+      });
   }
 
   syncAccount(accounts: MpurseAccount[]): void {
@@ -110,6 +120,7 @@ export class PreferenceService {
       flatMap(() => this.storage.remove(PreferenceKey.Identities)),
       flatMap(() => this.storage.remove(PreferenceKey.Favorites)),
       flatMap(() => this.storage.remove(PreferenceKey.Histories)),
+      flatMap(() => this.storage.remove(PreferenceKey.AutoLockTime)),
       map(() => {
         this.language = 'en';
         this.searchEngine = 'google';
@@ -118,6 +129,7 @@ export class PreferenceService {
         this.identities = [];
         this.favorites = [];
         this.histories = [];
+        this.autoLockTime = 15000;
       })
     );
   }
@@ -309,5 +321,15 @@ export class PreferenceService {
   deleteHistories(): void {
     this.histories = [];
     this.saveHistories();
+  }
+
+  // autoLockTime
+  getAutoLockTime(): number {
+    return this.autoLockTime;
+  }
+
+  setAutoLockTime(autoLockTime: number): void {
+    this.autoLockTime = autoLockTime;
+    this.storage.set(PreferenceKey.AutoLockTime, autoLockTime);
   }
 }

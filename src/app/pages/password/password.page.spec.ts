@@ -10,6 +10,7 @@ import { KeychainTouchId } from '@ionic-native/keychain-touch-id/ngx';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { IonicModule } from '@ionic/angular';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 describe('PasswordPage', () => {
   let component: PasswordPage;
@@ -26,7 +27,13 @@ describe('PasswordPage', () => {
         TranslateModule.forChild(),
         IonicStorageModule.forRoot()
       ],
-      providers: [KeychainTouchId, Clipboard, TranslateStore, BarcodeScanner]
+      providers: [
+        InAppBrowser,
+        KeychainTouchId,
+        Clipboard,
+        TranslateStore,
+        BarcodeScanner
+      ]
     }).compileComponents();
   }));
 

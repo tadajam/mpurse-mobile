@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
 import { ToastController } from '@ionic/angular';
-import { from, Observable } from 'rxjs';
+import { from, Observable, timer, Subscription } from 'rxjs';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { filter, map } from 'rxjs/operators';
 import QRCode from 'qrcode';
+import { PreferenceService } from './preference.service';
+import { Router } from '@angular/router';
+import { KeyringService } from './keyring.service';
+import { InAppBrowserService } from './in-app-browser.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +17,11 @@ export class CommonService {
   constructor(
     private clipboard: Clipboard,
     private toastController: ToastController,
-    private barcodeScanner: BarcodeScanner
+    private barcodeScanner: BarcodeScanner,
+    private preferenceService: PreferenceService,
+    private router: Router,
+    private keyringService: KeyringService,
+    private inAppBrowserService: InAppBrowserService
   ) {}
 
   private presentToast(message: string, css: string): void {
@@ -56,5 +64,22 @@ export class CommonService {
         errorCorrectionLevel: 'H'
       })
     ) as Observable<string>;
+  }
+
+  autoLockTimer(): Subscription {
+    const autoLockTime = this.preferenceService.getAutoLockTime();
+    if (autoLockTime < 0) {
+      return Subscription.EMPTY;
+    } else {
+      return timer(autoLockTime).subscribe({
+        next: () => this.lock()
+      });
+    }
+  }
+
+  lock(): void {
+    this.inAppBrowserService.hideTabs();
+    this.keyringService.lock();
+    this.router.navigateByUrl('/');
   }
 }

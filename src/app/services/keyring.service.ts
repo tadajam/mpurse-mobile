@@ -116,7 +116,8 @@ export class KeyringService {
     return this.getValidVault().pipe(
       map(vault => {
         return vault.checksum !== Encryptor.createCheckSum('');
-      })
+      }),
+      catchError(() => of(false))
     );
   }
 

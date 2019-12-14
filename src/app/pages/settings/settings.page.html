@@ -37,6 +37,25 @@
 
   <div padding>
     <ion-label>
+      <h1>Auto Lock</h1>
+    </ion-label>
+    <ion-text>
+      <p>Change the auto lock time.</p>
+    </ion-text>
+    <ion-select [(ngModel)]="autoLockTime" (ionChange)="changeAutoLockTime()" interface="action-sheet" ngDefaultControl>
+      <ion-select-option [value]="0">Immediately</ion-select-option>
+      <ion-select-option [value]="5000">After 5 seconds</ion-select-option>
+      <ion-select-option [value]="15000">After 15 seconds</ion-select-option>
+      <ion-select-option [value]="30000">After 30 seconds</ion-select-option>
+      <ion-select-option [value]="60000">After 60 seconds</ion-select-option>
+      <ion-select-option [value]="300000">After 5 minutes</ion-select-option>
+      <ion-select-option [value]="600000">After 10 minutes</ion-select-option>
+      <ion-select-option [value]="-1">Never</ion-select-option>
+    </ion-select>
+  </div>
+
+  <div padding>
+    <ion-label>
       <h1>Browser History</h1>
     </ion-label>
     <ion-text>

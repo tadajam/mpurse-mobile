@@ -2,10 +2,10 @@ import { Component, Input } from '@angular/core';
 import { MenuController, ModalController } from '@ionic/angular';
 import { from } from 'rxjs';
 import { AccountsPage } from 'src/app/pages/accounts/accounts.page';
-import { KeyringService } from 'src/app/services/keyring.service';
 import { Router } from '@angular/router';
 import { ReceivePage } from 'src/app/pages/receive/receive.page';
 import { InAppBrowserService } from 'src/app/services/in-app-browser.service';
+import { CommonService } from 'src/app/services/common.service';
 
 @Component({
   selector: 'app-menu',
@@ -23,8 +23,8 @@ export class MenuComponent {
     private router: Router,
     private menuController: MenuController,
     private modalController: ModalController,
-    private keyringService: KeyringService,
-    private inAppBrowserService: InAppBrowserService
+    private inAppBrowserService: InAppBrowserService,
+    private commonService: CommonService
   ) {}
 
   menuClose(): void {
@@ -53,8 +53,7 @@ export class MenuComponent {
 
   logout(): void {
     this.menuClose();
-    this.keyringService.lock();
-    this.router.navigateByUrl('/');
+    this.commonService.lock();
   }
 
   openInAppBrowser(query: string): void {

@@ -11,6 +11,7 @@ import { ModalController, AngularDelegate, IonicModule } from '@ionic/angular';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 
 describe('ImportAccountPage', () => {
   let component: ImportAccountPage;
@@ -29,6 +30,7 @@ describe('ImportAccountPage', () => {
         IonicStorageModule.forRoot()
       ],
       providers: [
+        InAppBrowser,
         KeychainTouchId,
         ModalController,
         AngularDelegate,

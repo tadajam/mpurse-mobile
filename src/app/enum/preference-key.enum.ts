@@ -6,5 +6,6 @@ export enum PreferenceKey {
   UseBiometrics = 'mpurse:useBiometrics',
   SearchEngine = 'mpurse:searchEngine',
   Favorites = 'mpurse:favorites',
-  Histories = 'mpurse:histories'
+  Histories = 'mpurse:histories',
+  AutoLockTime = 'mpurse:autoLockTime'
 }
