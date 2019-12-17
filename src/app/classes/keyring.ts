@@ -50,6 +50,23 @@ export class Keyring {
     }
   }
 
+  getAddresses(
+    seedType: string,
+    basePath: string,
+    mnemonic: string,
+    firstIndex: number,
+    total: number
+  ): string[] {
+    const addresses: string[] = [];
+    const hDPrivateKey = this.bitcore.getHDPrivateKey(mnemonic, seedType);
+    for (let i = firstIndex; i < firstIndex + total; i++) {
+      addresses.push(
+        this.bitcore.getAddress(hDPrivateKey.derive(basePath + i).privateKey)
+      );
+    }
+    return addresses;
+  }
+
   serialize(): string {
     return JSON.stringify({ hdkey: this.hdkey, privatekeys: this.privatekeys });
   }

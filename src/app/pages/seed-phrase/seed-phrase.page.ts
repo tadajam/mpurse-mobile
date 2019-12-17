@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { KeyringService } from 'src/app/services/keyring.service';
 import { PreferenceService } from 'src/app/services/preference.service';
-import { filter } from 'rxjs/operators';
+import { filter, tap, flatMap } from 'rxjs/operators';
 import {
   FormControl,
   Validators,
@@ -12,7 +12,11 @@ import {
 } from '@angular/forms';
 import { SeedType } from '../../enum/seed-type.enum';
 import { SeedLanguage } from '../../enum/seed-language.enum';
-import { AlertController, NavController } from '@ionic/angular';
+import {
+  AlertController,
+  NavController,
+  LoadingController
+} from '@ionic/angular';
 import { from } from 'rxjs';
 import { CommonService } from 'src/app/services/common.service';
 
@@ -78,13 +82,13 @@ export class SeedPhrasePage {
   }
 
   constructor(
-    private router: Router,
     private activatedRoute: ActivatedRoute,
     private keyringService: KeyringService,
     private preferenceService: PreferenceService,
     private alertController: AlertController,
     private commonService: CommonService,
-    private navController: NavController
+    private navController: NavController,
+    private loadingController: LoadingController
   ) {}
 
   ionViewDidEnter(): void {
@@ -173,14 +177,34 @@ export class SeedPhrasePage {
 
   finishBackup(): void {
     if (!this.existsVault) {
-      this.keyringService.createCustomKeyring(
-        this.seedTypeControl.value,
-        this.seedPhraseControl.value,
-        this.basePathControl.value
-      );
+      from(
+        this.loadingController.create({ message: 'Checking valid address.' })
+      )
+        .pipe(
+          tap(loading => loading.present()),
+          flatMap(() =>
+            this.keyringService.createCustomKeyring(
+              this.seedTypeControl.value,
+              this.seedPhraseControl.value,
+              this.basePathControl.value
+            )
+          )
+        )
+        .subscribe({
+          next: () => {
+            this.loadingController.dismiss();
+            this.preferenceService.finishBackup();
+            this.navController.navigateRoot('/home/wallet');
+          },
+          error: error => {
+            this.loadingController.dismiss();
+            this.commonService.presentErrorToast(error.toString());
+          }
+        });
+    } else {
+      this.preferenceService.finishBackup();
+      this.navController.navigateRoot('/home/wallet');
     }
-    this.preferenceService.finishBackup();
-    this.navController.navigateRoot('/home/wallet');
   }
 
   cancel(): void {

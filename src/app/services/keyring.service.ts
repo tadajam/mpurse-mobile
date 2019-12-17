@@ -5,8 +5,15 @@ import { PreferenceService } from './preference.service';
 import { SeedType } from '../enum/seed-type.enum';
 import { SeedLanguage } from '../enum/seed-language.enum';
 import * as jazzicon from 'jazzicon';
-import { Observable, from, of, Observer, Subject } from 'rxjs';
-import { map, flatMap, catchError } from 'rxjs/operators';
+import { Observable, from, of, Observer, Subject, empty } from 'rxjs';
+import {
+  map,
+  flatMap,
+  catchError,
+  toArray,
+  concatMap,
+  expand
+} from 'rxjs/operators';
 import { Encryptor } from '../classes/encryptor';
 import { Storage } from '@ionic/storage';
 import { KeychainTouchId } from '@ionic-native/keychain-touch-id/ngx';
@@ -15,6 +22,7 @@ import { Hdkey } from '../interfaces/hdkey';
 import { KeyringKey } from '../enum/keyring-key.enum';
 import { MpurseAccount } from '../interfaces/mpurse-account';
 import { Identity } from '../interfaces/identity';
+import { MpchainUtil } from '../classes/mpchain-util';
 
 interface Vault {
   version: number;
@@ -26,7 +34,10 @@ interface Vault {
   providedIn: 'root'
 })
 export class KeyringService {
-  private version = 1;
+  private VERSION = 1;
+
+  private GAP_LIMIT = 20;
+
   private keyring: Keyring;
   private password = '';
 
@@ -91,7 +102,7 @@ export class KeyringService {
 
   private saveVault(): void {
     const vault = {
-      version: this.version,
+      version: this.VERSION,
       data: Encryptor.encrypt(this.keyring.serialize(), this.password),
       checksum: Encryptor.createCheckSum(this.password)
     };
@@ -184,16 +195,20 @@ export class KeyringService {
   createCustomKeyring(
     seedType: SeedType,
     mnemonic: string,
-    basePah: string
-  ): void {
-    const hdkey: Hdkey = {
-      mnemonic: mnemonic,
-      seedType: seedType,
-      basePath: basePah,
-      numberOfAccounts: 1
-    };
-
-    this.createKeyring({ hdkey: hdkey, privatekeys: [] });
+    basePath: string
+  ): Observable<void> {
+    return this.getLastTxIndex(seedType, mnemonic, basePath).pipe(
+      map(index => (index >= 0 ? index + 1 : 1)),
+      map(numberOfAccounts => {
+        const hdkey: Hdkey = {
+          mnemonic: mnemonic,
+          seedType: seedType,
+          basePath: basePath,
+          numberOfAccounts: numberOfAccounts
+        };
+        this.createKeyring({ hdkey: hdkey, privatekeys: [] });
+      })
+    );
   }
 
   createExistingKeyring(): Observable<void> {
@@ -207,6 +222,80 @@ export class KeyringService {
         } else {
           throw new Error('Passwords do not match');
         }
+      })
+    );
+  }
+
+  getLastTxIndex(
+    seedType: SeedType,
+    mnemonic: string,
+    basePath: string
+  ): Observable<number> {
+    return of({ index: 0, lastIndex: -1 }).pipe(
+      expand(loopObj => {
+        return from(
+          MpchainUtil.cb('get_chain_address_info', {
+            addresses: this.keyring.getAddresses(
+              seedType,
+              basePath,
+              mnemonic,
+              loopObj.index * this.GAP_LIMIT,
+              this.GAP_LIMIT
+            ),
+            with_uxtos: false,
+            with_last_txn_hashes: true
+          })
+        ).pipe(
+          flatMap(info => {
+            const reverseIndex = info
+              .map(v => v.last_txns.length)
+              .slice()
+              .reverse()
+              .findIndex(v => v > 0);
+            const lastIndex = info.length - 1;
+            return reverseIndex >= 0
+              ? of({
+                  index: loopObj.index + 1,
+                  lastIndex:
+                    loopObj.index * this.GAP_LIMIT + lastIndex - reverseIndex
+                })
+              : this.getLastmessageIndex(loopObj.index, info.map(v => v.addr));
+          })
+        );
+      }),
+      map(loopObj => loopObj.lastIndex),
+      toArray(),
+      map(lastIndexes => Math.max.apply(null, lastIndexes)),
+      catchError(() => of(-1))
+    );
+  }
+
+  getLastmessageIndex(
+    loopIndex: number,
+    address: string[]
+  ): Observable<{ index: number; lastIndex: number } | never> {
+    return from(address).pipe(
+      concatMap(address =>
+        MpchainUtil.mp('history', {
+          address: address,
+          page: 1,
+          limit: 0
+        })
+      ),
+      toArray(),
+      map(info => info.map(v => v.total)),
+      flatMap(lengths => {
+        const reverseIndex = lengths
+          .slice()
+          .reverse()
+          .findIndex(v => v > 0);
+        const lastIndex = lengths.length - 1;
+        return reverseIndex >= 0
+          ? of({
+              index: loopIndex + 1,
+              lastIndex: loopIndex * this.GAP_LIMIT + lastIndex - reverseIndex
+            })
+          : empty();
       })
     );
   }
