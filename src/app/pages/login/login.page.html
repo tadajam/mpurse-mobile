@@ -14,9 +14,14 @@
       </ion-button>
     </ion-item>
   </form>
+  <ion-row justify-content-center padding-top>
+    <ion-text *ngIf="shouldInput" color="primary">
+      <p tappable (click)="initMpurse()">Forgot your password?</p>
+    </ion-text>
+  </ion-row>
 </ion-content>
 
-<ion-footer>
+<ion-footer *ngIf="shouldInput">
   <ion-grid>
     <ion-row>
       <ion-col>

@@ -2,8 +2,11 @@ import { Component } from '@angular/core';
 import { KeyringService } from 'src/app/services/keyring.service';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { flatMap } from 'rxjs/operators';
-import { Router } from '@angular/router';
-import { AlertController, ModalController } from '@ionic/angular';
+import {
+  AlertController,
+  ModalController,
+  NavController
+} from '@ionic/angular';
 import { from, Subscription } from 'rxjs';
 import { ExportPage } from '../export/export.page';
 
@@ -22,7 +25,7 @@ export class SettingsPage {
   accountName = '';
 
   constructor(
-    private router: Router,
+    private navController: NavController,
     private keyringService: KeyringService,
     private preferenceService: PreferenceService,
     private alertController: AlertController,
@@ -96,7 +99,7 @@ export class SettingsPage {
             .purgeVault()
             .pipe(flatMap(() => this.preferenceService.resetPreferences()))
             .subscribe({
-              next: () => this.router.navigateByUrl('/')
+              next: () => this.navController.navigateRoot('/')
             });
         }
       }

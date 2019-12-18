@@ -2,7 +2,10 @@ import { Component } from '@angular/core';
 import { KeyringService } from 'src/app/services/keyring.service';
 import { CommonService } from 'src/app/services/common.service';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
-import { NavController } from '@ionic/angular';
+import { NavController, AlertController } from '@ionic/angular';
+import { PreferenceService } from 'src/app/services/preference.service';
+import { from } from 'rxjs';
+import { flatMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-login',
@@ -22,7 +25,9 @@ export class LoginPage {
   constructor(
     private keyringService: KeyringService,
     private commonService: CommonService,
-    private navController: NavController
+    private navController: NavController,
+    private preferenceService: PreferenceService,
+    private alertController: AlertController
   ) {}
 
   ionViewDidEnter(): void {
@@ -43,5 +48,29 @@ export class LoginPage {
         this.commonService.presentErrorToast(error.toString());
       }
     });
+  }
+
+  initMpurse(): void {
+    const buttons: any[] = [
+      { text: 'CANCEL', role: 'cancel' },
+      {
+        text: 'INITIALIZE',
+        handler: (): void => {
+          this.keyringService
+            .purgeVault()
+            .pipe(flatMap(() => this.preferenceService.resetPreferences()))
+            .subscribe({
+              next: () => this.navController.navigateRoot('/')
+            });
+        }
+      }
+    ];
+    from(
+      this.alertController.create({
+        header: 'INITIALIZE',
+        message: 'Initialize your account and reimport using seed phrase.',
+        buttons: buttons
+      })
+    ).subscribe({ next: alert => alert.present() });
   }
 }
