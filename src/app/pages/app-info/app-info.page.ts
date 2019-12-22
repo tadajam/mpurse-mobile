@@ -4,7 +4,6 @@ import { ModalController, IonInfiniteScroll } from '@ionic/angular';
 import { InAppBrowserService } from 'src/app/services/in-app-browser.service';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { AppInfo } from 'src/app/interfaces/app-info';
-import { BackgroundService } from 'src/app/services/background.service';
 
 @Component({
   selector: 'app-app-info',
@@ -15,7 +14,7 @@ export class AppInfoPage {
   @ViewChild('infinite', { static: false }) infiniteScroll: IonInfiniteScroll;
   @Input() appGroup: AppGroup;
 
-  appInfo: AppInfo[] = [];
+  appInfo: AppInfo[] = null;
   page = 0;
   limit = 10;
   isReorderMode = false;
@@ -23,7 +22,6 @@ export class AppInfoPage {
   constructor(
     private preferenceService: PreferenceService,
     private inAppBrowserService: InAppBrowserService,
-    private backgroundService: BackgroundService,
     private modalController: ModalController
   ) {}
 

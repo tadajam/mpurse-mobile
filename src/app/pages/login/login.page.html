@@ -1,13 +1,13 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Login</ion-title>
+    <ion-title>{{ 'login.title' | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <form *ngIf="shouldInput" [formGroup]="passwordForm" (ngSubmit)="login()">
     <ion-item>
-      <ion-label position="floating">Password</ion-label>
+      <ion-label position="floating">{{ 'login.password' | translate }}</ion-label>
       <ion-input formControlName="password" [type]="hide ? 'password' : 'text'" autofocus="true"></ion-input>
       <ion-button (click)="hide = !hide" slot="end" fill="clear" class="margin-auto">
         <ion-icon [name]="hide ? 'eye-off' : 'eye'" color="primary" class="inner-icon"></ion-icon>
@@ -16,7 +16,7 @@
   </form>
   <ion-row justify-content-center padding-top>
     <ion-text *ngIf="shouldInput" color="primary">
-      <p tappable (click)="initMpurse()">Forgot your password?</p>
+      <p tappable (click)="initMpurse()">{{ 'login.forgot' | translate }}</p>
     </ion-text>
   </ion-row>
 </ion-content>
@@ -25,7 +25,7 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <ion-button (click)="login()" [disabled]="!passwordForm.valid" expand="block" color="primary">LOGIN</ion-button>
+        <ion-button (click)="login()" [disabled]="!passwordForm.valid" expand="block" color="primary">{{ 'login.login' | translate }}</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

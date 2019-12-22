@@ -6,6 +6,7 @@ import { KeyringService } from 'src/app/services/keyring.service';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { CommonService } from 'src/app/services/common.service';
 import { NavController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-password',
@@ -39,7 +40,8 @@ export class PasswordPage {
     private keyringService: KeyringService,
     private preferenceService: PreferenceService,
     private commonService: CommonService,
-    private navController: NavController
+    private navController: NavController,
+    private translateService: TranslateService
   ) {}
 
   ionViewDidEnter(): void {
@@ -93,7 +95,7 @@ export class PasswordPage {
           },
           error: () =>
             this.commonService.presentErrorToast(
-              'An error occurred during biometric authentication'
+              this.translateService.instant('password.biometricAuthError')
             )
         });
     } else {

@@ -7,6 +7,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { ApprovePage } from './approve.page';
 import { ComponentModule } from 'src/app/components/component.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 const routes: Routes = [
   {
@@ -21,7 +22,8 @@ const routes: Routes = [
     FormsModule,
     IonicModule,
     RouterModule.forChild(routes),
-    ComponentModule
+    ComponentModule,
+    TranslateModule
   ],
   declarations: [ApprovePage]
 })

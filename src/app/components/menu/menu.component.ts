@@ -2,7 +2,6 @@ import { Component, Input } from '@angular/core';
 import { MenuController, ModalController } from '@ionic/angular';
 import { from } from 'rxjs';
 import { AccountsPage } from 'src/app/pages/accounts/accounts.page';
-import { Router } from '@angular/router';
 import { ReceivePage } from 'src/app/pages/receive/receive.page';
 import { InAppBrowserService } from 'src/app/services/in-app-browser.service';
 import { CommonService } from 'src/app/services/common.service';
@@ -20,7 +19,6 @@ export class MenuComponent {
   isSwipeEnabled = true;
 
   constructor(
-    private router: Router,
     private menuController: MenuController,
     private modalController: ModalController,
     private inAppBrowserService: InAppBrowserService,

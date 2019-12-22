@@ -6,6 +6,7 @@ import { NavController, AlertController } from '@ionic/angular';
 import { PreferenceService } from 'src/app/services/preference.service';
 import { from } from 'rxjs';
 import { flatMap } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
@@ -27,7 +28,8 @@ export class LoginPage {
     private commonService: CommonService,
     private navController: NavController,
     private preferenceService: PreferenceService,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private translateService: TranslateService
   ) {}
 
   ionViewDidEnter(): void {
@@ -52,9 +54,9 @@ export class LoginPage {
 
   initMpurse(): void {
     const buttons: any[] = [
-      { text: 'CANCEL', role: 'cancel' },
+      { text: this.translateService.instant('login.cancel'), role: 'cancel' },
       {
-        text: 'INITIALIZE',
+        text: this.translateService.instant('login.initialize'),
         handler: (): void => {
           this.keyringService
             .purgeVault()
@@ -67,8 +69,8 @@ export class LoginPage {
     ];
     from(
       this.alertController.create({
-        header: 'INITIALIZE',
-        message: 'Initialize your account and reimport using seed phrase.',
+        header: this.translateService.instant('login.initialize'),
+        message: this.translateService.instant('login.initializeMessage'),
         buttons: buttons
       })
     ).subscribe({ next: alert => alert.present() });

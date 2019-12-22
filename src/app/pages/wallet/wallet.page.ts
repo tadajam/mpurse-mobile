@@ -16,6 +16,7 @@ import { MpchainService } from 'src/app/services/mpchain.service';
 import { AccountsPage } from '../accounts/accounts.page';
 import { CommonService } from 'src/app/services/common.service';
 import { Decimal } from 'decimal.js';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-wallet',
@@ -47,7 +48,8 @@ export class WalletPage {
     private commonService: CommonService,
     private modalController: ModalController,
     private navController: NavController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private translateService: TranslateService
   ) {}
 
   ionViewDidEnter(): void {
@@ -134,9 +136,9 @@ export class WalletPage {
   checkBackup(): void {
     if (!this.preferenceService.getFinishedBackup() && this.shouldBackup) {
       const buttons: any[] = [
-        { text: 'LATER', role: 'cancel' },
+        { text: this.translateService.instant('wallet.later'), role: 'cancel' },
         {
-          text: 'ENCRYPT',
+          text: this.translateService.instant('wallet.encrypt'),
           handler: (): void => {
             this.preferenceService.deferBackup();
             this.navController.navigateRoot('/password');
@@ -145,9 +147,8 @@ export class WalletPage {
       ];
       from(
         this.alertController.create({
-          header: 'BACKUP',
-          message:
-            'There was the first payment. Encrypt the seed phrase and private key and complete the backup.',
+          header: this.translateService.instant('wallet.backup'),
+          message: this.translateService.instant('wallet.backupMessage'),
           buttons: buttons
         })
       ).subscribe({ next: alert => alert.present() });
@@ -193,13 +194,13 @@ export class WalletPage {
   changeAccountName(): void {
     let e = '';
     if (this.accountName === '') {
-      e = 'The account name is empty';
+      e = this.translateService.instant('wallet.empty');
     } else if (
       this.preferenceService.getIdentity(this.address).name !==
         this.accountName &&
       this.preferenceService.existsNameInIdentities(this.accountName)
     ) {
-      e = 'The account name is a duplicate';
+      e = this.translateService.instant('wallet.duplicate');
     }
 
     if (e === '') {

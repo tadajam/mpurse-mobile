@@ -5,7 +5,7 @@
         <ion-icon name="arrow-back" size="large"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>Accounts</ion-title>
+    <ion-title>{{ 'accounts.title' | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -24,7 +24,7 @@
         <ion-row justify-content-between>
           <h2>{{ identity.name }}</h2>
           <ion-text *ngIf="identity.isImport" color="secondary">
-            <p>IMPORTED</p>
+            <p>{{ 'accounts.imported' | translate }}</p>
           </ion-text>
         </ion-row>
         <p>{{ identity.address }}</p>
@@ -36,11 +36,11 @@
 
 <ion-footer>
   <ion-button (click)="addAccount()" expand="block" color="primary" [disabled]="isDisable" margin>
-      Add New Account
+    {{ 'accounts.add' | translate }}
     <ion-icon name="add" slot="end"></ion-icon>
   </ion-button>
   <ion-button (click)="openImportPage()" expand="block" color="secondary" [disabled]="isDisable" margin>
-      Import Account
+    {{ 'accounts.import' | translate }}
     <ion-icon name="download" slot="end"></ion-icon>
   </ion-button>
 </ion-footer>

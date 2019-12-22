@@ -27,6 +27,7 @@ import { CommonService } from 'src/app/services/common.service';
 import { AccountsPage } from '../accounts/accounts.page';
 import { ModalController } from '@ionic/angular';
 import { Decimal } from 'decimal.js';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-send-asset',
@@ -115,7 +116,8 @@ export class SendAssetPage {
     private mpchainService: MpchainService,
     private keyringService: KeyringService,
     private commonService: CommonService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private translateService: TranslateService
   ) {}
 
   ionViewDidEnter(): void {
@@ -186,7 +188,9 @@ export class SendAssetPage {
         .pipe(
           tap((address: string) => {
             if (this.request) {
-              throw new Error('Canceled');
+              throw new Error(
+                this.translateService.instant('sendAsset.canceled')
+              );
             } else {
               this.updateAddress(address);
             }
@@ -307,9 +311,9 @@ export class SendAssetPage {
     this.mpchainService.getIssuer(this.toAddressControl.value).subscribe({
       next: issuer => {
         this.commonService.presentSuccessToast(
-          'Set ' +
-            this.toAddressControl.value +
-            ' issuer to destination address'
+          this.translateService.instant('sendAsset.setIssuer', {
+            value: this.toAddressControl.value
+          })
         );
         this.toAddressControl.setValue(issuer);
       },
@@ -362,7 +366,7 @@ export class SendAssetPage {
             this.location.back();
           } else {
             this.commonService.presentSuccessToast(
-              'Funds sent. tx_hash: ' + txHash
+              this.translateService.instant('sendAsset.sent', { value: txHash })
             );
             this.location.back();
           }

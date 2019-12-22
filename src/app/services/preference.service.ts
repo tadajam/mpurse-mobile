@@ -211,7 +211,7 @@ export class PreferenceService {
   }
 
   incrementAccountName(): string {
-    const name = 'Account';
+    const name = this.translateService.instant('preference.account');
     let num = this.identities.length + 1;
     while (this.existsNameInIdentities(name + num)) {
       num++;

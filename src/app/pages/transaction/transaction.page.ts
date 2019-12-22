@@ -13,6 +13,7 @@ import { MpchainService } from 'src/app/services/mpchain.service';
 import { CommonService } from 'src/app/services/common.service';
 import { AccountsPage } from '../accounts/accounts.page';
 import { ModalController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-transaction',
@@ -41,7 +42,8 @@ export class TransactionPage {
     private clipboard: Clipboard,
     private mpchainService: MpchainService,
     private commonService: CommonService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private translateService: TranslateService
   ) {}
 
   ionViewDidEnter(): void {
@@ -103,7 +105,10 @@ export class TransactionPage {
 
   copy(): void {
     from(this.clipboard.copy(this.signedTxControl.value)).subscribe({
-      next: () => this.commonService.presentSuccessToast('Copied')
+      next: () =>
+        this.commonService.presentSuccessToast(
+          this.translateService.instant('transaction.copied')
+        )
     });
   }
 

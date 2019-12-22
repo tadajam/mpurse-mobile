@@ -5,14 +5,14 @@
         <ion-icon name="arrow-back" size="large"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>{{address ? 'Show Private Key' : 'Show Seed Phrase'}}</ion-title>
+    <ion-title>{{(address ? 'export.titlePrivate' : 'export.titleSeed') | translate}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <form *ngIf="shouldInput" [formGroup]="passwordForm" (ngSubmit)="verifyPassword()">
     <ion-item>
-      <ion-label position="floating">Password</ion-label>
+      <ion-label position="floating">{{ 'export.password' | translate }}</ion-label>
       <ion-input formControlName="password" [type]="hide ? 'password' : 'text'" autofocus="true"></ion-input>
       <ion-button (click)="hide = !hide" slot="end" fill="clear" class="margin-auto">
         <ion-icon [name]="hide ? 'eye-off' : 'eye'" color="primary" class="input-icon"></ion-icon>
@@ -22,7 +22,7 @@
 
   <ion-card *ngIf="privatekey">
     <ion-card-header>
-      <ion-card-title>Your private key</ion-card-title>
+      <ion-card-title>{{ 'export.privateKey' | translate }}</ion-card-title>
     </ion-card-header>
     <img *ngIf="privatekeyQr" [src]="privatekeyQr" />
     <ion-card-content>
@@ -32,7 +32,7 @@
       <ion-row justify-content-center>
         <ion-chip (click)="copy(privatekey)">
           <ion-icon name="copy" color="dark"></ion-icon>
-          <ion-label>Copy to clipboard</ion-label>
+          <ion-label>{{ 'export.copy' | translate }}</ion-label>
         </ion-chip>
       </ion-row>
     </ion-card-content>
@@ -40,9 +40,9 @@
 
   <ion-card *ngIf="hdKey">
     <ion-card-header>
-      <ion-card-title>Your seed phrase</ion-card-title>
+      <ion-card-title>{{ 'export.seedPhrase' | translate }}</ion-card-title>
       <ion-card-subtitle><h4>{{getSeedTypeName(hdKey.seedType)}}</h4></ion-card-subtitle>
-      <ion-card-subtitle>Derivation Path: {{hdKey.basePath}}i</ion-card-subtitle>
+      <ion-card-subtitle>{{ 'export.derivationPath' | translate }}: {{hdKey.basePath}}i</ion-card-subtitle>
     </ion-card-header>
     <img *ngIf="seedPhraseQr" [src]="seedPhraseQr" />
     <ion-card-content>
@@ -52,7 +52,7 @@
       <ion-row justify-content-center>
         <ion-chip (click)="copy(hdKey.mnemonic)">
           <ion-icon name="copy" color="dark"></ion-icon>
-          <ion-label>Copy to clipboard</ion-label>
+          <ion-label>{{ 'export.copy' | translate }}</ion-label>
         </ion-chip>
       </ion-row>
     </ion-card-content>
@@ -64,7 +64,7 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <ion-button (click)="verifyPassword()" [disabled]="!passwordForm.valid" expand="block" color="primary">SHOW</ion-button>
+        <ion-button (click)="verifyPassword()" [disabled]="!passwordForm.valid" expand="block" color="primary">{{ 'export.show' | translate }}</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

@@ -8,11 +8,14 @@ import { MpchainAPIParams } from '../interfaces/mpchain-apiparams';
 import { flatMap, concatMap, reduce, map, catchError } from 'rxjs/operators';
 import Decimal from 'decimal.js';
 import { MpchainAsset } from '../interfaces/mpchain-asset';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MpchainService {
+  constructor(private translateService: TranslateService) {}
+
   getAddressInfo(address: string): Observable<MpchainAddressInfo> {
     return from(MpchainUtil.getAddressInfo(address));
   }
@@ -30,7 +33,7 @@ export class MpchainService {
   }
 
   getBalanceArray(address: string): Observable<MpchainAssetBalance[]> {
-    const limit = 2;
+    const limit = 500;
     return this.getBalances(address, 1, limit).pipe(
       flatMap((firstBalances: MpchainBalance) => {
         const getBalances: Observable<MpchainAssetBalance[]>[] = [
@@ -57,7 +60,9 @@ export class MpchainService {
     return from(MpchainUtil.getAsset(asset)).pipe(
       map(asset => {
         if ('error' in asset || !asset.issuer) {
-          throw new Error('Not Found');
+          throw new Error(
+            this.translateService.instant('mpchain.assetNotFound')
+          );
         } else {
           return asset.issuer;
         }
@@ -69,7 +74,9 @@ export class MpchainService {
     return from(MpchainUtil.getAsset(asset)).pipe(
       map(asset => {
         if ('error' in asset) {
-          throw new Error('Not Found');
+          throw new Error(
+            this.translateService.instant('mpchain.assetNotFound')
+          );
         } else {
           return asset;
         }
@@ -150,9 +157,9 @@ export class MpchainService {
           if (/("message"\:")(.+)("\},)/.test(errorMessage)) {
             errorMessage = /("message"\:")(.+)("\},)/.exec(errorMessage)[2];
           } else if (/(result is None)(.+)(monacoin)/.test(errorMessage)) {
-            errorMessage = 'Monacoin API is dead.';
+            errorMessage = this.translateService.instant('mpchain.deadMonaAPI');
           } else if (/(result is None)(.+)(counterparty)/.test(errorMessage)) {
-            errorMessage = 'Counterparty API is dead.';
+            errorMessage = this.translateService.instant('mpchain.deadCpAPI');
           }
         } else if (this.isObject(error.error.data)) {
           errorMessage = JSON.stringify(error.error.data);
@@ -163,9 +170,9 @@ export class MpchainService {
         errorMessage = JSON.stringify(error.error);
       } else {
         if (/(ECONNREFUSED)/.test(error.error)) {
-          errorMessage = 'Counterblock API is dead.';
+          errorMessage = this.translateService.instant('mpchain.deadCbAPI');
         } else if (/(Server is not caught up)/.test(error.error)) {
-          errorMessage = 'Server is not caught up.';
+          errorMessage = this.translateService.instant('mpchain.notCaughtUp');
         } else {
           errorMessage = error.error;
         }

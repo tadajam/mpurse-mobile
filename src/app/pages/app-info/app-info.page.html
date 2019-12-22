@@ -5,19 +5,19 @@
         <ion-icon name="arrow-back" size="large"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title *ngIf="appGroup === 'Active'">Active Tab</ion-title>
-    <ion-title *ngIf="appGroup === 'Favorite'">Favorite</ion-title>
-    <ion-title *ngIf="appGroup === 'History'">History</ion-title>
+    <ion-title *ngIf="appGroup === 'Active'">{{ 'appInfo.titleActive' | translate }}</ion-title>
+    <ion-title *ngIf="appGroup === 'Favorite'">{{ 'appInfo.titleFavorite' | translate }}</ion-title>
+    <ion-title *ngIf="appGroup === 'History'">{{ 'appInfo.titleHistory' | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-list>
-    <ion-item *ngIf="appInfo.length === 0" lines="none">
+    <ion-item *ngIf="appInfo && appInfo.length === 0" lines="none">
       <ion-avatar slot="start">
         <ion-icon name="cube" size="large" color="primary"></ion-icon>
       </ion-avatar>
-      <ion-label><p>No App</p></ion-label>
+      <ion-label><p>{{ 'appInfo.noItem' | translate }}</p></ion-label>
     </ion-item>
 
     <ng-container *ngIf="appGroup === 'Favorite'">
@@ -65,8 +65,8 @@
           </ion-button>
         </ion-item>
         <ion-item-options side="end">
-          <ion-item-option *ngIf="appGroup === 'History'" (click)="deleteHistory(i)">DELETE</ion-item-option>
-          <ion-item-option *ngIf="appGroup === 'Active'"  (click)="closeTab(i)">CLOSE</ion-item-option>
+          <ion-item-option *ngIf="appGroup === 'History'" (click)="deleteHistory(i)">{{ 'appInfo.delete' | translate }}</ion-item-option>
+          <ion-item-option *ngIf="appGroup === 'Active'"  (click)="closeTab(i)">{{ 'appInfo.close' | translate }}</ion-item-option>
         </ion-item-options>
       </ion-item-sliding>
     </ng-container>

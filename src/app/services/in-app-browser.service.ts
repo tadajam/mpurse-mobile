@@ -1,8 +1,7 @@
 import { Injectable, NgZone } from '@angular/core';
 import {
   InAppBrowser,
-  InAppBrowserObject,
-  InAppBrowserEvent
+  InAppBrowserObject
 } from '@ionic-native/in-app-browser/ngx';
 import { filter } from 'rxjs/operators';
 import { InPageMessage } from '../enum/in-page-message.enum';
@@ -73,27 +72,24 @@ export class InAppBrowserService {
     inAppBrowser
       .on('message')
       .pipe(
-        filter(
-          (event: InAppBrowserEvent) =>
-            event['data']['action'] === InPageMessage.InitRequest
-        )
+        filter((event: any) => event.data.action === InPageMessage.InitRequest)
       )
       .subscribe({
-        next: (event: InAppBrowserEvent) => {
+        next: (event: any) => {
           const tab = this.inAppBrowserTabs.find(
             v => v.inAppBrowserObject === inAppBrowser
           );
-          tab.href = event['data']['message']['href'];
-          tab.origin = event['data']['message']['origin'];
-          tab.title = event['data']['message']['title'];
-          tab.icon = event['data']['message']['icon'];
-          tab.description = event['data']['message']['description'];
+          tab.href = event.data.message.href;
+          tab.origin = event.data.message.origin;
+          tab.title = event.data.message.title;
+          tab.icon = event.data.message.icon;
+          tab.description = event.data.message.description;
         }
       });
 
     inAppBrowser
       .on('message')
-      .pipe(filter(event => event['data'].action === InPageMessage.Hide))
+      .pipe(filter((event: any) => event.data.action === InPageMessage.Hide))
       .subscribe({ next: () => inAppBrowser.hide() });
 
     inAppBrowser.on('loadstop').subscribe({

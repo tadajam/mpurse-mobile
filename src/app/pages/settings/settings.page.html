@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Settings</ion-title>
+    <ion-title>{{ 'settings.title' | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -11,23 +11,23 @@
 
   <div padding>
     <ion-label>
-      <h1>Language</h1>
+      <h1>{{ 'settings.language' | translate }}</h1>
     </ion-label>
     <ion-text>
-      <p>Translate the application.</p>
+      <p>{{ 'settings.languageMessage' | translate }}</p>
     </ion-text>
     <ion-select [(ngModel)]="lang" (ionChange)="changeLang()" interface="action-sheet" ngDefaultControl>
-      <ion-select-option value="en">English</ion-select-option>
-      <ion-select-option value="ja">Japanese</ion-select-option>
+      <ion-select-option value="en">{{ 'settings.english' | translate }}</ion-select-option>
+      <ion-select-option value="ja">{{ 'settings.japanese' | translate }}</ion-select-option>
     </ion-select>
   </div>
 
   <div padding>
     <ion-label>
-      <h1>Search Engine</h1>
+      <h1>{{ 'settings.searchEngine' | translate }}</h1>
     </ion-label>
     <ion-text>
-      <p>Change the default search engine.</p>
+      <p>{{ 'settings.searchEngineMessage' | translate }}</p>
     </ion-text>
     <ion-select [(ngModel)]="searchEngine" (ionChange)="changeSearchEngine()" interface="action-sheet" ngDefaultControl>
       <ion-select-option value="google">Google</ion-select-option>
@@ -37,70 +37,61 @@
 
   <div padding>
     <ion-label>
-      <h1>Auto Lock</h1>
+      <h1>{{ 'settings.autoLock' | translate }}</h1>
     </ion-label>
     <ion-text>
-      <p>Change the auto lock time.</p>
+      <p>{{ 'settings.autoLockMessage' | translate }}</p>
     </ion-text>
     <ion-select [(ngModel)]="autoLockTime" (ionChange)="changeAutoLockTime()" interface="action-sheet" ngDefaultControl>
-      <ion-select-option [value]="0">Immediately</ion-select-option>
-      <ion-select-option [value]="5000">After 5 seconds</ion-select-option>
-      <ion-select-option [value]="15000">After 15 seconds</ion-select-option>
-      <ion-select-option [value]="30000">After 30 seconds</ion-select-option>
-      <ion-select-option [value]="60000">After 60 seconds</ion-select-option>
-      <ion-select-option [value]="300000">After 5 minutes</ion-select-option>
-      <ion-select-option [value]="600000">After 10 minutes</ion-select-option>
-      <ion-select-option [value]="-1">Never</ion-select-option>
+      <ion-select-option [value]="0">{{ 'settings.immediately' | translate }}</ion-select-option>
+      <ion-select-option [value]="5000">{{ 'settings.after5s' | translate }}</ion-select-option>
+      <ion-select-option [value]="15000">{{ 'settings.after15s' | translate }}</ion-select-option>
+      <ion-select-option [value]="30000">{{ 'settings.after30s' | translate }}</ion-select-option>
+      <ion-select-option [value]="60000">{{ 'settings.after60s' | translate }}</ion-select-option>
+      <ion-select-option [value]="300000">{{ 'settings.after5m' | translate }}</ion-select-option>
+      <ion-select-option [value]="600000">{{ 'settings.after10m' | translate }}</ion-select-option>
+      <ion-select-option [value]="-1">{{ 'settings.never' | translate }}</ion-select-option>
     </ion-select>
   </div>
 
   <div padding>
     <ion-label>
-      <h1>Browser History</h1>
+      <h1>{{ 'settings.browserHistory' | translate }}</h1>
     </ion-label>
     <ion-text>
-      <p>Remove all browser history.</p>
+      <p>{{ 'settings.browserHistoryMessage' | translate }}</p>
     </ion-text>
-    <ion-button (click)="deleteHistories()" expand="block" fill="outline">Remove</ion-button>
+    <ion-button (click)="deleteHistories()" expand="block" fill="outline">{{ 'settings.remove' | translate }}</ion-button>
   </div>
 
   <div padding>
     <ion-label>
-      <h1>Show Private Key for "{{accountName}}"</h1>
+      <h1>{{ 'settings.privatekey' | translate: {value: accountName} }}</h1>
     </ion-label>
     <ion-text color="danger">
-      <p>
-        DO NOT share this private key with anyone!
-        This can be used to steal your accounts.
-      </p>
+      <p>{{ 'settings.privatekeyMessage' | translate }}</p>
     </ion-text>
-    <ion-button (click)="openExportPage(false)" expand="block" color="danger">Show</ion-button>
+    <ion-button (click)="openExportPage(false)" expand="block" color="danger">{{ 'settings.show' | translate }}</ion-button>
   </div>
 
   <div padding>
     <ion-label>
-      <h1>Show Seed Phrase</h1>
+      <h1>{{ 'settings.seedPhrase' | translate }}</h1>
     </ion-label>
     <ion-text color="danger">
-      <p>
-        DO NOT share this phrase with anyone!
-        These words can be used to steal all your accounts.
-      </p>
+      <p>{{ 'settings.seedPhraseMessage' | translate }}</p>
     </ion-text>
-    <ion-button (click)="openExportPage(true)" expand="block" color="danger">Show</ion-button>
+    <ion-button (click)="openExportPage(true)" expand="block" color="danger">{{ 'settings.show' | translate }}</ion-button>
   </div>
 
   <div padding>
     <ion-label>
-      <h1>Initialization</h1>
+      <h1>{{ 'settings.initialization' | translate }}</h1>
     </ion-label>
     <ion-text color="danger">
-      <p>
-        All account and settings will be removed from your wallet.
-        Please make sure you have the original seed phrase before continuing.
-      </p>
+      <p>{{ 'settings.initializationMessage' | translate }}</p>
     </ion-text>
-    <ion-button (click)="initMpurse()" expand="block" color="danger">Initialize</ion-button>
+    <ion-button (click)="initMpurse()" expand="block" color="danger">{{ 'settings.initialize' | translate }}</ion-button>
   </div>
   
 </ion-content>

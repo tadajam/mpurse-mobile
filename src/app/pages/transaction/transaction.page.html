@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Sign Transaction</ion-title>
+    <ion-title>{{ 'transaction.title' | translate }}</ion-title>
     <ion-buttons slot="end" (click)="openAccountsPage()" margin-end>
       <ion-item lines="none" class="identicon" button>
         <app-ident-icon [address]="address" diameter="40"></app-ident-icon>
@@ -16,7 +16,7 @@
   <ng-container *ngIf="request">
     <ion-item lines="none" text-center>
       <ion-label>
-        <h1>Request From</h1>
+        <h1>{{ 'transaction.from' | translate }}</h1>
       </ion-label>
     </ion-item>
   
@@ -38,7 +38,7 @@
   
   <form [formGroup]="signatureForm" (ngSubmit)="sign()">
     <ion-item>
-      <ion-label position="floating">Raw Transaction</ion-label>
+      <ion-label position="floating">{{ 'transaction.rawTx' | translate }}</ion-label>
       <ion-textarea
         formControlName="unsignedTx"
         [readonly]="request"
@@ -51,7 +51,7 @@
     </ion-item>
 
     <ion-item *ngIf="signedTxControl.value">
-      <ion-label position="floating">Signed Transaction</ion-label>
+      <ion-label position="floating">{{ 'transaction.signedTx' | translate }}</ion-label>
       <ion-textarea
         formControlName="signedTx"
         autoGrow="true"
@@ -65,7 +65,7 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <ion-button (click)="cancel()" expand="block" color="light">CANCEL</ion-button>
+        <ion-button (click)="cancel()" expand="block" color="light">{{ 'transaction.cancel' | translate }}</ion-button>
       </ion-col>
       <ion-col>
         <ng-container *ngIf="signedTxControl.value; then signed; else signButton"></ng-container>
@@ -74,18 +74,18 @@
           <ng-template #sendButton>
             <ng-container *ngIf="request.action === 'mpurse.sign.tx.request'; then signRequest; else sendRequest"></ng-container>
             <ng-template #signRequest>
-              <ion-button (click)="sendToWeb()" expand="block" color="secondary">SEND TO WEB</ion-button>
+              <ion-button (click)="sendToWeb()" expand="block" color="secondary">{{ 'transaction.sendToWeb' | translate }}</ion-button>
             </ng-template>
             <ng-template #sendRequest>
-              <ion-button (click)="broadcast()" expand="block" color="secondary">BROADCAST</ion-button>
+              <ion-button (click)="broadcast()" expand="block" color="secondary">{{ 'transaction.broadcast' | translate }}</ion-button>
             </ng-template>
           </ng-template>
           <ng-template #copyButton>
-            <ion-button (click)="copy()" expand="block" color="secondary">COPY</ion-button>
+            <ion-button (click)="copy()" expand="block" color="secondary">{{ 'transaction.copy' | translate }}</ion-button>
           </ng-template>
         </ng-template>
         <ng-template #signButton>
-          <ion-button (click)="sign()" [disabled]="!signatureForm.valid" expand="block" color="primary">SIGN</ion-button>
+          <ion-button (click)="sign()" [disabled]="!signatureForm.valid" expand="block" color="primary">{{ 'transaction.sign' | translate }}</ion-button>
         </ng-template>
       </ion-col>
     </ion-row>

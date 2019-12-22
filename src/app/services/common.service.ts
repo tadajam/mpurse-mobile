@@ -9,6 +9,7 @@ import { PreferenceService } from './preference.service';
 import { Router } from '@angular/router';
 import { KeyringService } from './keyring.service';
 import { InAppBrowserService } from './in-app-browser.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,8 @@ export class CommonService {
     private preferenceService: PreferenceService,
     private router: Router,
     private keyringService: KeyringService,
-    private inAppBrowserService: InAppBrowserService
+    private inAppBrowserService: InAppBrowserService,
+    private translateService: TranslateService
   ) {}
 
   private presentToast(message: string, css: string): void {
@@ -47,7 +49,8 @@ export class CommonService {
 
   copyString(targetStr: string): void {
     from(this.clipboard.copy(targetStr)).subscribe({
-      next: () => this.presentSuccessToast('Copied')
+      next: () =>
+        this.presentSuccessToast(this.translateService.instant('common.copy'))
     });
   }
 

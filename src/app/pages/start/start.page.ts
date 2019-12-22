@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { CommonService } from 'src/app/services/common.service';
 import { Observable } from 'rxjs';
 import { NavController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-start',
@@ -18,14 +19,15 @@ export class StartPage {
     private router: Router,
     private keyringService: KeyringService,
     private commonService: CommonService,
-    private navController: NavController
+    private navController: NavController,
+    private translateService: TranslateService
   ) {}
 
   existsVault(): Observable<void> {
     return this.keyringService.existsVault().pipe(
       map(exists => {
         if (exists) {
-          throw new Error('An account already exists.');
+          throw new Error(this.translateService.instant('start.already'));
         }
       })
     );

@@ -23,6 +23,7 @@ import { KeyringKey } from '../enum/keyring-key.enum';
 import { MpurseAccount } from '../interfaces/mpurse-account';
 import { Identity } from '../interfaces/identity';
 import { MpchainUtil } from '../classes/mpchain-util';
+import { TranslateService } from '@ngx-translate/core';
 
 interface Vault {
   version: number;
@@ -47,7 +48,8 @@ export class KeyringService {
   constructor(
     private storage: Storage,
     private keychainTouchId: KeychainTouchId,
-    private preferenceService: PreferenceService
+    private preferenceService: PreferenceService,
+    private translateService: TranslateService
   ) {
     this.keychainTouchId.setLocale(this.preferenceService.getLanguage());
     this.keyring = new Keyring();
@@ -77,7 +79,9 @@ export class KeyringService {
     return this.getValidVault().pipe(
       map(vault => {
         if (vault.checksum !== Encryptor.createCheckSum(inputPassword)) {
-          throw new Error('Passwords do not match');
+          throw new Error(
+            this.translateService.instant('keyring.passwordNotMatch')
+          );
         }
       })
     );
@@ -89,7 +93,7 @@ export class KeyringService {
       flatMap(() => {
         return this.keychainTouchId.verify(
           KeyringKey.MpurseUser,
-          'Show Secret'
+          this.translateService.instant('keyring.showSecret')
         );
       }),
       flatMap(result => this.verifyPassword(result))
@@ -117,7 +121,9 @@ export class KeyringService {
         if (vault && 'data' in vault && 'checksum' in vault) {
           return vault;
         } else {
-          throw new Error('No valid vault found');
+          throw new Error(
+            this.translateService.instant('keyring.vaultNotFount')
+          );
         }
       })
     );
@@ -149,7 +155,7 @@ export class KeyringService {
   purgeVault(): Observable<void> {
     return from(this.storage.remove(KeyringKey.Vault)).pipe(
       flatMap(() => this.keychainTouchId.isAvailable()),
-      flatMap(() => this.keychainTouchId.delete('mpurse-user')),
+      flatMap(() => this.keychainTouchId.delete(KeyringKey.MpurseUser)),
       catchError(() => of(void 0)),
       map(() => {
         this.password = '';
@@ -220,7 +226,9 @@ export class KeyringService {
           );
           this.createKeyring(vaultData);
         } else {
-          throw new Error('Passwords do not match');
+          throw new Error(
+            this.translateService.instant('keyring.passwordNotMatch')
+          );
         }
       })
     );
@@ -307,7 +315,9 @@ export class KeyringService {
           this.password = inputPassword;
           this.loginStateSubject.next(true);
         } else {
-          throw new Error('Passwords do not match');
+          throw new Error(
+            this.translateService.instant('keyring.passwordNotMatch')
+          );
         }
       })
     );
@@ -325,7 +335,7 @@ export class KeyringService {
       flatMap(() => {
         return this.keychainTouchId.verify(
           KeyringKey.MpurseUser,
-          'Login Mpurse'
+          this.translateService.instant('keyring.login')
         );
       }),
       flatMap(result => this.unlock(result))

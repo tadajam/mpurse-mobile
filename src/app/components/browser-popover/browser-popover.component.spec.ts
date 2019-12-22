@@ -7,6 +7,7 @@ import {
   AngularDelegate,
   PopoverController
 } from '@ionic/angular';
+import { TranslateModule, TranslateStore } from '@ngx-translate/core';
 
 describe('BrowserPopoverComponent', () => {
   let component: BrowserPopoverComponent;
@@ -16,8 +17,13 @@ describe('BrowserPopoverComponent', () => {
     TestBed.configureTestingModule({
       declarations: [BrowserPopoverComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [],
-      providers: [ModalController, AngularDelegate, PopoverController]
+      imports: [TranslateModule.forChild()],
+      providers: [
+        ModalController,
+        AngularDelegate,
+        PopoverController,
+        TranslateStore
+      ]
     }).compileComponents();
   }));
 

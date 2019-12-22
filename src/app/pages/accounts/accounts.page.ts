@@ -5,6 +5,7 @@ import { Identity } from 'src/app/interfaces/identity';
 import { ModalController, AlertController } from '@ionic/angular';
 import { from } from 'rxjs';
 import { ImportAccountPage } from '../import-account/import-account.page';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-accounts',
@@ -20,7 +21,8 @@ export class AccountsPage {
     private keyringService: KeyringService,
     private preferenceService: PreferenceService,
     private modalController: ModalController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private translateService: TranslateService
   ) {}
 
   ionViewDidEnter(): void {
@@ -53,9 +55,12 @@ export class AccountsPage {
 
   removeAccount(address: string): void {
     const buttons: any[] = [
-      { text: 'CANCEL', role: 'cancel' },
       {
-        text: 'REMOVE',
+        text: this.translateService.instant('accounts.cancel'),
+        role: 'cancel'
+      },
+      {
+        text: this.translateService.instant('accounts.remove'),
         handler: (): void => {
           this.keyringService.removeAccount(address);
           this.closeModal();
@@ -64,8 +69,8 @@ export class AccountsPage {
     ];
     from(
       this.alertController.create({
-        header: 'REMOVE',
-        message: 'Are you sure you want to remove this account?',
+        header: this.translateService.instant('accounts.remove'),
+        message: this.translateService.instant('accounts.removeMessage'),
         buttons: buttons
       })
     ).subscribe({ next: alert => alert.present() });

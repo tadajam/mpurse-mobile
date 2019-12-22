@@ -8,6 +8,7 @@ import { IonicModule } from '@ionic/angular';
 import { WalletPage } from './wallet.page';
 import { ComponentModule } from 'src/app/components/component.module';
 import { BalanceComponent } from 'src/app/components/balance/balance.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 const routes: Routes = [
   {
@@ -23,7 +24,8 @@ const routes: Routes = [
     ReactiveFormsModule,
     IonicModule,
     RouterModule.forChild(routes),
-    ComponentModule
+    ComponentModule,
+    TranslateModule
   ],
   declarations: [WalletPage, BalanceComponent]
 })

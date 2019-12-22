@@ -12,6 +12,7 @@ import { filter } from 'rxjs/operators';
 import { AccountsPage } from '../accounts/accounts.page';
 import { CommonService } from 'src/app/services/common.service';
 import { ModalController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-signature',
@@ -39,7 +40,8 @@ export class SignaturePage {
     private location: Location,
     private clipboard: Clipboard,
     private commonService: CommonService,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private translateService: TranslateService
   ) {}
 
   ionViewDidEnter(): void {
@@ -98,7 +100,10 @@ export class SignaturePage {
 
   copy(): void {
     from(this.clipboard.copy(this.signatureControl.value)).subscribe({
-      next: () => this.commonService.presentSuccessToast('Copied')
+      next: () =>
+        this.commonService.presentSuccessToast(
+          this.translateService.instant('signature.copied')
+        )
     });
   }
 

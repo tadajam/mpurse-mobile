@@ -3,7 +3,7 @@ import { Observable, of, Subscription } from 'rxjs';
 import { InPageMessage } from '../enum/in-page-message.enum';
 import { InAppBrowserService } from './in-app-browser.service';
 import { InAppBrowserObject } from '@ionic-native/in-app-browser/ngx';
-import { flatMap, map, filter, catchError } from 'rxjs/operators';
+import { flatMap, map, filter, catchError, tap } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PreferenceService } from './preference.service';
 import { MpchainService } from './mpchain.service';
@@ -83,15 +83,17 @@ export class BackgroundService implements OnDestroy {
 
     inAppBrowser
       .on('message')
-      .pipe(filter(event => event['data'].action === InPageMessage.InitRequest))
-      .subscribe(event => {
-        this.href = event['data'].message.href;
-        this.origin = event['data'].message.origin;
-        this.title = event['data'].message.title;
-        this.icon = event['data'].message.icon;
-        this.description = event['data'].message.description;
+      .pipe(
+        filter((event: any) => event.data.action === InPageMessage.InitRequest)
+      )
+      .subscribe((event: any) => {
+        this.href = event.data.message.href;
+        this.origin = event.data.message.origin;
+        this.title = event.data.message.title;
+        this.icon = event.data.message.icon;
+        this.description = event.data.message.description;
 
-        this.sendResponse(event['data'], {
+        this.sendResponse(event.data, {
           isUnlocked: true
         });
       });
@@ -100,37 +102,37 @@ export class BackgroundService implements OnDestroy {
       .on('message')
       .pipe(
         filter(
-          event =>
-            event['data'].action === InPageMessage.AddressRequest ||
-            event['data'].action === InPageMessage.SendAssetRequest ||
-            event['data'].action === InPageMessage.SignRawTransactionRequest ||
-            event['data'].action === InPageMessage.SignMessageRequest ||
-            event['data'].action === InPageMessage.SendRawTransactionRequest
+          (event: any) =>
+            event.data.action === InPageMessage.AddressRequest ||
+            event.data.action === InPageMessage.SendAssetRequest ||
+            event.data.action === InPageMessage.SignRawTransactionRequest ||
+            event.data.action === InPageMessage.SignMessageRequest ||
+            event.data.action === InPageMessage.SendRawTransactionRequest
         ),
-        map(event => {
-          switch (event['data'].action) {
+        map((event: any) => {
+          switch (event.data.action) {
             case InPageMessage.AddressRequest:
-              event['data'].target = '';
+              event.data.target = '';
               break;
             case InPageMessage.SendAssetRequest:
-              event['data'].target = 'send-asset';
+              event.data.target = 'send-asset';
               break;
             case InPageMessage.SignRawTransactionRequest:
-              event['data'].target = 'transaction';
+              event.data.target = 'transaction';
               break;
             case InPageMessage.SignMessageRequest:
-              event['data'].target = 'signature';
+              event.data.target = 'signature';
               break;
             case InPageMessage.SendRawTransactionRequest:
-              event['data'].target = 'transaction';
+              event.data.target = 'transaction';
               break;
           }
-          event['data'].href = this.href;
-          event['data'].origin = this.origin;
-          event['data'].title = this.title;
-          event['data'].icon = this.icon;
-          event['data'].description = this.description;
-          this.pendingRequests.push(event['data']);
+          event.data.href = this.href;
+          event.data.origin = this.origin;
+          event.data.title = this.title;
+          event.data.icon = this.icon;
+          event.data.description = this.description;
+          this.pendingRequests.push(event.data);
         })
       )
       .subscribe({
@@ -141,35 +143,35 @@ export class BackgroundService implements OnDestroy {
       .on('message')
       .pipe(
         filter(
-          event =>
-            event['data'].action === InPageMessage.MpchainRequest ||
-            event['data'].action === InPageMessage.CounterBlockRequest ||
-            event['data'].action === InPageMessage.CounterPartyRequest
+          (event: any) =>
+            event.data.action === InPageMessage.MpchainRequest ||
+            event.data.action === InPageMessage.CounterBlockRequest ||
+            event.data.action === InPageMessage.CounterPartyRequest
         ),
-        flatMap(event => {
-          switch (event['data'].action) {
+        flatMap((event: any) => {
+          switch (event.data.action) {
             case InPageMessage.MpchainRequest:
               return this.mpchainApi(
-                event['data'],
+                event.data,
                 this.mpchainService.mp(
-                  event['data'].message.method,
-                  event['data'].message.params
+                  event.data.message.method,
+                  event.data.message.params
                 )
               );
             case InPageMessage.CounterBlockRequest:
               return this.mpchainApi(
-                event['data'],
+                event.data,
                 this.mpchainService.cb(
-                  event['data'].message.method,
-                  event['data'].message.params
+                  event.data.message.method,
+                  event.data.message.params
                 )
               );
             case InPageMessage.CounterPartyRequest:
               return this.mpchainApi(
-                event['data'],
+                event.data,
                 this.mpchainService.cp(
-                  event['data'].message.method,
-                  event['data'].message.params
+                  event.data.message.method,
+                  event.data.message.params
                 )
               );
           }

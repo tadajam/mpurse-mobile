@@ -1,5 +1,234 @@
 {
+  "browserPopover": {
+    "favorite": "Favorite",
+    "history": "History"
+  },
+  "menu": {
+    "title": "Mpurse",
+    "send": "Send",
+    "receive": "Receive",
+    "navigation": "Navigation",
+    "browser": "Browser",
+    "wallet": "Wallet",
+    "signMessage": "Sign Message",
+    "signTx": "Sign Transaction",
+    "settings": "Settings",
+    "infomation": "Infomation",
+    "explorer": "Blockchain Explorer"
+  },
+  "common": {
+    "copy": "Copied"
+  },
+  "keyring": {
+    "passwordNotMatch": "Password do not match",
+    "showSecret": "Show Secret",
+    "vaultNotFount": "No valid vault found",
+    "login": "Login Mpurse"
+  },
+  "mpchain": {
+    "assetNotFound": "Asset not found",
+    "deadMonaAPI": "Monacoin API is dead",
+    "deadCpAPI": "Counterparty API is dead",
+    "deadCbAPI": "Counterblock API is dead",
+    "notCaughtUp": "Server is not caught up"
+  },
+  "preference": {
+    "account": "Account"
+  },
+  "accounts": {
+    "title": "Accounts",
+    "imported": "IMPORTED",
+    "add": "Add New Account",
+    "import": "Import Account",
+    "cancel": "Cancel",
+    "remove": "Remove",
+    "removeMessage": "Are you sure you want to remove this account?"
+  },
+  "appInfo": {
+    "titleActive": "Active Tab",
+    "titleFavorite": "Favorite",
+    "titleHistory": "History",
+    "noItem": "No item",
+    "delete": "Delete",
+    "close": "Close"
+  },
+  "approve": {
+    "title": "Connect Request",
+    "from": "From",
+    "to": "To",
+    "cancel": "Cancel",
+    "approve": "Approve"
+  },
   "browser": {
-    "title": "Browser"
+    "title": "Browser",
+    "popular": "Popular Apps",
+    "favorites": "Favorites",
+    "noItem": "No item",
+    "moreFavorite": "Show More Favorite"
+  },
+  "export": {
+    "titlePrivate": "Show Private Key",
+    "titleSeed": "Show Seed Phrase",
+    "password": "Password",
+    "privateKey": "Your private key",
+    "copy": "Copy to clipboard",
+    "seedPhrase": "Your seed phrase",
+    "derivationPath": "Derivation Path",
+    "show": "Show"
+  },
+  "importAccount": {
+    "title": "Import Account",
+    "name": "Account Name",
+    "privateKey": "Private Key(WIF)",
+    "attentionImport": "Imported accounts will not be associated with your originally created Mpurse account passphrase.",
+    "import": "Import Account"
+  },
+  "infomation": {
+    "title": "Infomation",
+    "titleMpurse": "About Mpurse",
+    "aboutMpurse": "Mpurse is a Monacoin and Monaparty wallet with browser function.This can inject an instance of mpurse into every website's javascript context.",
+    "titleMpchain": "About Mpchain",
+    "aboutMpchain": "Mpchain is a free Monaparty blockchain explorer.",
+    "titleDonate": "Donate",
+    "aboutDonate": "MONA or whatever tokens are welcome."
+  },
+  "login": {
+    "title": "Login",
+    "password": "Password",
+    "forgot": "If you forget your password",
+    "login": "Login",
+    "cancel": "Cancel",
+    "initialize": "Initialize",
+    "initializeMessage": "Initialize your account and reimport using seed phrase."
+  },
+  "password": {
+    "title": "Create Password",
+    "message": "Create a password to encrypt the seed phrase.",
+    "newPassword": "New Password (min 8 chars)",
+    "confirmPassword": "Confirm Password",
+    "useBiometrics": "Use biometrics",
+    "cancel": "Cancel",
+    "encrypt": "Encrypt",
+    "biometricAuthError": "An error occurred during biometric authentication"
+  },
+  "receive": {
+    "title": "Receive",
+    "address": "Your Address",
+    "copy": "Copy to clipboard"
+  },
+  "seedPhrase": {
+    "title": "Your Seed Phrase",
+    "message": "Write your seed phrase down and keep it safe.",
+    "type": "Seed Type",
+    "languages": "Seed Language",
+    "phrase": "Seed Phrase",
+    "derivationPath": "Derivation Path",
+    "writtenDown": "I have written down my seed phrase.",
+    "cancel": "Cancel",
+    "ok": "OK",
+    "change": "Change",
+    "warning": "Warning",
+    "warningMessage": "Do not change without understanding.",
+    "checkingAddress": "Checking valid address."
+  },
+  "sendAsset": {
+    "title": "Send Asset",
+    "from": "Request From",
+    "destination": "Destination Address",
+    "addressOrAsset": "Address or Asset Name",
+    "asset": "Asset",
+    "amount": "Amount",
+    "available": "Available",
+    "memoType": "Memo Type",
+    "no": "No Memo",
+    "hex": "Data Memo",
+    "plain": "Plain Text Memo",
+    "memo": "Memo",
+    "invalidMemo": "Invalid memo string",
+    "fee": "Fee Watanabes/Byte",
+    "resultFee": "Transaction fee: {{value}} MONA",
+    "remaining": "After sending, you will have {{value}} MONA remaining at this address.",
+    "cancel": "Cancel",
+    "send": "Send",
+    "canceled": "Canceled",
+    "setIssuer": "Set {{value}} issuer to destination address",
+    "sent": "Funds sent. tx_hash: {{value}}"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "languageMessage": "Translate the application.",
+    "english": "English",
+    "japanese": "Japanese",
+    "searchEngine": "Search Engine",
+    "searchEngineMessage": "Change the default search engine.",
+    "autoLock": "Auto Lock",
+    "autoLockMessage": "Change the auto lock time.",
+    "immediately": "Immediately",
+    "after5s": "After 5 seconds",
+    "after15s": "After 15 seconds",
+    "after30s": "After 30 seconds",
+    "after60s": "After 60 seconds",
+    "after5m": "After 5 minutes",
+    "after10m": "After 10 minutes",
+    "never": "Never",
+    "browserHistory": "Browser History",
+    "browserHistoryMessage": "Remove all browser history.",
+    "remove": "Remove",
+    "privatekey": "Private Key for \"{{value}}\"",
+    "privatekeyMessage": "DO NOT share this private key with anyone! This can be used to steal your accounts.",
+    "show": "Show",
+    "seedPhrase": "Seed Phrase",
+    "seedPhraseMessage": "DO NOT share this phrase with anyone! These words can be used to steal all your accounts.",
+    "initialization": "Initialization",
+    "initializationMessage": "All account and settings will be removed from your wallet. Please make sure you have the original seed phrase before continuing.",
+    "initialize": "Initialize",
+    "cancel": "Cancel",
+    "removeBrowserHistory": "Remove browser history",
+    "browserHistoryConfirmation": "Are you sure you want to remove browser history?",
+    "initializeConfirmation": "Are you sure you want to remove all?"
+  },
+  "signature": {
+    "title": "Sign Message",
+    "from": "Request From",
+    "message": "Message",
+    "signature": "Signature",
+    "cancel": "Cancel",
+    "sendToWeb": "Send to web",
+    "copy": "Copy",
+    "sign": "Sign",
+    "copied": "Copied"
+  },
+  "start": {
+    "title": "Term of Use",
+    "ownRisk": "Please use this app at your own risk.",
+    "agree": "By clicking you agree to terms.",
+    "new": "Create New",
+    "custom": "Custom Seed",
+    "import": "Import",
+    "already": "An account already exists"
+  },
+  "transaction": {
+    "title": "Sign Transaction",
+    "from": "Request From",
+    "rawTx": "Raw Transaction",
+    "signedTx": "Signed Transaction",
+    "cancel": "Cancel",
+    "sendToWeb": "Send to web",
+    "broadcast": "Broadcast",
+    "copy": "Copy",
+    "sign": "Sign",
+    "copied": "Copied"
+  },
+  "wallet": {
+    "title": "Wallet",
+    "balance": "Asset Balance",
+    "search": "Search Asset",
+    "later": "Later",
+    "encrypt": "Encrypt",
+    "backup": "Backup",
+    "backupMessage": "There was the first payment. Encrypt the seed phrase and private key and complete the backup.",
+    "empty": "The account name is empty",
+    "duplicate": "The account name is a duplicate"
   }
 }

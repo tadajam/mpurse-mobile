@@ -26,7 +26,7 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     ComponentModule,
     ReactiveFormsModule,
-    TranslateModule.forChild()
+    TranslateModule
   ],
   declarations: [BrowserPage, BrowserPopoverComponent]
 })

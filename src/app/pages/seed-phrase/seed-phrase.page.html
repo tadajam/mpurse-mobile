@@ -1,19 +1,19 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Your Seed Phrase</ion-title>
+    <ion-title>{{ 'seedPhrase.title' | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-item *ngIf="custom || existsVault" lines="none">
     <ion-text color="danger">
-      <strong>Write your seed phrase down and keep it safe.</strong>
+      <strong>{{ 'seedPhrase.message' | translate }}</strong>
     </ion-text>
   </ion-item>
   
   <form [formGroup]="seedForm" (ngSubmit)="finishBackup()">
     <ion-item>
-      <ion-label position="floating">Seed Type</ion-label>
+      <ion-label position="floating">{{ 'seedPhrase.type' | translate }}</ion-label>
       <ion-select formControlName="seedType" (ionChange)="changeType()" interface="action-sheet" ngDefaultControl>
         <ion-select-option
           *ngFor="let t of seedTypes"
@@ -24,7 +24,7 @@
     </ion-item>
 
     <ion-item *ngIf="custom && seedTypeControl.value === 'Bip39'">
-      <ion-label position="floating">Seed Language</ion-label>
+      <ion-label position="floating">{{ 'seedPhrase.languages' | translate }}</ion-label>
       <ion-select formControlName="seedLanguage" (ionChange)="changeLang()" interface="action-sheet" ngDefaultControl>
         <ion-select-option *ngFor="let l of languages" [value]="l">
           {{l}}
@@ -33,7 +33,7 @@
     </ion-item>
 
     <ion-item>
-      <ion-label position="floating">Seed Phrase</ion-label>
+      <ion-label position="floating">{{ 'seedPhrase.phrase' | translate }}</ion-label>
       <ion-textarea formControlName="seedPhrase" [readonly]="!import" autoGrow="true">
       </ion-textarea>
       <ion-button *ngIf="!existsVault && custom" (click)="generateRandomMnemonic()" slot="end" fill="clear" class="margin-auto">
@@ -45,7 +45,7 @@
     </ion-item>
 
     <ion-item>
-      <ion-label position="floating">Base Derivation Path</ion-label>
+      <ion-label position="floating">{{ 'seedPhrase.derivationPath' | translate }}</ion-label>
       <ion-input
         formControlName="basePath"
         [readonly]="isBasePathReadonly"
@@ -57,7 +57,7 @@
     </ion-item>
 
     <ion-item lines="none">
-      <ion-label>I have written down my seed phrase.</ion-label>
+      <ion-label>{{ 'seedPhrase.writtenDown' | translate }}</ion-label>
       <ion-checkbox slot="end" formControlName="isSaved"></ion-checkbox>
     </ion-item>
   </form>
@@ -67,10 +67,10 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <ion-button (click)="cancel()" expand="block" color="light">CANCEL</ion-button>
+        <ion-button (click)="cancel()" expand="block" color="light">{{ 'seedPhrase.cancel' | translate }}</ion-button>
       </ion-col>
       <ion-col>
-        <ion-button (click)="finishBackup()" [disabled]="!seedForm.valid" expand="block" color="primary">OK</ion-button>
+        <ion-button (click)="finishBackup()" [disabled]="!seedForm.valid" expand="block" color="primary">{{ 'seedPhrase.ok' | translate }}</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

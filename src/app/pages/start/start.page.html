@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Term of Use</ion-title>
+    <ion-title>{{ 'start.title' | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -23,23 +23,23 @@
   （　 _)　　　　　 ＼__つ　　　 ／ >　
     </pre>
   </ion-card>
-  <h3 text-center>Please use this app at your own risk.</h3>
+  <h3 text-center>{{ 'start.ownRisk' | translate }}</h3>
 </ion-content>
 
 <ion-footer>  
   <ion-text text-center>
-    <p>By clicking you agree to terms.</p>
+    <p>{{ 'start.agree' | translate }}</p>
   </ion-text>
   <ion-button (click)="createNew()" expand="block" margin>
-    CREATE NEW
+    {{ 'start.new' | translate }}
     <ion-icon name="add" slot="end"></ion-icon>
   </ion-button>
   <ion-button (click)="generateCustomSeed()" expand="block" color="secondary" margin>
-    CUSTOM SEED
+    {{ 'start.custom' | translate }}
     <ion-icon name="build" slot="end"></ion-icon>
   </ion-button>
   <ion-button (click)="importExistingSeed()" expand="block" color="secondary" margin>
-    IMPORT
+    {{ 'start.import' | translate }}
     <ion-icon name="download" slot="end"></ion-icon>
   </ion-button>
 </ion-footer>

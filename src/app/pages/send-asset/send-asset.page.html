@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Send Asset</ion-title>
+    <ion-title>{{ 'sendAsset.title' | translate }}</ion-title>
     <ion-buttons slot="end" (click)="openAccountsPage()" margin-end>
       <ion-item lines="none" class="identicon" button>
         <app-ident-icon [address]="address" diameter="40"></app-ident-icon>
@@ -16,7 +16,7 @@
   <ng-container *ngIf="request">
     <ion-item lines="none" text-center>
       <ion-label>
-        <h1>Request From</h1>
+        <h1>{{ 'sendAsset.from' | translate }}</h1>
       </ion-label>
     </ion-item>
   
@@ -37,10 +37,10 @@
 
   <form [formGroup]="sendAssetForm" (ngSubmit)="sendAsset()">
     <ion-item style="margin: 0; padding: 0">
-      <ion-label position="floating">Destination Address</ion-label>
+      <ion-label position="floating">{{ 'sendAsset.destination' | translate }}</ion-label>
       <ion-textarea
         formControlName="to"
-        placeholder="Address or Asset Name"
+        placeholder="{{ 'sendAsset.addressOrAsset' | translate }}"
         [readonly]="toHasAssigned"
         rows="1"
         autoGrow="true">
@@ -54,7 +54,7 @@
     </ion-item>
 
     <ion-item>
-      <ion-label position="floating">Asset</ion-label>
+      <ion-label position="floating">{{ 'sendAsset.asset' | translate }}</ion-label>
       <ng-container *ngIf="assetHasAssigned; then fixAsset; else selectAsset"></ng-container>
       <ng-template #fixAsset>
         <ion-textarea [value]="getAssetName(assetControl.value)" readonly="true" rows="1" autoGrow="true"></ion-textarea>
@@ -69,44 +69,44 @@
     </ion-item>
 
     <ion-item>
-      <ion-label position="floating">Amount</ion-label>
+      <ion-label position="floating">{{ 'sendAsset.amount' | translate }}</ion-label>
       <ion-input formControlName="amount" [readonly]="amountHasAssigned"></ion-input>
       <ion-chip *ngIf="!amountHasAssigned" (click)="setAvailableAllFunds()" color="primary" slot="end" class="margin-auto">
-        Available: {{getAvailable(assetControl.value)}}
+        {{ 'sendAsset.available' | translate }}: {{getAvailable(assetControl.value)}}
       </ion-chip>
     </ion-item>
 
     <ng-container formGroupName="memo" *ngIf="assetControl.value !== 'MONA'">
       <ion-item>
-        <ion-label position="floating">Memo Type</ion-label>
+        <ion-label position="floating">{{ 'sendAsset.memoType' | translate }}</ion-label>
         <ng-container *ngIf="memoTypeHasAssigned; then fixType; else selectType"></ng-container>
         <ng-template #fixType>
           <ng-container [ngSwitch]="memoTypeControl.value">
-            <ion-input *ngSwitchCase="'no'" readonly="true" value="No Memo"></ion-input>
-            <ion-input *ngSwitchCase="'hex'" readonly="true" value="Data Memo"></ion-input>
-            <ion-input *ngSwitchCase="'plain'" readonly="true" value="Plain Text Memo"></ion-input>
+            <ion-input *ngSwitchCase="'no'" readonly="true" value="{{ 'sendAsset.no' | translate }}"></ion-input>
+            <ion-input *ngSwitchCase="'hex'" readonly="true" value="{{ 'sendAsset.hex' | translate }}"></ion-input>
+            <ion-input *ngSwitchCase="'plain'" readonly="true" value="{{ 'sendAsset.plain' | translate }}"></ion-input>
           </ng-container>
         </ng-template>
         <ng-template #selectType>
           <ion-select formControlName="memoType" interface="action-sheet">
-            <ion-select-option value="no">No Memo</ion-select-option>
-            <ion-select-option value="hex">Data Memo</ion-select-option>
-            <ion-select-option value="plain">Plain Text Memo</ion-select-option>
+            <ion-select-option value="no">{{ 'sendAsset.no' | translate }}</ion-select-option>
+            <ion-select-option value="hex">{{ 'sendAsset.hex' | translate }}</ion-select-option>
+            <ion-select-option value="plain">{{ 'sendAsset.plain' | translate }}</ion-select-option>
           </ion-select>
         </ng-template>
       </ion-item>
   
       <ion-item *ngIf="memoTypeControl.value === 'hex' || memoTypeControl.value === 'plain'">
-        <ion-label position="floating">Memo</ion-label>
+        <ion-label position="floating">{{ 'sendAsset.memo' | translate }}</ion-label>
         <ion-input formControlName="memoValue" [readonly]="memoValueHasAssigned"></ion-input>
         <ion-text *ngIf="memoGroup.invalid" color="danger" padding-bottom>
-          Invalid memo string
+          {{ 'sendAsset.invalidMemo' | translate }}
         </ion-text>
       </ion-item>
     </ng-container>
 
     <ion-item>
-      <ion-label position="floating">Fee Watanabes/Byte</ion-label>
+      <ion-label position="floating">{{ 'sendAsset.fee' | translate }}</ion-label>
       <ion-grid class="fee-grid">
         <ion-row>
           <ion-col size="5">
@@ -130,15 +130,15 @@
 
   <ng-container *ngIf="unsignedTx">
     <ion-item lines="none" padding-top>
-      <p>Transaction fee: {{calculatedFee / 100000000 | number:'1.8-8'}} MONA</p>
+      <p>{{ 'sendAsset.resultFee' | translate: {value: calculatedFee / 100000000 | number:'1.8-8'} }}</p>
     </ion-item>
     <ion-item lines="none">
       <ng-container *ngIf="assetControl.value === 'MONA'; then sendMona; else sendAsset"></ng-container>
       <ng-template #sendMona>
-        After sending, you will have {{(getAvailableNumber('MONA') - amountControl.value - calculatedFee / 100000000) | number:'1.8-8'}} MONA remaining at this address.
+        {{ 'sendAsset.remaining' | translate: {value: (getAvailableNumber('MONA') - amountControl.value - calculatedFee / 100000000) | number:'1.8-8'} }}
       </ng-template>
       <ng-template #sendAsset>
-        After sending, you will have {{(getAvailableNumber('MONA') - calculatedFee / 100000000) | number:'1.8-8'}} MONA remaining at this address.
+        {{ 'sendAsset.remaining' | translate: {value: (getAvailableNumber('MONA') - calculatedFee / 100000000) | number:'1.8-8'} }}
       </ng-template>
     </ion-item>
   </ng-container>
@@ -149,10 +149,10 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <ion-button (click)="cancel()" expand="block" color="light">CANCEL</ion-button>
+        <ion-button (click)="cancel()" expand="block" color="light">{{ 'sendAsset.cancel' | translate }}</ion-button>
       </ion-col>
       <ion-col>
-        <ion-button (click)="sendAsset()" expand="block" color="primary" [disabled]="unsignedTx === ''">SEND</ion-button>
+        <ion-button (click)="sendAsset()" expand="block" color="primary" [disabled]="unsignedTx === ''">{{ 'sendAsset.send' | translate }}</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

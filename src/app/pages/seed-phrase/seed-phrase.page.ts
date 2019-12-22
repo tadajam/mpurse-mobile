@@ -19,6 +19,7 @@ import {
 } from '@ionic/angular';
 import { from } from 'rxjs';
 import { CommonService } from 'src/app/services/common.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-seed-phrase',
@@ -88,7 +89,8 @@ export class SeedPhrasePage {
     private alertController: AlertController,
     private commonService: CommonService,
     private navController: NavController,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private translateService: TranslateService
   ) {}
 
   ionViewDidEnter(): void {
@@ -157,9 +159,12 @@ export class SeedPhrasePage {
   requestChagne(): void {
     if (!this.existsVault) {
       const buttons: any[] = [
-        { text: 'CANCEL', role: 'cancel' },
         {
-          text: 'CHANGE',
+          text: this.translateService.instant('seedPhrase.cancel'),
+          role: 'cancel'
+        },
+        {
+          text: this.translateService.instant('seedPhrase.change'),
           handler: (): void => {
             this.isBasePathReadonly = false;
           }
@@ -167,8 +172,8 @@ export class SeedPhrasePage {
       ];
       from(
         this.alertController.create({
-          header: 'WARNING',
-          message: 'Do not change without understanding.',
+          header: this.translateService.instant('seedPhrase.warning'),
+          message: this.translateService.instant('seedPhrase.warningMessage'),
           buttons: buttons
         })
       ).subscribe({ next: alert => alert.present() });
@@ -178,7 +183,9 @@ export class SeedPhrasePage {
   finishBackup(): void {
     if (!this.existsVault) {
       from(
-        this.loadingController.create({ message: 'Checking valid address.' })
+        this.loadingController.create({
+          message: this.translateService.instant('seedPhrase.checkingAddress')
+        })
       )
         .pipe(
           tap(loading => loading.present()),

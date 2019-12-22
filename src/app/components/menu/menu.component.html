@@ -9,7 +9,7 @@
 
     <ion-header>
       <ion-toolbar>
-        <ion-title>Mpurse</ion-title>
+        <ion-title>{{ 'menu.title' | translate }}</ion-title>
         <ion-buttons slot="end">
           <ion-button (click)="logout()" fill="clear">
             <ion-icon name="log-out" size="large"></ion-icon>
@@ -33,55 +33,55 @@
       <ion-item lines="none">
         <ion-chip routerLink="/home/send-asset" (click)="menuClose()" color="primary" outline="true">
           <ion-icon name="send"></ion-icon>
-          <ion-label>Send</ion-label>
+          <ion-label>{{ 'menu.send' | translate }}</ion-label>
         </ion-chip>
 
         <ion-chip (click)="openReceivePage()" color="primary" outline="true">
           <ion-icon name="download"></ion-icon>
-          <ion-label>Receive</ion-label>
+          <ion-label>{{ 'menu.receive' | translate }}</ion-label>
         </ion-chip>
       </ion-item>
 
       <ion-list lines="none">
         <ion-item-group>
           <ion-item-divider>
-            <ion-label>Navigation</ion-label>
+            <ion-label>{{ 'menu.navigation' | translate }}</ion-label>
           </ion-item-divider>
 
           <ion-item routerLink="/home/browser" routerDirection="root" (click)="menuClose()">
             <ion-icon name="browsers" slot="start"></ion-icon>
-            <ion-label>Browser</ion-label>
+            <ion-label>{{ 'menu.browser' | translate }}</ion-label>
           </ion-item>
 
           <ion-item routerLink="/home/wallet" (click)="menuClose()">
             <ion-icon name="wallet" slot="start"></ion-icon>
-            <ion-label>Wallet</ion-label>
+            <ion-label>{{ 'menu.wallet' | translate }}</ion-label>
           </ion-item>
 
           <ion-item routerLink="/home/signature" (click)="menuClose()">
             <ion-icon name="create" slot="start"></ion-icon>
-            <ion-label>Sign Message</ion-label>
+            <ion-label>{{ 'menu.signMessage' | translate }}</ion-label>
           </ion-item>
 
           <ion-item routerLink="/home/transaction" (click)="menuClose()">
             <ion-icon name="create" slot="start"></ion-icon>
-            <ion-label>Sign Transaction</ion-label>
+            <ion-label>{{ 'menu.signTx' | translate }}</ion-label>
           </ion-item>
 
           <ion-item routerLink="/home/settings" (click)="menuClose()">
             <ion-icon name="settings" slot="start"></ion-icon>
-            <ion-label>Settings</ion-label>
+            <ion-label>{{ 'menu.settings' | translate }}</ion-label>
           </ion-item>
 
           <ion-item routerLink="/home/info" (click)="menuClose()">
             <ion-icon name="information-circle-outline" slot="start"></ion-icon>
-            <ion-label>Infomation</ion-label>
+            <ion-label>{{ 'menu.infomation' | translate }}</ion-label>
           </ion-item>
         </ion-item-group>
 
         <ion-item-group>
           <ion-item-divider>
-            <ion-label>Blockchain Explorer</ion-label>
+            <ion-label>{{ 'menu.explorer' | translate }}</ion-label>
           </ion-item-divider>
 
           <ion-item (click)="openInAppBrowser('https://mpchain.info/address/' + address);menuClose()">

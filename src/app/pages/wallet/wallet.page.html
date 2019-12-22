@@ -3,7 +3,7 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Wallet</ion-title>
+    <ion-title>{{ 'wallet.title' | translate }}</ion-title>
   </ion-toolbar>
   <ion-progress-bar *ngIf="loading" type="indeterminate"></ion-progress-bar>
 </ion-header>
@@ -53,7 +53,7 @@
 
   <ion-list>
     <ion-list-header>
-      <ion-label>Asset Balance</ion-label>
+      <ion-label>{{ 'wallet.balance' | translate }}</ion-label>
     </ion-list-header>
       <app-balance *ngIf="monaBalance" [asset]="monaBalance"></app-balance>
       <app-balance *ngIf="xmpBalance" [asset]="xmpBalance"></app-balance>
@@ -61,7 +61,7 @@
       <ion-item>
         <ion-input
           type="search"
-          placeholder="Search Asset"
+          placeholder="{{ 'wallet.search' | translate }}"
           [formControl]="searchAssetStrControl"
           (keyup.enter)="searchAssetStrControl.value ? search() : {}">
         </ion-input>

@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-title>Connect Request</ion-title>
+    <ion-title>{{ 'approve.title' | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -8,7 +8,7 @@
   <ng-container *ngIf="request">
     <ion-item lines="none" text-center>
       <ion-label>
-        <h1>From</h1>
+        <h1>{{ 'approve.from' | translate }}</h1>
       </ion-label>
     </ion-item>
   
@@ -30,7 +30,7 @@
   <ng-container *ngIf="identity">
     <ion-item lines="none" text-center>
         <ion-label>
-          <h1>To</h1>
+          <h1>{{ 'approve.to' | translate }}</h1>
         </ion-label>
       </ion-item>
     
@@ -54,10 +54,10 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <ion-button (click)="cancel()" expand="block" color="light">CANCEL</ion-button>
+        <ion-button (click)="cancel()" expand="block" color="light">{{ 'approve.cancel' | translate }}</ion-button>
       </ion-col>
       <ion-col>
-        <ion-button (click)="approve()" expand="block" color="primary">APPROVE</ion-button>
+        <ion-button (click)="approve()" expand="block" color="primary">{{ 'approve.approve' | translate }}</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

@@ -9,6 +9,7 @@ import {
 } from '@ionic/angular';
 import { from, Subscription } from 'rxjs';
 import { ExportPage } from '../export/export.page';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-settings',
@@ -29,7 +30,8 @@ export class SettingsPage {
     private keyringService: KeyringService,
     private preferenceService: PreferenceService,
     private alertController: AlertController,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private translateService: TranslateService
   ) {}
 
   ionViewDidEnter(): void {
@@ -72,9 +74,12 @@ export class SettingsPage {
 
   deleteHistories(): void {
     const buttons: any[] = [
-      { text: 'CANCEL', role: 'cancel' },
       {
-        text: 'REMOVE',
+        text: this.translateService.instant('settings.cancel'),
+        role: 'cancel'
+      },
+      {
+        text: this.translateService.instant('settings.remove'),
         handler: (): void => {
           this.preferenceService.deleteHistories();
         }
@@ -82,8 +87,10 @@ export class SettingsPage {
     ];
     from(
       this.alertController.create({
-        header: 'BROWSER HISTORY',
-        message: 'Are you sure you want to remove browser history?',
+        header: this.translateService.instant('settings.removeBrowserHistory'),
+        message: this.translateService.instant(
+          'settings.browserHistoryConfirmation'
+        ),
         buttons: buttons
       })
     ).subscribe({ next: alert => alert.present() });
@@ -91,9 +98,12 @@ export class SettingsPage {
 
   initMpurse(): void {
     const buttons: any[] = [
-      { text: 'CANCEL', role: 'cancel' },
       {
-        text: 'INITIALIZE',
+        text: this.translateService.instant('settings.cancel'),
+        role: 'cancel'
+      },
+      {
+        text: this.translateService.instant('settings.initialize'),
         handler: (): void => {
           this.keyringService
             .purgeVault()
@@ -106,8 +116,10 @@ export class SettingsPage {
     ];
     from(
       this.alertController.create({
-        header: 'INITIALIZE',
-        message: 'Are you sure you want to remove all?',
+        header: this.translateService.instant('settings.initialize'),
+        message: this.translateService.instant(
+          'settings.initializeConfirmation'
+        ),
         buttons: buttons
       })
     ).subscribe({ next: alert => alert.present() });

@@ -3,46 +3,39 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Infomation</ion-title>
+    <ion-title>{{ 'infomation.title' | translate }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-card>
     <ion-card-header>
-      <ion-card-title>About Mpurse</ion-card-title>
+      <ion-card-title>{{ 'infomation.titleMpurse' | translate }}</ion-card-title>
     </ion-card-header>
       
     <ion-card-content>
-      <p>
-        Mpurse is a Monacoin and Monaparty wallet with browser function.
-        This can inject an instance of mpurse into every website's javascript context.
-      </p>
+      <p>{{ 'infomation.aboutMpurse' | translate }}</p>
     </ion-card-content>
   </ion-card>
   
   <ion-card>
     <ion-card-header>
-      <ion-card-title>About Mpchain</ion-card-title>
+      <ion-card-title>{{ 'infomation.titleMpchain' | translate }}</ion-card-title>
     </ion-card-header>
       
     <ion-card-content>
-      <p>
-        Mpchain is a free Monaparty blockchain explorer.
-      </p>
+      <p>{{ 'infomation.aboutMpchain' | translate }}</p>
       <ion-text color="primary" (click)="openInAppBrowser('https://mpchain.info')">https://mpchain.info</ion-text>
     </ion-card-content>
   </ion-card>
   
   <ion-card>
     <ion-card-header>
-      <ion-card-title>Donate</ion-card-title>
+      <ion-card-title>{{ 'infomation.titleDonate' | translate }}</ion-card-title>
     </ion-card-header>
       
     <ion-card-content>
-      <p>
-        MONA or whatever tokens are welcome.
-      </p>
+      <p>{{ 'infomation.aboutDonate' | translate }}</p>
       <ion-text color="primary" routerLink="/home/send-asset" [queryParams]="{ to: 'MLinW5mA2Rnu7EjDQpnsrh6Z8APMBH6rAt' }">
         MLinW5mA2Rnu7EjDQpnsrh6Z8APMBH6rAt
       </ion-text>

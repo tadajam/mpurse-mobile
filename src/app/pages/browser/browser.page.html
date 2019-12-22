@@ -20,7 +20,7 @@
 
   <ion-list>
     <ion-list-header>
-      <ion-label>Popular Apps</ion-label>
+      <ion-label>{{ 'browser.popular' | translate }}</ion-label>
     </ion-list-header>
     <ion-item *ngFor="let app of appList" (click)="open(app.href)" lines="none">
       <ion-avatar slot="start">
@@ -37,14 +37,14 @@
 
   <ion-list>
     <ion-list-header>
-      <ion-label>Favorites</ion-label>
+      <ion-label>{{ 'browser.favorites' | translate }}</ion-label>
     </ion-list-header>
     
     <ion-item *ngIf="getFavorites().length === 0" lines="none">
       <ion-avatar slot="start">
         <ion-icon name="cube" size="large" color="primary"></ion-icon>
       </ion-avatar>
-      <ion-label><p>No data</p></ion-label>
+      <ion-label><p>{{ 'browser.noItem' | translate }}</p></ion-label>
     </ion-item>
 
     <ion-reorder-group [disabled]="!isReorderMode" (ionItemReorder)="reorderFavorites($event)">
@@ -73,7 +73,7 @@
       <ion-item *ngIf="getFavorites().length > 5" lines="none">
         <ion-chip (click)="openAppInfoPage('Favorite')" color="primary" outline="true">
           <ion-icon name="open"></ion-icon>
-          <ion-label>Show More Favorite</ion-label>
+          <ion-label>{{ 'browser.moreFavorite' | translate }}</ion-label>
         </ion-chip>
       </ion-item>
     </ion-row>

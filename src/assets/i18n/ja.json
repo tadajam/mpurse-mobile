@@ -1,5 +1,234 @@
 {
+  "browserPopover": {
+    "favorite": "お気に入り",
+    "history": "履歴"
+  },
+  "menu": {
+    "title": "Mpurse",
+    "send": "送る",
+    "receive": "受け取る",
+    "navigation": "ナビゲーション",
+    "browser": "ブラウザ",
+    "wallet": "ウォレット",
+    "signMessage": "メッセージへ署名",
+    "signTx": "トランザクションへ署名",
+    "settings": "設定",
+    "infomation": "インフォメーション",
+    "explorer": "ブロックチェーンエクスプローラ"
+  },
+  "common": {
+    "copy": "コピーしました"
+  },
+  "keyring": {
+    "passwordNotMatch": "パスワードが一致しません",
+    "showSecret": "機密情報を表示する",
+    "vaultNotFount": "有効なバックアップが見つかりません",
+    "login": "Mpurseへログイン"
+  },
+  "mpchain": {
+    "assetNotFound": "アセットが見つかりません",
+    "deadMonaAPI": "モナコインAPIが停止しています",
+    "deadCpAPI": "カウンターパーティAPIが停止しています",
+    "deadCbAPI": "カウンターブロックAPIが停止しています",
+    "notCaughtUp": "同期中です"
+  },
+  "preference": {
+    "account": "アカウント"
+  },
+  "accounts": {
+    "title": "アカウント",
+    "imported": "インポート",
+    "add": "新しいアカウントを追加",
+    "import": "アカウントをインポート",
+    "cancel": "キャンセル",
+    "remove": "削除",
+    "removeMessage": "このアカウントを削除してもよろしいですか？"
+  },
+  "appInfo": {
+    "titleActive": "アクティブなタブ",
+    "titleFavorite": "お気に入り",
+    "titleHistory": "履歴",
+    "noItem": "アイテム無し",
+    "delete": "削除",
+    "close": "閉じる"
+  },
+  "approve": {
+    "title": "接続リクエスト",
+    "from": "接続元サイト",
+    "to": "接続先アカウント",
+    "cancel": "キャンセル",
+    "approve": "承認"
+  },
   "browser": {
-    "title": "Browser"
+    "title": "ブラウザ",
+    "popular": "人気のアプリケーション",
+    "favorites": "お気に入り",
+    "noItem": "アイテム無し",
+    "moreFavorite": "お気に入りをさらに見る"
+  },
+  "export": {
+    "titlePrivate": "秘密鍵の表示",
+    "titleSeed": "シードフレーズの表示",
+    "password": "パスワード",
+    "privateKey": "秘密鍵",
+    "copy": "クリップボードにコピーする",
+    "seedPhrase": "シードフレーズ",
+    "derivationPath": "導出パス",
+    "show": "表示"
+  },
+  "importAccount": {
+    "title": "アカウントをインポート",
+    "name": "アカウント名",
+    "privateKey": "秘密鍵(WIF)",
+    "attentionImport": "インポートしたアカウントは、最初に作成したMpurseアカウントのパスフレーズと関連付けられません。",
+    "import": "インポート"
+  },
+  "infomation": {
+    "title": "インフォメーション",
+    "titleMpurse": "Mpurseについて",
+    "aboutMpurse": "MpurseはMonacoinとMonapartyのブラウザ機能付きウォレットです。すべてのWebサイトのjavascriptコンテキストにmpurseのインスタンスを挿入できます。",
+    "titleMpchain": "Mpchainについて",
+    "aboutMpchain": "Mpchainは無料のMonapartyブロックチェーンエクスプローラです。",
+    "titleDonate": "寄付",
+    "aboutDonate": "MONAやその他のトークンも大歓迎です。"
+  },
+  "login": {
+    "title": "ログイン",
+    "password": "パスワード",
+    "forgot": "パスワードを忘れた場合",
+    "login": "ログイン",
+    "cancel": "キャンセル",
+    "initialize": "初期化",
+    "initializeMessage": "アカウントを初期化し、シードフレーズを利用して再インポートして下さい。"
+  },
+  "password": {
+    "title": "パスワードの作成",
+    "message": "シードフレーズを暗号化するためにパスワードを作成します。",
+    "newPassword": "パスワード (8文字以上)",
+    "confirmPassword": "確認入力",
+    "useBiometrics": "生体認証を利用する",
+    "cancel": "キャンセル",
+    "encrypt": "暗号化",
+    "biometricAuthError": "生体認証実行中にエラーが発生しました"
+  },
+  "receive": {
+    "title": "受け取る",
+    "address": "アドレス",
+    "copy": "クリップボードにコピーする"
+  },
+  "seedPhrase": {
+    "title": "シードフレーズ",
+    "message": "シードフレーズを書き留めて安全に保管してください。",
+    "type": "シードタイプ",
+    "languages": "言語",
+    "phrase": "シードフレーズ",
+    "derivationPath": "導出パス",
+    "writtenDown": "シードフレーズを書き留めました",
+    "cancel": "キャンセル",
+    "ok": "OK",
+    "change": "変更",
+    "warning": "警告",
+    "warningMessage": "不明な場合は変更しないで下さい。",
+    "checkingAddress": "有効なアドレスを確認しています。"
+  },
+  "sendAsset": {
+    "title": "アセットの送信",
+    "from": "要求元",
+    "destination": "送信先アドレス",
+    "addressOrAsset": "アドレス、アセット名",
+    "asset": "アセット",
+    "amount": "送信量",
+    "available": "残高",
+    "memoType": "メモタイプ",
+    "no": "メモ無し",
+    "hex": "データ",
+    "plain": "プレーンテキスト",
+    "memo": "メモ",
+    "invalidMemo": "無効なメモ文字列",
+    "fee": "手数料 Watanabes/Byte",
+    "resultFee": "トランザクション手数料: {{value}} MONA",
+    "remaining": "送信後このアドレスに {{value}} MONAが残ります。",
+    "cancel": "キャンセル",
+    "send": "送信",
+    "canceled": "キャンセルしました",
+    "setIssuer": "「{{value}}」の発行者を送信先アドレスに設定しました",
+    "sent": "送信しました。 tx_hash: {{value}}"
+  },
+  "settings": {
+    "title": "設定",
+    "language": "言語",
+    "languageMessage": "アプリケーションを翻訳します。",
+    "english": "英語",
+    "japanese": "日本語",
+    "searchEngine": "検索エンジン",
+    "searchEngineMessage": "デフォルトの検索エンジンを変更します。",
+    "autoLock": "オートロック",
+    "autoLockMessage": "オートロックまでの時間を変更します。",
+    "immediately": "すぐに",
+    "after5s": "5秒後",
+    "after15s": "15秒後",
+    "after30s": "30秒後",
+    "after60s": "60秒後",
+    "after5m": "5分後",
+    "after10m": "10分後",
+    "never": "しない",
+    "browserHistory": "ブラウザ履歴",
+    "browserHistoryMessage": "すべてのブラウザ履歴を削除します。",
+    "remove": "削除",
+    "privatekey": "「{{value}}」の秘密鍵",
+    "privatekeyMessage": "この秘密鍵を誰とも共有しないでください！ これはアカウントを盗むために使用できます。",
+    "show": "表示",
+    "seedPhrase": "シードフレーズ",
+    "seedPhraseMessage": "このフレーズを誰とも共有しないでください！ これらはすべてのアカウントを盗むために使用できます。",
+    "initialization": "初期化",
+    "initializationMessage": "すべてのアカウントと設定がウォレットから削除されます。 続行する前に元のシードフレーズがあることを確認してください。",
+    "initialize": "初期化",
+    "cancel": "キャンセル",
+    "removeBrowserHistory": "ブラウザ履歴の削除",
+    "browserHistoryConfirmation": "ブラウザの履歴を削除してもよろしいですか？",
+    "initializeConfirmation": "すべてを削除してもよろしいですか？"
+  },
+  "signature": {
+    "title": "メッセージへ署名",
+    "from": "要求元",
+    "message": "メッセージ",
+    "signature": "署名",
+    "cancel": "キャンセル",
+    "sendToWeb": "WEBへ送信",
+    "copy": "コピー",
+    "sign": "署名",
+    "copied": "コピーしました"
+  },
+  "start": {
+    "title": "利用規約",
+    "ownRisk": "ご自身の責任でこのアプリを使用してください。",
+    "agree": "クリックすると規約に同意したことになります。",
+    "new": "新しいアカウント",
+    "custom": "カスタムシード",
+    "import": "インポート",
+    "already": "アカウントは既に存在します"
+  },
+  "transaction": {
+    "title": "トランザクションへ署名",
+    "from": "要求元",
+    "rawTx": "未署名トランザクション",
+    "signedTx": "署名済トランザクション",
+    "cancel": "キャンセル",
+    "sendToWeb": "WEBへ送信",
+    "broadcast": "ブロードキャスト",
+    "copy": "コピー",
+    "sign": "署名",
+    "copied": "コピーしました"
+  },
+  "wallet": {
+    "title": "ウォレット",
+    "balance": "アセット残高",
+    "search": "アセットの検索",
+    "later": "あとで",
+    "encrypt": "暗号化",
+    "backup": "バックアップ",
+    "backupMessage": "最初の支払いがありました。シードフレーズと秘密鍵を暗号化し、バックアップを完了させて下さい。",
+    "empty": "アカウント名が空です",
+    "duplicate": "アカウント名が重複しています"
   }
 }
