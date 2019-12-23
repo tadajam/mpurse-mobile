@@ -60,6 +60,7 @@
     "decimal.js": "^10.2.0",
     "hammerjs": "^2.0.8",
     "jazzicon": "^1.5.0",
+    "npm": "^6.13.4",
     "phonegap-plugin-barcodescanner": "^8.1.0",
     "qrcode": "^1.4.2",
     "rxjs": "~6.5.1",

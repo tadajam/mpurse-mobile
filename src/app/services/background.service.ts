@@ -3,7 +3,7 @@ import { Observable, of, Subscription } from 'rxjs';
 import { InPageMessage } from '../enum/in-page-message.enum';
 import { InAppBrowserService } from './in-app-browser.service';
 import { InAppBrowserObject } from '@ionic-native/in-app-browser/ngx';
-import { flatMap, map, filter, catchError, tap } from 'rxjs/operators';
+import { flatMap, map, filter, catchError } from 'rxjs/operators';
 import { Router, ActivatedRoute } from '@angular/router';
 import { PreferenceService } from './preference.service';
 import { MpchainService } from './mpchain.service';
