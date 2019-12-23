@@ -178,7 +178,10 @@ export class SendAssetPage {
         flatMap(() => this.updateAssets())
       )
       .subscribe({
-        next: (balances: MpchainAssetBalance[]) => (this.assets = balances),
+        next: (balances: MpchainAssetBalance[]) => {
+          this.assets = balances;
+          this.sendAssetForm.updateValueAndValidity();
+        },
         error: error => this.commonService.presentErrorToast(error.toString())
       });
 
