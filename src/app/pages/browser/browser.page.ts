@@ -58,7 +58,7 @@ export class BrowserPage {
     });
   }
 
-  openAppInfoPage(group: AppGroup): void {
+  openAppInfoPage(group: AppGroup | string): void {
     from(
       this.modalController.create({
         component: AppInfoPage,

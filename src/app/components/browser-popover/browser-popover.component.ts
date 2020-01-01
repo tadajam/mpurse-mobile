@@ -15,7 +15,7 @@ export class BrowserPopoverComponent {
     private popoverController: PopoverController
   ) {}
 
-  openAppInfoPage(group: AppGroup): void {
+  openAppInfoPage(group: AppGroup | string): void {
     from(
       this.modalController.create({
         component: AppInfoPage,
