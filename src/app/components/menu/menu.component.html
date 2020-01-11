@@ -19,7 +19,7 @@
     </ion-header>
 
     <ion-content>
-      <ion-item *ngIf="address" lines="full" (click)="openAccountsPage()" button padding-vertical>
+      <ion-item *ngIf="address" lines="full" (click)="openAccountsPage()" detail="false" button padding-vertical>
         <ion-row justify-content-center>
           <app-ident-icon [address]="address" diameter="60" margin-end></app-ident-icon>
         </ion-row>

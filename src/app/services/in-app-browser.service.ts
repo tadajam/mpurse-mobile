@@ -28,7 +28,8 @@ export class InAppBrowserService {
       this.generateUrl(target),
       '_blank',
       {
-        hideurlbar: 'yes'
+        hideurlbar: 'yes',
+        usewkwebview: 'yes'
       }
     );
 

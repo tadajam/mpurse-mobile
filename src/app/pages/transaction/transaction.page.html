@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>{{ 'transaction.title' | translate }}</ion-title>
     <ion-buttons slot="end" (click)="openAccountsPage()" margin-end>
-      <ion-item lines="none" class="identicon" button>
+      <ion-item lines="none" class="identicon" detail="false" button>
         <app-ident-icon [address]="address" diameter="40"></app-ident-icon>
       </ion-item>
     </ion-buttons>

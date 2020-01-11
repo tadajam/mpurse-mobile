@@ -2,7 +2,8 @@
   *ngIf="asset"
   routerLink="/home/send-asset"
   [queryParams]="{ asset: asset.asset }"
-  [lines]="searched ? 'full' : 'none'">
+  [lines]="searched ? 'full' : 'none'"
+  detail="false">
   <ion-avatar slot="start">
     <img src="https://mpchain.info/icon/{{asset.asset}}.png">
   </ion-avatar>
