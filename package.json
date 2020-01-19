@@ -1,6 +1,6 @@
 {
   "name": "mpurse-mobile",
-  "version": "0.0.1",
+  "version": "0.0.6",
   "author": "tadajam",
   "homepage": "https://mpchain.info/",
   "scripts": {
@@ -55,6 +55,7 @@
     "cordova-ios": "^5.1.1",
     "cordova-plugin-inappbrowser": "git+https://github.com/apache/cordova-plugin-inappbrowser.git",
     "cordova-plugin-keychain-touch-id": "^3.2.1",
+    "cordova-plugin-settings-hook": "^0.3.1",
     "cordova-sqlite-storage": "^3.3.0",
     "core-js": "^2.5.4",
     "crypto-js": "^3.1.9-1",
@@ -126,7 +127,8 @@
       "cordova-clipboard": {},
       "phonegap-plugin-barcodescanner": {
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
-      }
+      },
+      "cordova-plugin-settings-hook": {}
     },
     "platforms": [
       "android",
