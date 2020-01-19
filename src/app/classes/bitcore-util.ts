@@ -196,6 +196,10 @@ export class BitcoreUtil {
     return BitCore.encoding.Base58.decode(str);
   }
 
+  getValidationError(addressStr): any {
+    return BitCore.Address.getValidationError(addressStr, this.NETWORK);
+  }
+
   signTransaction(unsignedHex: string, hex: string): Promise<string> {
     return this.rebuildScriptPubKey(unsignedHex).then(tx =>
       tx.sign(this.getPrivateKeyFromHex(hex)).toString()

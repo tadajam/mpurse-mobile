@@ -157,6 +157,15 @@ export class Keyring {
     return this.bitcore.decodeBase58(address);
   }
 
+  isAddress(addressStr: string): boolean {
+    try {
+      const validationError = this.bitcore.getValidationError(addressStr);
+      return validationError ? false : true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   signTransaction(tx: string, address: string): Promise<string> {
     const account = this.accounts.find(value => value.address === address);
     return this.bitcore.signTransaction(tx, account.privatekey);

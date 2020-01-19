@@ -453,4 +453,8 @@ export class KeyringService {
       return null;
     }
   }
+
+  isAddress(addressStr: string): boolean {
+    return this.keyring.isAddress(addressStr);
+  }
 }

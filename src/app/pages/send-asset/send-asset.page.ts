@@ -4,7 +4,8 @@ import {
   FormControl,
   FormGroup,
   Validators,
-  ValidationErrors
+  ValidationErrors,
+  AbstractControl
 } from '@angular/forms';
 import { Subscription, from, Observable, of } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
@@ -43,8 +44,16 @@ export class SendAssetPage {
 
   toAddressControl = new FormControl('', {
     updateOn: 'blur',
-    validators: [Validators.required]
+    validators: [
+      Validators.required,
+      (control: AbstractControl): ValidationErrors | null => {
+        return this.keyringService.isAddress(control.value)
+          ? null
+          : { notAddress: true };
+      }
+    ]
   });
+
   amountControl = new FormControl(0, {
     updateOn: 'blur',
     validators: [
