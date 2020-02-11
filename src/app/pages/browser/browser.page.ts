@@ -27,6 +27,12 @@ export class BrowserPage {
       icon: 'https://web3.askmona.org/apple-touch-icon.png',
       description:
         'Ask Mona 3.0では、掲示板形式で簡単にMONAをやり取りすることができます。質問したり、答えたりしてMONAを手に入れてください。'
+    },
+    {
+      href: 'https://mpurse-extension.komikikaku.com/step',
+      title: 'Mpurseエクステ',
+      icon: 'https://mpurse-extension.komikikaku.com/ogimage.png',
+      description: 'Mpurseとモナパレットがあわさりサイキョーにベンリ'
     }
   ];
 
