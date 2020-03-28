@@ -200,7 +200,7 @@ export class SeedPhrasePage {
         .subscribe({
           next: () => {
             this.loadingController.dismiss();
-            this.preferenceService.finishBackup();
+            this.preferenceService.setFinishedBackup(true);
             this.navController.navigateRoot('/home/wallet');
           },
           error: error => {
@@ -209,7 +209,7 @@ export class SeedPhrasePage {
           }
         });
     } else {
-      this.preferenceService.finishBackup();
+      this.preferenceService.setFinishedBackup(true);
       this.navController.navigateRoot('/home/wallet');
     }
   }

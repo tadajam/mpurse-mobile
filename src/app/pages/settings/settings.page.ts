@@ -21,6 +21,7 @@ export class SettingsPage {
   lang = 'en';
   searchEngine = 'google';
   autoLockTime = 15000;
+  encrypted: boolean = null;
 
   address = '';
   accountName = '';
@@ -48,6 +49,9 @@ export class SettingsPage {
         }
       })
     );
+    this.keyringService
+      .isEncrypted()
+      .subscribe({ next: encrypted => (this.encrypted = encrypted) });
   }
 
   ionViewWillLeave(): void {
@@ -94,6 +98,37 @@ export class SettingsPage {
         buttons: buttons
       })
     ).subscribe({ next: alert => alert.present() });
+  }
+
+  disablePassword(): void {
+    const buttons: any[] = [
+      {
+        text: this.translateService.instant('settings.cancel'),
+        role: 'cancel'
+      },
+      {
+        text: this.translateService.instant('settings.disable'),
+        handler: (): void => {
+          this.keyringService
+            .setPassword('')
+            .pipe(flatMap(() => this.keyringService.isEncrypted()))
+            .subscribe({ next: encrypted => (this.encrypted = encrypted) });
+        }
+      }
+    ];
+    from(
+      this.alertController.create({
+        header: this.translateService.instant('settings.passwordProtection'),
+        message: this.translateService.instant(
+          'settings.disablePasswordConfirmation'
+        ),
+        buttons: buttons
+      })
+    ).subscribe({ next: alert => alert.present() });
+  }
+
+  openPasswordPage(): void {
+    this.navController.navigateRoot('/password');
   }
 
   initMpurse(): void {

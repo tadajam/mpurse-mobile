@@ -8,7 +8,6 @@
 </ion-header>
 
 <ion-content>
-
   <div padding>
     <ion-label>
       <h1>{{ 'settings.language' | translate }}</h1>
@@ -16,9 +15,18 @@
     <ion-text>
       <p>{{ 'settings.languageMessage' | translate }}</p>
     </ion-text>
-    <ion-select [(ngModel)]="lang" (ionChange)="changeLang()" interface="action-sheet" ngDefaultControl>
-      <ion-select-option value="en">{{ 'settings.english' | translate }}</ion-select-option>
-      <ion-select-option value="ja">{{ 'settings.japanese' | translate }}</ion-select-option>
+    <ion-select
+      [(ngModel)]="lang"
+      (ionChange)="changeLang()"
+      interface="action-sheet"
+      ngDefaultControl
+    >
+      <ion-select-option value="en">
+        {{ 'settings.english' | translate }}
+      </ion-select-option>
+      <ion-select-option value="ja">
+        {{ 'settings.japanese' | translate }}
+      </ion-select-option>
     </ion-select>
   </div>
 
@@ -29,7 +37,12 @@
     <ion-text>
       <p>{{ 'settings.searchEngineMessage' | translate }}</p>
     </ion-text>
-    <ion-select [(ngModel)]="searchEngine" (ionChange)="changeSearchEngine()" interface="action-sheet" ngDefaultControl>
+    <ion-select
+      [(ngModel)]="searchEngine"
+      (ionChange)="changeSearchEngine()"
+      interface="action-sheet"
+      ngDefaultControl
+    >
       <ion-select-option value="google">Google</ion-select-option>
       <ion-select-option value="duckduckgo">DuckDuckGo</ion-select-option>
     </ion-select>
@@ -42,15 +55,36 @@
     <ion-text>
       <p>{{ 'settings.autoLockMessage' | translate }}</p>
     </ion-text>
-    <ion-select [(ngModel)]="autoLockTime" (ionChange)="changeAutoLockTime()" interface="action-sheet" ngDefaultControl>
-      <ion-select-option [value]="0">{{ 'settings.immediately' | translate }}</ion-select-option>
-      <ion-select-option [value]="5000">{{ 'settings.after5s' | translate }}</ion-select-option>
-      <ion-select-option [value]="15000">{{ 'settings.after15s' | translate }}</ion-select-option>
-      <ion-select-option [value]="30000">{{ 'settings.after30s' | translate }}</ion-select-option>
-      <ion-select-option [value]="60000">{{ 'settings.after60s' | translate }}</ion-select-option>
-      <ion-select-option [value]="300000">{{ 'settings.after5m' | translate }}</ion-select-option>
-      <ion-select-option [value]="600000">{{ 'settings.after10m' | translate }}</ion-select-option>
-      <ion-select-option [value]="-1">{{ 'settings.never' | translate }}</ion-select-option>
+    <ion-select
+      [(ngModel)]="autoLockTime"
+      (ionChange)="changeAutoLockTime()"
+      interface="action-sheet"
+      ngDefaultControl
+    >
+      <ion-select-option [value]="0">
+        {{ 'settings.immediately' | translate }}
+      </ion-select-option>
+      <ion-select-option [value]="5000">
+        {{ 'settings.after5s' | translate }}
+      </ion-select-option>
+      <ion-select-option [value]="15000">
+        {{ 'settings.after15s' | translate }}
+      </ion-select-option>
+      <ion-select-option [value]="30000">
+        {{ 'settings.after30s' | translate }}
+      </ion-select-option>
+      <ion-select-option [value]="60000">
+        {{ 'settings.after60s' | translate }}
+      </ion-select-option>
+      <ion-select-option [value]="300000">
+        {{ 'settings.after5m' | translate }}
+      </ion-select-option>
+      <ion-select-option [value]="600000">
+        {{ 'settings.after10m' | translate }}
+      </ion-select-option>
+      <ion-select-option [value]="-1">
+        {{ 'settings.never' | translate }}
+      </ion-select-option>
     </ion-select>
   </div>
 
@@ -61,7 +95,33 @@
     <ion-text>
       <p>{{ 'settings.browserHistoryMessage' | translate }}</p>
     </ion-text>
-    <ion-button (click)="deleteHistories()" expand="block" fill="outline">{{ 'settings.remove' | translate }}</ion-button>
+    <ion-button (click)="deleteHistories()" expand="block" fill="outline">
+      {{ 'settings.remove' | translate }}
+    </ion-button>
+  </div>
+
+  <div *ngIf="encrypted != null && encrypted" padding>
+    <ion-label>
+      <h1>{{ 'settings.passwordProtection' | translate }}</h1>
+    </ion-label>
+    <ion-text color="danger">
+      <p>{{ 'settings.disablePasswordMessage' | translate }}</p>
+    </ion-text>
+    <ion-button (click)="disablePassword()" expand="block" color="danger">
+      {{ 'settings.disable' | translate }}
+    </ion-button>
+  </div>
+
+  <div *ngIf="encrypted != null && !encrypted" padding>
+    <ion-label>
+      <h1>{{ 'settings.passwordProtection' | translate }}</h1>
+    </ion-label>
+    <ion-text>
+      <p>{{ 'settings.enablePasswordMessage' | translate }}</p>
+    </ion-text>
+    <ion-button (click)="openPasswordPage()" expand="block" fill="outline">
+      {{ 'settings.enable' | translate }}
+    </ion-button>
   </div>
 
   <div padding>
@@ -71,7 +131,9 @@
     <ion-text color="danger">
       <p>{{ 'settings.privatekeyMessage' | translate }}</p>
     </ion-text>
-    <ion-button (click)="openExportPage(false)" expand="block" color="danger">{{ 'settings.show' | translate }}</ion-button>
+    <ion-button (click)="openExportPage(false)" expand="block" color="danger">
+      {{ 'settings.show' | translate }}
+    </ion-button>
   </div>
 
   <div padding>
@@ -81,7 +143,9 @@
     <ion-text color="danger">
       <p>{{ 'settings.seedPhraseMessage' | translate }}</p>
     </ion-text>
-    <ion-button (click)="openExportPage(true)" expand="block" color="danger">{{ 'settings.show' | translate }}</ion-button>
+    <ion-button (click)="openExportPage(true)" expand="block" color="danger">
+      {{ 'settings.show' | translate }}
+    </ion-button>
   </div>
 
   <div padding>
@@ -91,7 +155,8 @@
     <ion-text color="danger">
       <p>{{ 'settings.initializationMessage' | translate }}</p>
     </ion-text>
-    <ion-button (click)="initMpurse()" expand="block" color="danger">{{ 'settings.initialize' | translate }}</ion-button>
+    <ion-button (click)="initMpurse()" expand="block" color="danger">
+      {{ 'settings.initialize' | translate }}
+    </ion-button>
   </div>
-  
 </ion-content>

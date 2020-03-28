@@ -10,22 +10,34 @@
       <strong>{{ 'seedPhrase.message' | translate }}</strong>
     </ion-text>
   </ion-item>
-  
+
   <form [formGroup]="seedForm" (ngSubmit)="finishBackup()">
     <ion-item>
-      <ion-label position="floating">{{ 'seedPhrase.type' | translate }}</ion-label>
-      <ion-select formControlName="seedType" (ionChange)="changeType()" interface="action-sheet" ngDefaultControl>
-        <ion-select-option
-          *ngFor="let t of seedTypes"
-          [value]="t.typeValue">
+      <ion-label position="floating">
+        {{ 'seedPhrase.type' | translate }}
+      </ion-label>
+      <ion-select
+        formControlName="seedType"
+        (ionChange)="changeType()"
+        interface="action-sheet"
+        ngDefaultControl
+      >
+        <ion-select-option *ngFor="let t of seedTypes" [value]="t.typeValue">
           {{t.typeString}}
         </ion-select-option>
       </ion-select>
     </ion-item>
 
     <ion-item *ngIf="custom && seedTypeControl.value === 'Bip39'">
-      <ion-label position="floating">{{ 'seedPhrase.languages' | translate }}</ion-label>
-      <ion-select formControlName="seedLanguage" (ionChange)="changeLang()" interface="action-sheet" ngDefaultControl>
+      <ion-label position="floating">
+        {{ 'seedPhrase.languages' | translate }}
+      </ion-label>
+      <ion-select
+        formControlName="seedLanguage"
+        (ionChange)="changeLang()"
+        interface="action-sheet"
+        ngDefaultControl
+      >
         <ion-select-option *ngFor="let l of languages" [value]="l">
           {{l}}
         </ion-select-option>
@@ -33,25 +45,54 @@
     </ion-item>
 
     <ion-item>
-      <ion-label position="floating">{{ 'seedPhrase.phrase' | translate }}</ion-label>
-      <ion-textarea formControlName="seedPhrase" [readonly]="!import" autoGrow="true">
-      </ion-textarea>
-      <ion-button *ngIf="!existsVault && custom" (click)="generateRandomMnemonic()" slot="end" fill="clear" class="margin-auto">
+      <ion-label position="floating">
+        {{ 'seedPhrase.phrase' | translate }}
+      </ion-label>
+      <ion-textarea
+        formControlName="seedPhrase"
+        [readonly]="!import"
+        autoGrow="true"
+      ></ion-textarea>
+      <ion-button
+        *ngIf="!existsVault && custom"
+        (click)="generateRandomMnemonic()"
+        slot="end"
+        fill="clear"
+        class="margin-auto"
+      >
         <ion-icon name="refresh" color="primary" class="inner-icon"></ion-icon>
       </ion-button>
-      <ion-button *ngIf="!existsVault && import" (click)="scanQrcode()" slot="end" fill="clear" class="margin-auto">
-        <ion-icon name="qr-scanner" color="primary" class="inner-icon"></ion-icon>
+      <ion-button
+        *ngIf="!existsVault && import"
+        (click)="scanQrcode()"
+        slot="end"
+        fill="clear"
+        class="margin-auto"
+      >
+        <ion-icon
+          name="qr-scanner"
+          color="primary"
+          class="inner-icon"
+        ></ion-icon>
       </ion-button>
     </ion-item>
 
     <ion-item>
-      <ion-label position="floating">{{ 'seedPhrase.derivationPath' | translate }}</ion-label>
+      <ion-label position="floating">
+        {{ 'seedPhrase.derivationPath' | translate }}
+      </ion-label>
       <ion-input
         formControlName="basePath"
         [readonly]="isBasePathReadonly"
-        [color]="isBasePathReadonly ? 'medium' : 'dark'">
-      </ion-input>
-      <ion-button *ngIf="!existsVault && isBasePathReadonly" (click)="requestChagne()" slot="end" fill="clear" class="margin-auto">
+        [color]="isBasePathReadonly ? 'medium' : 'dark'"
+      ></ion-input>
+      <ion-button
+        *ngIf="!existsVault && isBasePathReadonly"
+        (click)="requestChagne()"
+        slot="end"
+        fill="clear"
+        class="margin-auto"
+      >
         <ion-icon name="create" color="primary" class="inner-icon"></ion-icon>
       </ion-button>
     </ion-item>
@@ -67,10 +108,19 @@
   <ion-grid>
     <ion-row>
       <ion-col>
-        <ion-button (click)="cancel()" expand="block" color="light">{{ 'seedPhrase.cancel' | translate }}</ion-button>
+        <ion-button (click)="cancel()" expand="block" color="light">
+          {{ 'seedPhrase.cancel' | translate }}
+        </ion-button>
       </ion-col>
       <ion-col>
-        <ion-button (click)="finishBackup()" [disabled]="!seedForm.valid" expand="block" color="primary">{{ 'seedPhrase.ok' | translate }}</ion-button>
+        <ion-button
+          (click)="finishBackup()"
+          [disabled]="!seedForm.valid"
+          expand="block"
+          color="primary"
+        >
+          {{ 'seedPhrase.ok' | translate }}
+        </ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

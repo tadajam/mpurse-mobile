@@ -135,8 +135,8 @@ export class PreferenceService {
   }
 
   // finishedBackup
-  finishBackup(): void {
-    this.finishedBackup = true;
+  setFinishedBackup(isFinished: boolean): void {
+    this.finishedBackup = isFinished;
     this.storage.set(PreferenceKey.FinishedBackup, this.finishedBackup);
   }
 

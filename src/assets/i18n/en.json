@@ -109,7 +109,9 @@
     "useBiometrics": "Use biometrics",
     "cancel": "Cancel",
     "encrypt": "Encrypt",
-    "biometricAuthError": "An error occurred during biometric authentication"
+    "biometricAuthError": "An error occurred during biometric authentication",
+    "noEncryption": "No encryption required",
+    "next": "Next"
   },
   "receive": {
     "title": "Receive",
@@ -175,6 +177,12 @@
     "browserHistory": "Browser History",
     "browserHistoryMessage": "Remove all browser history.",
     "remove": "Remove",
+    "passwordProtection": "Password Protection",
+    "enablePasswordMessage": "Create a password and enable password protection.",
+    "enable": "Enable",
+    "disablePasswordMessage": "Remove your current password and disable password protection.",
+    "disable": "Disable",
+    "disablePasswordConfirmation": "Are you sure you want to disable password protection?",
     "privatekey": "Private Key for \"{{value}}\"",
     "privatekeyMessage": "DO NOT share this private key with anyone! This can be used to steal your accounts.",
     "show": "Show",

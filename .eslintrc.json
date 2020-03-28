@@ -16,7 +16,8 @@
       "error",
       {
         "singleQuote": true,
-        "semi": true
+        "semi": true,
+        "htmlWhitespaceSensitivity": "ignore"
       }
     ]
   }

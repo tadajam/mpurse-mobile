@@ -109,7 +109,9 @@
     "useBiometrics": "生体認証を利用する",
     "cancel": "キャンセル",
     "encrypt": "暗号化",
-    "biometricAuthError": "生体認証実行中にエラーが発生しました"
+    "biometricAuthError": "生体認証実行中にエラーが発生しました",
+    "noEncryption": "暗号化しない",
+    "next": "次へ"
   },
   "receive": {
     "title": "受け取る",
@@ -175,6 +177,12 @@
     "browserHistory": "ブラウザ履歴",
     "browserHistoryMessage": "すべてのブラウザ履歴を削除します。",
     "remove": "削除",
+    "passwordProtection": "パスワード保護",
+    "enablePasswordMessage": "パスワードを作成してパスワード保護を有効にします。",
+    "enable": "有効化",
+    "disablePasswordMessage": "パスワードを削除してパスワード保護を無効にします。",
+    "disable": "無効化",
+    "disablePasswordConfirmation": "パスワード保護を無効にしてもよろしいですか？",
     "privatekey": "「{{value}}」の秘密鍵",
     "privatekeyMessage": "この秘密鍵を誰とも共有しないでください！ これはアカウントを盗むために使用できます。",
     "show": "表示",

@@ -18,18 +18,17 @@ export class PasswordPage {
   import = false;
   hide = true;
 
-  passwordControl = new FormControl('', [
-    Validators.required,
-    Validators.minLength(8)
-  ]);
+  passwordControl = new FormControl('', []);
   confirmPasswordControl = new FormControl('', []);
   useBiometricsControl = new FormControl(false, []);
+  noEncryptionControl = new FormControl(false, []);
 
   passwordForm = new FormGroup(
     {
       password: this.passwordControl,
       confirmPassword: this.confirmPasswordControl,
-      biometrics: this.useBiometricsControl
+      biometrics: this.useBiometricsControl,
+      noEncryption: this.noEncryptionControl
     },
     { validators: this.checkPasswords }
   );
@@ -74,10 +73,14 @@ export class PasswordPage {
   }
 
   checkPasswords(group: FormGroup): { [key: string]: any } | null {
+    const noEncryption = group.controls.noEncryption.value;
     const pass = group.controls.password.value;
     const confirmPass = group.controls.confirmPassword.value;
 
-    return pass === confirmPass ? null : { notMatch: true };
+    const minLen = pass.length >= 8;
+    const match = pass === confirmPass;
+
+    return noEncryption || (minLen && match) ? null : { notMatch: true };
   }
 
   cancel(): void {
@@ -90,6 +93,7 @@ export class PasswordPage {
         .savePasswordWithTouchId(this.passwordControl.value)
         .subscribe({
           next: () => {
+            this.preferenceService.setFinishedBackup(false);
             this.preferenceService.setUseBiometrics(true);
             this.openSeedPhrasePage();
           },
@@ -101,11 +105,18 @@ export class PasswordPage {
     } else {
       this.keyringService.setPassword(this.passwordControl.value).subscribe({
         next: () => {
+          this.preferenceService.setFinishedBackup(false);
           this.preferenceService.setUseBiometrics(false);
           this.openSeedPhrasePage();
         }
       });
     }
+  }
+
+  next(): void {
+    this.preferenceService.setFinishedBackup(false);
+    this.preferenceService.setUseBiometrics(false);
+    this.openSeedPhrasePage();
   }
 
   openSeedPhrasePage(): void {
